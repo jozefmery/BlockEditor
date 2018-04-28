@@ -30,11 +30,12 @@ inline void MainWindow::setUpChildren() {
 
 	ui.controlToolBar->setIconSize(QSize(Scaler::scaleX(35), Scaler::scaleY(35)));
 
-	setFixedSize(Scaler::scaleX(1024), Scaler::scaleY(768));
+	resize(Scaler::scaleX(1024), Scaler::scaleY(768));
 
 	connect(controlActions[0], &QAction::triggered, this, &MainWindow::start);
 	connect(controlActions[1], &QAction::triggered, this, &MainWindow::pause);
 	connect(controlActions[2], &QAction::triggered, this, &MainWindow::stop);
+
 }
 
 void MainWindow::start() {

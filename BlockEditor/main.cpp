@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
 	QApplication app(argc, argv);
 
 	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+	QCoreApplication::setAttribute(Qt::AA_UseStyleSheetPropagationInWidgetStyles, true);
 
 	QRect rec = QApplication::desktop()->screenGeometry();
 

@@ -12,7 +12,7 @@ BlockEditor::BlockEditor(QWidget* parent) {
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 	// set size of view
-	setFixedSize(Scaler::scaleX(1024), Scaler::scaleY(768));
+	resize(Scaler::scaleX(1024), Scaler::scaleY(768));
 
 	// set up scene
 	scene = new QGraphicsScene();
