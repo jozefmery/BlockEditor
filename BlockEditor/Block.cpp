@@ -7,8 +7,7 @@
 
 extern BlockEditor *blockEditor;
 
-Block::Block(int x, int y, int n, QGraphicsItem* parent) {
-
+Block::Block(const int x, const int y, const int n, QGraphicsItem* parent) {
 	// draw the block
 	setRect(x, y, 50, 50);
 	QBrush brush;
@@ -17,8 +16,8 @@ Block::Block(int x, int y, int n, QGraphicsItem* parent) {
 	setBrush(brush);
 
 	QGraphicsTextItem* text = new QGraphicsTextItem(QString::number(n), this);
-	int xPos = x + rect().width() / 2 - text->boundingRect().width() / 2;
-	int yPos = y + rect().height() / 2 - text->boundingRect().height() / 2;
+	int const xPos = x + rect().width() / 2 - text->boundingRect().width() / 2;
+	int const yPos = y + rect().height() / 2 - text->boundingRect().height() / 2;
 	text->setPos(xPos, yPos);
 
 	setIsPlaced(true);
@@ -28,11 +27,12 @@ Block::Block(int x, int y, int n, QGraphicsItem* parent) {
 }
 
 void Block::mousePressEvent(QGraphicsSceneMouseEvent* event) {
-	// pick up the block
-	if (isPlaced()) {
-		blockEditor->pickUpBlock(this, event->pos());
-	}
-	else { // place the block
+	if (isPlaced()) { // block is placed
+		if (event->buttons() == Qt::LeftButton) {
+			// pick up the block
+			blockEditor->pickUpBlock(this, event->pos());
+		}
+	} else if (event->buttons() == Qt::LeftButton) { // place the block
 		blockEditor->placeBlock(this);
 	}
 }

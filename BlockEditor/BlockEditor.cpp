@@ -4,7 +4,8 @@
 #include <QComboBox>
 #include <QMouseEvent>
 #include <QDebug>
-#include <QToolBar>
+#include <QWidget>
+#include <QMenu>
 
 BlockEditor::BlockEditor(QWidget* parent) {
 	// disable scroll bar
@@ -20,6 +21,12 @@ BlockEditor::BlockEditor(QWidget* parent) {
 	setScene(scene);
 
 	drawGUI();
+
+	addContextMenus();
+}
+
+void BlockEditor::addContextMenus() {
+	
 }
 
 void BlockEditor::drawGUI() {
@@ -69,6 +76,14 @@ void BlockEditor::spawnBlock() {
 	pickUpBlock(block, cursorPos);
 }
 
+void BlockEditor::deleteBlock() {
+	// get cursor position
+	QPointF cursorPos = this->mapFromGlobal(QCursor::pos());
+	// draw a block
+	Block* block = dynamic_cast<Block*>(itemAt(cursorPos.x(), cursorPos.y()));
+	scene->removeItem(block);
+}
+
 void BlockEditor::mouseMoveEvent(QMouseEvent* event) {
 
 	// if there is a cardToPlace, then make it follow the mouse
@@ -80,4 +95,14 @@ void BlockEditor::mouseMoveEvent(QMouseEvent* event) {
 	}
 
 	QGraphicsView::mouseMoveEvent(event);
+}
+
+void BlockEditor::contextMenuEvent(QContextMenuEvent* event) {
+	QPointF p = event->pos();
+	QGraphicsItem* item = itemAt(p.x(), p.y());
+	if (item != nullptr) {
+		if (dynamic_cast<Block*>(item)) {
+			//blockContextMenu->exec(event->globalPos());
+		}
+	}
 }

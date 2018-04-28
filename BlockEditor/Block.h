@@ -1,14 +1,12 @@
 #pragma once
 
-#include <QVector>
 #include <QGraphicsRectItem>
-#include <QGraphicsSceneMouseEvent>
 
 class Block : public QGraphicsRectItem {
 
 	public:
 		// constructors
-		Block(int x, int y, int n, QGraphicsItem* parent = NULL);
+		Block(const int x, const int y, const int n, QGraphicsItem* parent = nullptr);
 
 		// events
 		void Block::mousePressEvent(QGraphicsSceneMouseEvent* event);

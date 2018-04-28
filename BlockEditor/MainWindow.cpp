@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget *parent)
 inline void MainWindow::setUpChildren() {
 
 	blockEditor = new BlockEditor;
+	blockEditor->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(blockEditor, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
 	setCentralWidget(blockEditor);
 
 	controlActions[0] = new QAction(this);
@@ -48,4 +50,17 @@ void MainWindow::pause() {
 
 void MainWindow::stop() {
 
+}
+
+void MainWindow::showContextMenu(QPoint pos) {
+	// Handle global position
+	QPoint globalPos = blockEditor->mapToGlobal(pos);
+
+	// Create menu and insert some actions
+	QMenu myMenu;
+	myMenu.addAction("Insert");
+	myMenu.addAction("Erase");
+
+	// Show context menu at handling position
+	myMenu.exec(globalPos);
 }

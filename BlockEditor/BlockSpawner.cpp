@@ -18,6 +18,7 @@ BlockSpawner::BlockSpawner() {
 	text->setPos(xPos, yPos);
 
 	// allow reposing to hover events
+	setAcceptedMouseButtons(Qt::LeftButton);
 	setAcceptHoverEvents(true);
 
 	blockOrder = 1;

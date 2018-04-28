@@ -21,5 +21,11 @@ private:
 private:
 	Ui::MainWindowClass ui;
 	QAction* controlActions[3];
+
+signals:
+	void customContextMenuRequested(QPoint pos);
+
+public slots:
+	void showContextMenu(QPoint pos);
 	
 };
