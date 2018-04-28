@@ -36,7 +36,7 @@ void BlockEditor::drawGUI() {
 }
 
 void BlockEditor::pickUpBlock(Block* block, QPointF pos) {
-	if (blockToPlace == NULL) {
+	if (blockToPlace == nullptr) {
 		blockToPlace = block;
 		mouseClickPos = pos;
 		blockToPlace->setIsPlaced(false);
@@ -56,7 +56,7 @@ void BlockEditor::placeBlock(Block* block) {
 	blockToPlace->setIsPlaced(true);
 
 	// null the values
-	blockToPlace = NULL;
+	blockToPlace = nullptr;
 	mouseClickPos = QPointF(-1, -1);
 }
 

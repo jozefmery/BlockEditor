@@ -15,8 +15,8 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
-#include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
 
@@ -27,8 +27,8 @@ class Ui_MainWindowClass
 public:
     QWidget *centralWidget;
     QMenuBar *menuBar;
-    QToolBar *mainToolBar;
-    QStatusBar *statusBar;
+    QMenu *menuFILE;
+    QToolBar *controlToolBar;
 
     void setupUi(QMainWindow *MainWindowClass)
     {
@@ -37,17 +37,23 @@ public:
         MainWindowClass->resize(600, 400);
         centralWidget = new QWidget(MainWindowClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
+        centralWidget->setStyleSheet(QStringLiteral(""));
         MainWindowClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindowClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 600, 26));
+        menuBar->setGeometry(QRect(0, 0, 600, 22));
+        menuBar->setStyleSheet(QStringLiteral("background-color: rgb(66,66,66); color: #FFFFFF;"));
+        menuFILE = new QMenu(menuBar);
+        menuFILE->setObjectName(QStringLiteral("menuFILE"));
         MainWindowClass->setMenuBar(menuBar);
-        mainToolBar = new QToolBar(MainWindowClass);
-        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
-        MainWindowClass->addToolBar(Qt::TopToolBarArea, mainToolBar);
-        statusBar = new QStatusBar(MainWindowClass);
-        statusBar->setObjectName(QStringLiteral("statusBar"));
-        MainWindowClass->setStatusBar(statusBar);
+        controlToolBar = new QToolBar(MainWindowClass);
+        controlToolBar->setObjectName(QStringLiteral("controlToolBar"));
+        controlToolBar->setStyleSheet(QStringLiteral("background-color: rgb(66,66,66); color: #FFFFFF; border-width: 0px; "));
+        controlToolBar->setAllowedAreas(Qt::TopToolBarArea);
+        controlToolBar->setFloatable(false);
+        MainWindowClass->addToolBar(Qt::TopToolBarArea, controlToolBar);
+
+        menuBar->addAction(menuFILE->menuAction());
 
         retranslateUi(MainWindowClass);
 
@@ -57,6 +63,7 @@ public:
     void retranslateUi(QMainWindow *MainWindowClass)
     {
         MainWindowClass->setWindowTitle(QApplication::translate("MainWindowClass", "MainWindow", nullptr));
+        menuFILE->setTitle(QApplication::translate("MainWindowClass", "FILE", nullptr));
     } // retranslateUi
 
 };

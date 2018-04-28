@@ -11,5 +11,15 @@ public:
 	MainWindow(QWidget *parent = Q_NULLPTR);
 
 private:
+
+	inline void setUpChildren();
+
+	void start();
+	void pause();
+	void stop();
+
+private:
 	Ui::MainWindowClass ui;
+	QAction* controlActions[3];
+	
 };

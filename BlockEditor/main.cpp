@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
 	main_window.show();
 	
 	QApplication::setWindowIcon(QIcon(":/Resources/main_icon.png"));
+
 	
 	return QApplication::exec();
 }
