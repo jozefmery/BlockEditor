@@ -16,7 +16,6 @@ class BlockEditor : public QGraphicsView {
 
 		// events
 		void mouseMoveEvent(QMouseEvent* event);
-		void contextMenuEvent(QContextMenuEvent* event);
 
 		// constructors
 		BlockEditor(QWidget* parent = NULL);
@@ -24,10 +23,13 @@ class BlockEditor : public QGraphicsView {
 		// methods
 		void pickUpBlock(Block* card, QPointF pos);
 		void placeBlock(Block* block);
-		void addContextMenus();
+
+		// getters
+		inline BlockSpawner* getSpawner() const { return blockSpawner; };
 
 	private:
 		// attributes
+		QGraphicsItem * item = nullptr;
 		QPointF originalPos;
 		QPointF mouseClickPos = QPointF(-1, -1);
 		Block* blockToPlace = NULL;
@@ -36,12 +38,10 @@ class BlockEditor : public QGraphicsView {
 		// methods
 		void drawGUI();
 
-	signals:
-		void triggered();
-
 	public slots:
-		void spawnBlock();
+		void showContextMenu(QPoint pos);
 		void deleteBlock();
+		void spawnBlock();
 
 };
 

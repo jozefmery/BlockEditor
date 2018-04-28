@@ -1,10 +1,10 @@
 #include "BlockEditor.h"
+#include "Scaler.h"
 
 #include <QBrush>
 #include <QComboBox>
 #include <QMouseEvent>
 #include <QDebug>
-#include <QWidget>
 #include <QMenu>
 
 BlockEditor::BlockEditor(QWidget* parent) {
@@ -12,21 +12,17 @@ BlockEditor::BlockEditor(QWidget* parent) {
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+	
+
 	// set size of view
-	setFixedSize(1024, 768);
+	resize(Scaler::scaleX(1024), Scaler::scaleY(768));
 
 	// set up scene
 	scene = new QGraphicsScene();
-	scene->setSceneRect(0, 0, 1024, 768);
+	scene->setSceneRect(0, 0, Scaler::scaleX(1024), Scaler::scaleY(768));
 	setScene(scene);
 
 	drawGUI();
-
-	addContextMenus();
-}
-
-void BlockEditor::addContextMenus() {
-	
 }
 
 void BlockEditor::drawGUI() {
@@ -67,21 +63,37 @@ void BlockEditor::placeBlock(Block* block) {
 	mouseClickPos = QPointF(-1, -1);
 }
 
+void BlockEditor::showContextMenu(QPoint pos) {
+	// Handle global position
+	QPoint globalPos = mapToGlobal(pos);
+
+	item = itemAt(pos.x(), pos.y());
+	if (item) {
+		QMenu myMenu;
+		myMenu.addAction("Delete Block", this, SLOT(deleteBlock()));
+		myMenu.addAction("Change Operation");
+		myMenu.exec(globalPos);
+	}
+	else {
+		QMenu myMenu;
+		myMenu.addAction("New Scheme");
+		myMenu.addAction("New Block", this, SLOT(spawnBlock()));
+		myMenu.exec(globalPos);
+	}
+}
+
+void BlockEditor::deleteBlock() {
+	scene->removeItem(item);
+	item = nullptr;
+}
+
 void BlockEditor::spawnBlock() {
 	// get cursor position
 	QPointF cursorPos = this->mapFromGlobal(QCursor::pos());
 	// draw a block
-	Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, blockSpawner->getBlockOrder());
+	Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25);
 	scene->addItem(block);
 	pickUpBlock(block, cursorPos);
-}
-
-void BlockEditor::deleteBlock() {
-	// get cursor position
-	QPointF cursorPos = this->mapFromGlobal(QCursor::pos());
-	// draw a block
-	Block* block = dynamic_cast<Block*>(itemAt(cursorPos.x(), cursorPos.y()));
-	scene->removeItem(block);
 }
 
 void BlockEditor::mouseMoveEvent(QMouseEvent* event) {
@@ -95,14 +107,4 @@ void BlockEditor::mouseMoveEvent(QMouseEvent* event) {
 	}
 
 	QGraphicsView::mouseMoveEvent(event);
-}
-
-void BlockEditor::contextMenuEvent(QContextMenuEvent* event) {
-	QPointF p = event->pos();
-	QGraphicsItem* item = itemAt(p.x(), p.y());
-	if (item != nullptr) {
-		if (dynamic_cast<Block*>(item)) {
-			//blockContextMenu->exec(event->globalPos());
-		}
-	}
 }
