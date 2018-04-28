@@ -4,7 +4,7 @@
 #include <QComboBox>
 #include <QMouseEvent>
 #include <QDebug>
-#include <QToolBar>
+#include "Scaler.h"
 
 BlockEditor::BlockEditor(QWidget* parent) {
 	// disable scroll bar
@@ -12,11 +12,11 @@ BlockEditor::BlockEditor(QWidget* parent) {
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 	// set size of view
-	setFixedSize(1024, 768);
+	setFixedSize(Scaler::scaleX(1024), Scaler::scaleY(768));
 
 	// set up scene
 	scene = new QGraphicsScene();
-	scene->setSceneRect(0, 0, 1024, 768);
+	scene->setSceneRect(0, 0, Scaler::scaleX(1024), Scaler::scaleY(768));
 	setScene(scene);
 
 	drawGUI();

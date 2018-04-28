@@ -2,6 +2,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_MainWindow.h"
+#include "Scaler.h"
 
 class MainWindow : public QMainWindow
 {
@@ -21,5 +22,6 @@ private:
 private:
 	Ui::MainWindowClass ui;
 	QAction* controlActions[3];
+
 	
 };

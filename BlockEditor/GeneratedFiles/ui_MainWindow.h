@@ -41,10 +41,16 @@ public:
         MainWindowClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindowClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 600, 22));
+        menuBar->setGeometry(QRect(0, 0, 600, 28));
+        QFont font;
+        font.setPointSize(12);
+        menuBar->setFont(font);
         menuBar->setStyleSheet(QStringLiteral("background-color: rgb(66,66,66); color: #FFFFFF;"));
         menuFILE = new QMenu(menuBar);
         menuFILE->setObjectName(QStringLiteral("menuFILE"));
+        QFont font1;
+        font1.setPointSize(9);
+        menuFILE->setFont(font1);
         MainWindowClass->setMenuBar(menuBar);
         controlToolBar = new QToolBar(MainWindowClass);
         controlToolBar->setObjectName(QStringLiteral("controlToolBar"));
