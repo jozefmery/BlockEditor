@@ -22,7 +22,6 @@ private:
 	void stop();
 
 	Ui::MainWindowClass ui;
-	QAction* controlActions[3];
 
 signals:
 	void customContextMenuRequested(QPoint pos);
