@@ -21,7 +21,6 @@ private:
 
 private:
 	Ui::MainWindowClass ui;
-	QAction* controlActions[3];
 
 	
 };

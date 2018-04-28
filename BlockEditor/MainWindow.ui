@@ -38,7 +38,17 @@ font-size: 11p;</string>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true"/>
+    <string notr="true">QMenuBar::item:selected {
+	background: rgb(112, 112, 112);
+}
+
+QMenuBar::item:pressed {
+	background: rgb(50, 50, 50);
+}
+
+spacing: 15px;
+margin-top: 5px;
+margin-bottom: 5px;</string>
    </property>
    <widget class="QMenu" name="menuFILE">
     <property name="font">
@@ -46,15 +56,37 @@ font-size: 11p;</string>
       <pointsize>11</pointsize>
      </font>
     </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::DefaultContextMenu</enum>
+    </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">QMenu::separator {
+    height: 1px;
+    background: rgb(112,112,112);
+    margin-left: 5px;
+    margin-right: 20px;
+}
+
+QMenu {
+	background: rgb(50, 50, 50);
+}
+
+QMenu::item:selected{
+	background: rgb(112, 112, 112);
+}</string>
     </property>
     <property name="title">
      <string>FILE</string>
     </property>
+    <widget class="QMenu" name="menuRecent">
+     <property name="title">
+      <string>Recent</string>
+     </property>
+     <addaction name="actionClear"/>
+    </widget>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
-    <addaction name="actionRecent"/>
+    <addaction name="menuRecent"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_as"/>
@@ -69,12 +101,37 @@ font-size: 11p;</string>
      <string>EDIT</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuVIEW">
+    <property name="title">
+     <string>VIEW</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuSCHEME">
+    <property name="title">
+     <string>SCHEME</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuSETTINGS">
+    <property name="title">
+     <string>SETTINGS</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuHELP">
+    <property name="title">
+     <string>HELP</string>
+    </property>
+   </widget>
    <addaction name="menuFILE"/>
    <addaction name="menuEDIT"/>
+   <addaction name="menuVIEW"/>
+   <addaction name="menuSCHEME"/>
+   <addaction name="menuSETTINGS"/>
+   <addaction name="menuHELP"/>
   </widget>
   <widget class="QToolBar" name="controlToolBar">
    <property name="styleSheet">
-    <string notr="true"/>
+    <string notr="true">border: 0px;
+</string>
    </property>
    <property name="allowedAreas">
     <set>Qt::TopToolBarArea</set>
@@ -91,10 +148,10 @@ font-size: 11p;</string>
   </widget>
   <widget class="QToolBar" name="fileToolBar">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string/>
    </property>
    <property name="styleSheet">
-    <string notr="true"/>
+    <string notr="true">border: 0px;</string>
    </property>
    <property name="allowedAreas">
     <set>Qt::TopToolBarArea</set>
@@ -110,48 +167,160 @@ font-size: 11p;</string>
    </attribute>
   </widget>
   <action name="actionNew">
+   <property name="icon">
+    <iconset resource="MainWindow.qrc">
+     <normaloff>:/Resources/new_file.png</normaloff>:/Resources/new_file.png</iconset>
+   </property>
    <property name="text">
     <string>New</string>
    </property>
+   <property name="toolTip">
+    <string>Create new scheme</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
   </action>
   <action name="actionOpen">
+   <property name="icon">
+    <iconset resource="MainWindow.qrc">
+     <normaloff>:/Resources/open_file.png</normaloff>:/Resources/open_file.png</iconset>
+   </property>
    <property name="text">
     <string>Open</string>
    </property>
-  </action>
-  <action name="actionRecent">
-   <property name="text">
-    <string>Recent</string>
+   <property name="toolTip">
+    <string>Open an existing scheme</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionSave">
+   <property name="icon">
+    <iconset resource="MainWindow.qrc">
+     <normaloff>:/Resources/save.png</normaloff>:/Resources/save.png</iconset>
+   </property>
    <property name="text">
     <string>Save</string>
+   </property>
+   <property name="toolTip">
+    <string>Save current document</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionSave_as">
    <property name="text">
-    <string>Save as</string>
+    <string>Save as...</string>
+   </property>
+   <property name="iconText">
+    <string>Save as...</string>
+   </property>
+   <property name="toolTip">
+    <string>Choose how to save</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+S</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionSave_all">
    <property name="text">
     <string>Save all</string>
    </property>
+   <property name="toolTip">
+    <string>Save all open documents</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
   </action>
   <action name="actionClose">
    <property name="text">
     <string>Close</string>
+   </property>
+   <property name="toolTip">
+    <string>Close current document</string>
    </property>
   </action>
   <action name="actionClose_all">
    <property name="text">
     <string>Close all</string>
    </property>
+   <property name="toolTip">
+    <string>Close all open documents</string>
+   </property>
   </action>
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+   <property name="toolTip">
+    <string>Exit the application</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionStart">
+   <property name="icon">
+    <iconset resource="MainWindow.qrc">
+     <normaloff>:/Resources/play.png</normaloff>:/Resources/play.png</iconset>
+   </property>
+   <property name="text">
+    <string>Start Execution</string>
+   </property>
+   <property name="toolTip">
+    <string>Start execution of the selected scheme.</string>
+   </property>
+  </action>
+  <action name="actionPause">
+   <property name="icon">
+    <iconset resource="MainWindow.qrc">
+     <normaloff>:/Resources/pause.png</normaloff>:/Resources/pause.png</iconset>
+   </property>
+   <property name="text">
+    <string>Pause Execution</string>
+   </property>
+  </action>
+  <action name="actionStop">
+   <property name="icon">
+    <iconset resource="MainWindow.qrc">
+     <normaloff>:/Resources/stop.png</normaloff>:/Resources/stop.png</iconset>
+   </property>
+   <property name="text">
+    <string>Stop Execution</string>
+   </property>
+  </action>
+  <action name="actionClear">
+   <property name="icon">
+    <iconset resource="MainWindow.qrc">
+     <normaloff>:/Resources/clear.png</normaloff>:/Resources/clear.png</iconset>
+   </property>
+   <property name="text">
+    <string>Clear</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear recent files</string>
    </property>
   </action>
  </widget>

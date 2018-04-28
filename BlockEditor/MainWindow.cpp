@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "BlockEditor.h"
+#include <QDebug>
 
 BlockEditor* blockEditor;
 
@@ -15,31 +16,30 @@ inline void MainWindow::setUpChildren() {
 	blockEditor = new BlockEditor;
 	setCentralWidget(blockEditor);
 
-	controlActions[0] = new QAction(this);
-	controlActions[1] = new QAction(this);
-	controlActions[2] = new QAction(this);
+	ui.controlToolBar->addAction(ui.actionStart);
+	ui.controlToolBar->addAction(ui.actionPause);
+	ui.controlToolBar->addAction(ui.actionStop);
 
-
-	controlActions[0]->setIcon(QIcon(":/Resources/play.png"));
-	controlActions[1]->setIcon(QIcon(":/Resources/pause.png"));
-	controlActions[2]->setIcon(QIcon(":/Resources/stop.png"));
-
-	ui.controlToolBar->addAction(controlActions[0]);
-	ui.controlToolBar->addAction(controlActions[1]);
-	ui.controlToolBar->addAction(controlActions[2]);
+	ui.fileToolBar->addAction(ui.actionNew);
+	ui.fileToolBar->addAction(ui.actionOpen);
+	ui.fileToolBar->addAction(ui.actionSave);
 
 	ui.controlToolBar->setIconSize(QSize(Scaler::scaleX(35), Scaler::scaleY(35)));
+	ui.fileToolBar->setIconSize(QSize(Scaler::scaleX(35), Scaler::scaleY(35)));
 
 	resize(Scaler::scaleX(1024), Scaler::scaleY(768));
 
-	connect(controlActions[0], &QAction::triggered, this, &MainWindow::start);
-	connect(controlActions[1], &QAction::triggered, this, &MainWindow::pause);
-	connect(controlActions[2], &QAction::triggered, this, &MainWindow::stop);
+	connect(ui.actionStart, &QAction::triggered, this, &MainWindow::start);
+	connect(ui.actionPause, &QAction::triggered, this, &MainWindow::pause);
+	connect(ui.actionStop, &QAction::triggered, this, &MainWindow::stop);
 
+	ui.menuFILE->setMinimumWidth(Scaler::scaleX(250));
+	ui.menuRecent->setMinimumWidth(Scaler::scaleX(250));
 }
 
 void MainWindow::start() {
 	
+	qDebug() << "asd";
 }
 
 void MainWindow::pause() {
