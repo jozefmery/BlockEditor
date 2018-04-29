@@ -6,9 +6,12 @@
 #include <QPainter>
 #include <QDebug>
 
-extern BlockEditor *blockEditor;
+//extern BlockEditor *blockEditor;
 
-Block::Block(const int x, const int y, QGraphicsItem* parent) {
+Block::Block(const int x, const int y, BlockEditor* parent) :
+
+	parent(parent)
+{
 	// draw the block
 	setRect(x, y, 50, 50);
 	QBrush brush;
@@ -27,11 +30,11 @@ void Block::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 	if (isPlaced()) { // block is placed
 		if (event->buttons() == Qt::LeftButton) {
 			// pick up the block
-			blockEditor->pickUpBlock(this, event->pos());
+			parent->pickUpBlock(this, event->pos());
 		}
 	} else {
 		if (event->buttons() == Qt::LeftButton) { // place the block
-			blockEditor->placeBlock(this);
+			parent->placeBlock(this);
 		} else if (event->buttons() == Qt::RightButton) {
 			// TODO: blockEditor->rotateBlock(this);
 		}
