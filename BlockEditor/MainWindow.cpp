@@ -27,7 +27,7 @@ inline void MainWindow::setUpChildren() {
 	ui.controlToolBar->addAction(ui.actionPause);
 	ui.controlToolBar->addAction(ui.actionStop);
 
-	ui.fi4leToolBar->addAction(ui.actionNew);
+	ui.fileToolBar->addAction(ui.actionNew);
 	ui.fileToolBar->addAction(ui.actionOpen);
 	ui.fileToolBar->addAction(ui.actionSave);
 
