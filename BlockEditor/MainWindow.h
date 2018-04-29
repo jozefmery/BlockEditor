@@ -3,7 +3,7 @@
 #include "ui_MainWindow.h"
 #include "Scaler.h"
 #include "Block.h"
-
+#include <QTabWidget>
 #include <QtWidgets/QMainWindow>
 #include <QGraphicsItem>
 
@@ -22,6 +22,8 @@ private:
 	void stop();
 
 	Ui::MainWindowClass ui;
+
+	QTabWidget *editorTabs;
 
 signals:
 	void customContextMenuRequested(QPoint pos);

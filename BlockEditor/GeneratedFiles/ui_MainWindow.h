@@ -18,6 +18,7 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QToolBar>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -38,6 +39,7 @@ public:
     QAction *actionStop;
     QAction *actionClear;
     QWidget *centralWidget;
+    QVBoxLayout *verticalLayout;
     QMenuBar *menuBar;
     QMenu *menuFILE;
     QMenu *menuRecent;
@@ -53,10 +55,54 @@ public:
     {
         if (MainWindowClass->objectName().isEmpty())
             MainWindowClass->setObjectName(QStringLiteral("MainWindowClass"));
-        MainWindowClass->resize(600, 400);
-        MainWindowClass->setStyleSheet(QLatin1String("color: #FFFFFF;\n"
-"background: rgb(66,66,66);\n"
-"font-size: 11p;"));
+        MainWindowClass->resize(592, 395);
+        MainWindowClass->setStyleSheet(QLatin1String("QWidget{\n"
+"	\n"
+"	color: #FFFFFF;\n"
+"	background: rgb(66,66,66);\n"
+"	font-size: 11p;\n"
+"}\n"
+"\n"
+"QToolBar {\n"
+"	\n"
+"	border: 0px;\n"
+"	font-size: 11p;\n"
+"\n"
+"}\n"
+"\n"
+"QMenuBar::item:selected {\n"
+"\n"
+"	background: rgb(112, 112, 112);\n"
+"}\n"
+"\n"
+"QMenuBar::item:pressed {\n"
+"	background: rgb(50, 50, 50);\n"
+"}\n"
+"\n"
+"QMenuBar {\n"
+"\n"
+"	padding-left: 5px;\n"
+"	padding-right: 5px;\n"
+"	margin-top: 5px;\n"
+"	margin-bottom: 5px;\n"
+"\n"
+"}\n"
+"\n"
+"QMenu::separator {\n"
+"    height: 1px;\n"
+"    background: rgb(112,112,112);\n"
+"    margin-left: 5px;\n"
+"    margin-right: 20px;\n"
+"}\n"
+"\n"
+"QMenu {\n"
+"	background: rgb(50, 50, 50);\n"
+"}\n"
+"\n"
+"QMenu::item:selected{\n"
+"	background: rgb(112, 112, 112);\n"
+"}"));
+        MainWindowClass->setTabShape(QTabWidget::Rounded);
         actionNew = new QAction(MainWindowClass);
         actionNew->setObjectName(QStringLiteral("actionNew"));
         QIcon icon;
@@ -111,42 +157,23 @@ public:
         centralWidget = new QWidget(MainWindowClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         centralWidget->setStyleSheet(QStringLiteral(""));
+        verticalLayout = new QVBoxLayout(centralWidget);
+        verticalLayout->setSpacing(6);
+        verticalLayout->setContentsMargins(11, 11, 11, 11);
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         MainWindowClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindowClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 600, 26));
+        menuBar->setGeometry(QRect(0, 0, 592, 26));
         QFont font;
         font.setPointSize(11);
         menuBar->setFont(font);
-        menuBar->setStyleSheet(QLatin1String("QMenuBar::item:selected {\n"
-"	background: rgb(112, 112, 112);\n"
-"}\n"
-"\n"
-"QMenuBar::item:pressed {\n"
-"	background: rgb(50, 50, 50);\n"
-"}\n"
-"\n"
-"spacing: 15px;\n"
-"margin-top: 5px;\n"
-"margin-bottom: 5px;"));
+        menuBar->setStyleSheet(QStringLiteral(""));
         menuFILE = new QMenu(menuBar);
         menuFILE->setObjectName(QStringLiteral("menuFILE"));
         menuFILE->setFont(font);
         menuFILE->setContextMenuPolicy(Qt::DefaultContextMenu);
-        menuFILE->setStyleSheet(QLatin1String("QMenu::separator {\n"
-"    height: 1px;\n"
-"    background: rgb(112,112,112);\n"
-"    margin-left: 5px;\n"
-"    margin-right: 20px;\n"
-"}\n"
-"\n"
-"QMenu {\n"
-"	background: rgb(50, 50, 50);\n"
-"}\n"
-"\n"
-"QMenu::item:selected{\n"
-"	background: rgb(112, 112, 112);\n"
-"}"));
+        menuFILE->setStyleSheet(QStringLiteral(""));
         menuRecent = new QMenu(menuFILE);
         menuRecent->setObjectName(QStringLiteral("menuRecent"));
         menuEDIT = new QMenu(menuBar);
@@ -162,8 +189,7 @@ public:
         MainWindowClass->setMenuBar(menuBar);
         controlToolBar = new QToolBar(MainWindowClass);
         controlToolBar->setObjectName(QStringLiteral("controlToolBar"));
-        controlToolBar->setStyleSheet(QLatin1String("border: 0px;\n"
-""));
+        controlToolBar->setStyleSheet(QStringLiteral(""));
         controlToolBar->setAllowedAreas(Qt::TopToolBarArea);
         controlToolBar->setFloatable(false);
         MainWindowClass->addToolBar(Qt::TopToolBarArea, controlToolBar);
@@ -200,7 +226,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindowClass)
     {
-        MainWindowClass->setWindowTitle(QApplication::translate("MainWindowClass", "MainWindow", nullptr));
+        MainWindowClass->setWindowTitle(QApplication::translate("MainWindowClass", "BlockEditor", nullptr));
         actionNew->setText(QApplication::translate("MainWindowClass", "New", nullptr));
 #ifndef QT_NO_TOOLTIP
         actionNew->setToolTip(QApplication::translate("MainWindowClass", "Create new scheme", nullptr));
