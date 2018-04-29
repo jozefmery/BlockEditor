@@ -22,7 +22,5 @@ int main(int argc, char *argv[])
 	
 	QApplication::setWindowIcon(QIcon(":/Resources/main_icon.png"));
 
-
-
 	return QApplication::exec();
 }
