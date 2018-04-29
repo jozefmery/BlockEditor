@@ -99,7 +99,7 @@ void BlockEditor::spawnBlock() {
 	// get cursor position
 	QPointF cursorPos = this->mapFromGlobal(QCursor::pos());
 	// draw a block
-	Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25);
+	Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this);
 
 	block->parent = this;
 

@@ -9,7 +9,7 @@ class Block : public QGraphicsRectItem {
 
 	public:
 		// constructors
-		Block(const int x, const int y, QGraphicsItem* parent = nullptr);
+		Block(const int x, const int y, BlockEditor* parent);
 
 		// events
 		void Block::mousePressEvent(QGraphicsSceneMouseEvent* event);
