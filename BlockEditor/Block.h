@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QGraphicsRectItem>
+#include <QGraphicsLineItem>
 
 class Block : public QGraphicsRectItem {
 
@@ -16,8 +17,15 @@ class Block : public QGraphicsRectItem {
 		// setters
 		inline void setIsPlaced(bool const placed) { this->placed = placed; };
 
+		// methods
+		void addLine(QGraphicsLineItem *line, bool isPoint1);
+		QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+		void moveLineToCenter(QPointF newPos);
+
 	private:
 		// attributes
+		QGraphicsLineItem * line;
+		bool isP1;
 		bool placed;
 
 };
