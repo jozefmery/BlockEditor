@@ -6,39 +6,30 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>400</height>
+    <width>584</width>
+    <height>366</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>BlockEditor</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">color: #FFFFFF;
-background: rgb(66,66,66);
-font-size: 11p;</string>
-  </property>
-  <widget class="QWidget" name="centralWidget">
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>600</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>11</pointsize>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QMenuBar::item:selected {
+   <string notr="true">QWidget{
+	
+	color: rgb(244, 244, 244);
+	background: rgb(66,66,66);
+	font-size: 11p;
+}
+
+QToolBar {
+	
+	border: 0px;
+	font-size: 11p;
+
+}
+
+QMenuBar::item:selected {
+
 	background: rgb(112, 112, 112);
 }
 
@@ -46,21 +37,16 @@ QMenuBar::item:pressed {
 	background: rgb(50, 50, 50);
 }
 
-spacing: 15px;
-margin-top: 5px;
-margin-bottom: 5px;</string>
-   </property>
-   <widget class="QMenu" name="menuFILE">
-    <property name="font">
-     <font>
-      <pointsize>11</pointsize>
-     </font>
-    </property>
-    <property name="contextMenuPolicy">
-     <enum>Qt::DefaultContextMenu</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QMenu::separator {
+QMenuBar {
+
+	padding-left: 5px;
+	padding-right: 5px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+
+}
+
+QMenu::separator {
     height: 1px;
     background: rgb(112,112,112);
     margin-left: 5px;
@@ -73,7 +59,79 @@ QMenu {
 
 QMenu::item:selected{
 	background: rgb(112, 112, 112);
-}</string>
+}
+
+QTabWidget::pane{
+	
+}
+
+
+QTabBar::tab {
+ 
+    border: 1px solid rgb(255, 255, 255);
+    border-bottom-color: rgb(244, 244, 244);
+	min-width: 8ex;
+    min-height: 3ex;
+    padding: 2px;
+}
+
+</string>
+  </property>
+  <property name="tabShape">
+   <enum>QTabWidget::Rounded</enum>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Tab 1</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Tab 2</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>584</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>11</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <widget class="QMenu" name="menuFILE">
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::DefaultContextMenu</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
     </property>
     <property name="title">
      <string>FILE</string>
@@ -130,8 +188,7 @@ QMenu::item:selected{
   </widget>
   <widget class="QToolBar" name="controlToolBar">
    <property name="styleSheet">
-    <string notr="true">border: 0px;
-</string>
+    <string notr="true"/>
    </property>
    <property name="allowedAreas">
     <set>Qt::TopToolBarArea</set>

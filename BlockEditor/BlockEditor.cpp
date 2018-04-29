@@ -100,6 +100,9 @@ void BlockEditor::spawnBlock() {
 	QPointF cursorPos = this->mapFromGlobal(QCursor::pos());
 	// draw a block
 	Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25);
+
+	block->parent = this;
+
 	scene->addItem(block);
 	pickUpBlock(block, cursorPos);
 }
