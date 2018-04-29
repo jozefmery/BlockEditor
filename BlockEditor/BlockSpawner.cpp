@@ -21,7 +21,6 @@ BlockSpawner::BlockSpawner() {
 	setAcceptedMouseButtons(Qt::LeftButton);
 	setAcceptHoverEvents(true);
 
-	blockOrder = 1;
 }
 
 void BlockSpawner::mousePressEvent(QGraphicsSceneMouseEvent* event) {

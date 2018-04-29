@@ -3,9 +3,6 @@
 
 #include <QGraphicsTextItem>
 #include <QBrush>
-#include <QDebug>
-
-extern BlockEditor *blockEditor;
 
 Block::Block(const int x, const int y, QGraphicsItem* parent) {
 	// draw the block
@@ -25,9 +22,9 @@ void Block::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 	if (isPlaced()) { // block is placed
 		if (event->buttons() == Qt::LeftButton) {
 			// pick up the block
-			blockEditor->pickUpBlock(this, event->pos());
+			parent->pickUpBlock(this, event->pos());
 		}
 	} else if (event->buttons() == Qt::LeftButton) { // place the block
-		blockEditor->placeBlock(this);
+		parent->placeBlock(this);
 	}
 }

@@ -17,6 +17,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QTabWidget>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -40,6 +41,9 @@ public:
     QAction *actionClear;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
+    QTabWidget *tabWidget;
+    QWidget *tab;
+    QWidget *tab_2;
     QMenuBar *menuBar;
     QMenu *menuFILE;
     QMenu *menuRecent;
@@ -55,10 +59,10 @@ public:
     {
         if (MainWindowClass->objectName().isEmpty())
             MainWindowClass->setObjectName(QStringLiteral("MainWindowClass"));
-        MainWindowClass->resize(592, 395);
+        MainWindowClass->resize(584, 366);
         MainWindowClass->setStyleSheet(QLatin1String("QWidget{\n"
 "	\n"
-"	color: #FFFFFF;\n"
+"	color: rgb(244, 244, 244);\n"
 "	background: rgb(66,66,66);\n"
 "	font-size: 11p;\n"
 "}\n"
@@ -101,7 +105,23 @@ public:
 "\n"
 "QMenu::item:selected{\n"
 "	background: rgb(112, 112, 112);\n"
-"}"));
+"}\n"
+"\n"
+"QTabWidget::pane{\n"
+"	\n"
+"}\n"
+"\n"
+"\n"
+"QTabBar::tab {\n"
+" \n"
+"    border: 1px solid rgb(255, 255, 255);\n"
+"    border-bottom-color: rgb(244, 244, 244);\n"
+"	min-width: 8ex;\n"
+"    min-height: 3ex;\n"
+"    padding: 2px;\n"
+"}\n"
+"\n"
+""));
         MainWindowClass->setTabShape(QTabWidget::Rounded);
         actionNew = new QAction(MainWindowClass);
         actionNew->setObjectName(QStringLiteral("actionNew"));
@@ -161,10 +181,21 @@ public:
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        tabWidget = new QTabWidget(centralWidget);
+        tabWidget->setObjectName(QStringLiteral("tabWidget"));
+        tab = new QWidget();
+        tab->setObjectName(QStringLiteral("tab"));
+        tabWidget->addTab(tab, QString());
+        tab_2 = new QWidget();
+        tab_2->setObjectName(QStringLiteral("tab_2"));
+        tabWidget->addTab(tab_2, QString());
+
+        verticalLayout->addWidget(tabWidget);
+
         MainWindowClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindowClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 592, 26));
+        menuBar->setGeometry(QRect(0, 0, 584, 26));
         QFont font;
         font.setPointSize(11);
         menuBar->setFont(font);
@@ -220,6 +251,9 @@ public:
         menuRecent->addAction(actionClear);
 
         retranslateUi(MainWindowClass);
+
+        tabWidget->setCurrentIndex(1);
+
 
         QMetaObject::connectSlotsByName(MainWindowClass);
     } // setupUi
@@ -288,6 +322,8 @@ public:
 #ifndef QT_NO_TOOLTIP
         actionClear->setToolTip(QApplication::translate("MainWindowClass", "Clear recent files", nullptr));
 #endif // QT_NO_TOOLTIP
+        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindowClass", "Tab 1", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindowClass", "Tab 2", nullptr));
         menuFILE->setTitle(QApplication::translate("MainWindowClass", "FILE", nullptr));
         menuRecent->setTitle(QApplication::translate("MainWindowClass", "Recent", nullptr));
         menuEDIT->setTitle(QApplication::translate("MainWindowClass", "EDIT", nullptr));

@@ -2,6 +2,8 @@
 
 #include <QGraphicsRectItem>
 
+class BlockEditor;
+
 class Block : public QGraphicsRectItem {
 
 	public:
@@ -12,13 +14,14 @@ class Block : public QGraphicsRectItem {
 		void Block::mousePressEvent(QGraphicsSceneMouseEvent* event);
 
 		// getters
-		inline bool isPlaced() const { return placed; };
+		inline bool isPlaced() const { return placed; }
 		// setters
-		inline void setIsPlaced(bool const placed) { this->placed = placed; };
+		inline void setIsPlaced(bool const placed) { this->placed = placed; }
+
+		BlockEditor *parent;
 
 	private:
 		// attributes
 		bool placed;
-
 };
 
