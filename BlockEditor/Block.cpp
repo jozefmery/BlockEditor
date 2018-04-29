@@ -1,5 +1,6 @@
 #include "Block.h"
 #include "BlockEditor.h"
+#include "BlockIO.h"
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
@@ -9,8 +10,9 @@
 
 Block::Block(const int x, const int y, BlockEditor* parent) :
 	parent(parent) {
-	//setFlag(QGraphicsItem::ItemIsMovable);
-	//setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
+
+	this->parent = parent;
+
 	// draw the block
 	setRect(x, y, 50, 50);
 	QBrush brush;
@@ -18,41 +20,14 @@ Block::Block(const int x, const int y, BlockEditor* parent) :
 	brush.setColor(Qt::red);
 	setBrush(brush);
 
+	BlockIO* input = new BlockIO(x, y, INPUT, parent, this);
+	BlockIO* output = new BlockIO(x, y, OUTPUT, parent, this);
+
 	setIsPlaced(true);
 
 	// allow reposing to hover events
 	setCursor(Qt::OpenHandCursor);
 	setAcceptHoverEvents(true);
-}
-
-void Block::addLine(QGraphicsLineItem *line, bool isPoint1) {
-	this->line = line;
-	isP1 = isPoint1;
-}
-
-QVariant Block::itemChange(GraphicsItemChange change, const QVariant &value) {
-	if (change == ItemPositionChange && scene()) {
-		// value is the new position.
-		QPointF newPos = value.toPointF();
-
-		moveLineToCenter(newPos);
-	}
-	return QGraphicsItem::itemChange(change, value);
-}
-
-void Block::moveLineToCenter(QPointF newPos) {
-	// Converts the elipse position (top-left)
-	// to its center position
-	int xOffset = rect().x() + rect().width() / 2;
-	int yOffset = rect().y() + rect().height() / 2;
-
-	QPointF newCenterPos = QPointF(newPos.x() + xOffset, newPos.y() + yOffset);
-
-	// Move the required point of the line to the center of the elipse
-	QPointF p1 = isP1 ? newCenterPos : line->line().p1();
-	QPointF p2 = isP1 ? line->line().p2() : newCenterPos;
-
-	line->setLine(QLineF(p1, p2));
 }
 
 void Block::mousePressEvent(QGraphicsSceneMouseEvent* event) {

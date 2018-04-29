@@ -20,17 +20,6 @@ BlockEditor::BlockEditor(QWidget* parent) {
 	scene->setSceneRect(0, 0, Scaler::scaleX(1024), Scaler::scaleY(695));
 	setScene(scene);
 
-	/*
-	Block* block1 = new Block(100, 100);
-	scene->addItem(block1);
-	Block* block2 = new Block(300, 100);
-	scene->addItem(block2);
-	QGraphicsLineItem *line = scene->addLine(QLineF(40, 40, 80, 80));
-
-	block1->addLine(line, true);
-	block2->addLine(line, false);*/
-
-
 	drawGUI();
 }
 
@@ -56,7 +45,7 @@ void BlockEditor::placeBlock(Block* block) {
 	block->setCursor(Qt::OpenHandCursor);
 	
 	// get cursor position
-	QPointF cursorPos = this->mapFromGlobal(QCursor::pos());
+	QPointF cursorPos = mapFromGlobal(QCursor::pos());
 	
 	// shift the position of placed block 
 	int shiftX = cursorPos.x() - mouseClickPos.x();
@@ -97,14 +86,14 @@ void BlockEditor::deleteBlock() {
 
 void BlockEditor::spawnBlock() {
 	// get cursor position
-	QPointF cursorPos = this->mapFromGlobal(QCursor::pos());
+	QPointF cursorPos = mapFromGlobal(QCursor::pos());
 	// draw a block
 	Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this);
 
 	block->parent = this;
 
 	scene->addItem(block);
-	pickUpBlock(block, cursorPos);
+	//pickUpBlock(block, cursorPos);
 }
 
 void BlockEditor::mouseMoveEvent(QMouseEvent* event) {
@@ -115,6 +104,8 @@ void BlockEditor::mouseMoveEvent(QMouseEvent* event) {
 		int shiftY = event->pos().y() - mouseClickPos.y();
 		QPointF newPoint(shiftX, shiftY);
 		blockToPlace->setPos(newPoint);
+	} else if (isDrawing()) {
+		line->setLine(lineStart.x(), lineStart.y(), event->pos().x(), event->pos().y());
 	}
 
 	QGraphicsView::mouseMoveEvent(event);
