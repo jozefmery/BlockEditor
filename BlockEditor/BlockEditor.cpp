@@ -12,14 +12,12 @@ BlockEditor::BlockEditor(QWidget* parent) {
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-	
-
 	// set size of view
-	resize(Scaler::scaleX(1024), Scaler::scaleY(768));
+	resize(Scaler::scaleX(1024), Scaler::scaleY(695));
 
 	// set up scene
 	scene = new QGraphicsScene();
-	scene->setSceneRect(0, 0, Scaler::scaleX(1024), Scaler::scaleY(768));
+	scene->setSceneRect(0, 0, Scaler::scaleX(1024), Scaler::scaleY(695));
 	setScene(scene);
 
 	drawGUI();
@@ -31,15 +29,11 @@ void BlockEditor::drawGUI() {
 	brush.setStyle(Qt::SolidPattern);
 	brush.setColor(Qt::darkGray);
 	scene->setBackgroundBrush(brush);
-
-	// draw a block spawner 
-	blockSpawner = new BlockSpawner();
-	connect(blockSpawner, SIGNAL(clicked()), this, SLOT(spawnBlock()));
-	scene->addItem(blockSpawner);
 }
 
 void BlockEditor::pickUpBlock(Block* block, QPointF pos) {
 	if (blockToPlace == nullptr) {
+		block->setCursor(Qt::ClosedHandCursor);
 		blockToPlace = block;
 		mouseClickPos = pos;
 		blockToPlace->setIsPlaced(false);
@@ -48,9 +42,11 @@ void BlockEditor::pickUpBlock(Block* block, QPointF pos) {
 }
 
 void BlockEditor::placeBlock(Block* block) {
+	block->setCursor(Qt::OpenHandCursor);
+	
 	// get cursor position
 	QPointF cursorPos = this->mapFromGlobal(QCursor::pos());
-
+	
 	// shift the position of placed block 
 	int shiftX = cursorPos.x() - mouseClickPos.x();
 	int shiftY = cursorPos.y() - mouseClickPos.y();
@@ -64,21 +60,22 @@ void BlockEditor::placeBlock(Block* block) {
 }
 
 void BlockEditor::showContextMenu(QPoint pos) {
-	// Handle global position
-	QPoint globalPos = mapToGlobal(pos);
+	if (blockToPlace == nullptr) { // when plock is picked up, context menu open isn't able to open
+		// Handle global position
+		QPoint globalPos = mapToGlobal(pos);
 
-	item = itemAt(pos.x(), pos.y());
-	if (item) {
-		QMenu myMenu;
-		myMenu.addAction("Delete Block", this, SLOT(deleteBlock()));
-		myMenu.addAction("Change Operation");
-		myMenu.exec(globalPos);
-	}
-	else {
-		QMenu myMenu;
-		myMenu.addAction("New Scheme");
-		myMenu.addAction("New Block", this, SLOT(spawnBlock()));
-		myMenu.exec(globalPos);
+		item = itemAt(pos.x(), pos.y());
+		if (item) {
+			QMenu myMenu;
+			myMenu.addAction("Delete Block", this, SLOT(deleteBlock()));
+			myMenu.addAction("Change Operation");
+			myMenu.exec(globalPos);
+		} else {
+			QMenu myMenu;
+			myMenu.addAction("New Scheme");
+			myMenu.addAction("New Block", this, SLOT(spawnBlock()));
+			myMenu.exec(globalPos);
+		}
 	}
 }
 

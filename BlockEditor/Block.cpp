@@ -1,8 +1,9 @@
 #include "Block.h"
 #include "BlockEditor.h"
 
+#include <QGraphicsSceneMouseEvent>
 #include <QGraphicsTextItem>
-#include <QBrush>
+#include <QPainter>
 #include <QDebug>
 
 extern BlockEditor *blockEditor;
@@ -18,6 +19,7 @@ Block::Block(const int x, const int y, QGraphicsItem* parent) {
 	setIsPlaced(true);
 
 	// allow reposing to hover events
+	setCursor(Qt::OpenHandCursor);
 	setAcceptHoverEvents(true);
 }
 
@@ -27,7 +29,11 @@ void Block::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 			// pick up the block
 			blockEditor->pickUpBlock(this, event->pos());
 		}
-	} else if (event->buttons() == Qt::LeftButton) { // place the block
-		blockEditor->placeBlock(this);
+	} else {
+		if (event->buttons() == Qt::LeftButton) { // place the block
+			blockEditor->placeBlock(this);
+		} else if (event->buttons() == Qt::RightButton) {
+			// TODO: blockEditor->rotateBlock(this);
+		}
 	}
 }

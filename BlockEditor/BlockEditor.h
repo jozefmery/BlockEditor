@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Block.h"
-#include "BlockSpawner.h"
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -24,16 +23,12 @@ class BlockEditor : public QGraphicsView {
 		void pickUpBlock(Block* card, QPointF pos);
 		void placeBlock(Block* block);
 
-		// getters
-		inline BlockSpawner* getSpawner() const { return blockSpawner; };
-
 	private:
 		// attributes
 		QGraphicsItem * item = nullptr;
 		QPointF originalPos;
 		QPointF mouseClickPos = QPointF(-1, -1);
 		Block* blockToPlace = NULL;
-		BlockSpawner* blockSpawner;
 
 		// methods
 		void drawGUI();
