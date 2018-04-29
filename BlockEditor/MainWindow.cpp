@@ -67,7 +67,11 @@ void MainWindow::createNewFile() {
 void MainWindow::openFile() {
 	
 	auto path = QFileDialog::getOpenFileName(this, "Open Scheme", "", "Scheme file (*.scheme);;All Files (*.*)");
-	createNewTab(path);
+
+	if(path != ""){
+
+		createNewTab(path);
+	}
 }
 
 void MainWindow::createNewTab(QString& path) {
