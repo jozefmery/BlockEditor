@@ -21,7 +21,6 @@ private:
 
 	void createNewTab(QString& path);
 
-private:
 	Ui::MainWindowClass ui;
 
 	QTabWidget *editorTabs;
