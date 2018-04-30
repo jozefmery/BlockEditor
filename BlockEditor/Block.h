@@ -13,7 +13,7 @@ class Block : public QGraphicsRectItem {
 
 	public:
 		// constructors
-		Block(const int x, const int y, BlockEditor* parent);
+		Block(const int x, const int y, BlockEditor* parent, QString operation, int iPorts, int oPorts);
 
 		// events
 		void mousePressEvent(QGraphicsSceneMouseEvent* event);
@@ -40,8 +40,10 @@ class Block : public QGraphicsRectItem {
 				void moveLineToCenter(QPointF newPos);
 
 				// getters
+				inline QGraphicsLineItem* getLine() const { return line; };
 
 				// setters
+				inline void setLine(QGraphicsLineItem* line) { this->line = line; };
 
 			private:
 				// attributes
@@ -56,5 +58,7 @@ class Block : public QGraphicsRectItem {
 	private:
 		// attributes
 		bool placed;
+		QVector<BlockIO*> input;
+		QVector<BlockIO*> output;
 };
 

@@ -45,7 +45,7 @@
     <ClCompile Include="Scaler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BlockIO.cpp">
+    <ClCompile Include="Dialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,9 +56,15 @@
     <QtMoc Include="BlockEditor.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="Dialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="MainWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="Dialog.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
@@ -72,9 +78,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Scaler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BlockIO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

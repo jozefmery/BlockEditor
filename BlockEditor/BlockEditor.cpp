@@ -6,6 +6,7 @@
 #include <QMouseEvent>
 #include <QDebug>
 #include <QMenu>
+#include <QDialog>
 
 BlockEditor::BlockEditor(QWidget* parent) {
 	// disable scroll bar
@@ -38,15 +39,16 @@ void BlockEditor::pickUpBlock(Block* block, QPointF pos) {
 		mouseClickPos = pos;
 		blockToPlace->setIsPlaced(false);
 		originalPos = block->pos();
+		block->setZValue(1);
 	}
 }
 
 void BlockEditor::placeBlock(Block* block) {
-	block->setCursor(Qt::OpenHandCursor);
-	
 	// get cursor position
 	QPointF cursorPos = mapFromGlobal(QCursor::pos());
-	
+
+	block->setCursor(Qt::OpenHandCursor);
+
 	// shift the position of placed block 
 	int shiftX = cursorPos.x() - mouseClickPos.x();
 	int shiftY = cursorPos.y() - mouseClickPos.y();
@@ -57,10 +59,11 @@ void BlockEditor::placeBlock(Block* block) {
 	// null the values
 	blockToPlace = nullptr;
 	mouseClickPos = QPointF(-1, -1);
+	block->setZValue(0);
 }
 
 void BlockEditor::showContextMenu(QPoint pos) {
-	if (blockToPlace == nullptr) { // when plock is picked up, context menu open isn't able to open
+	if (blockToPlace == nullptr && !isDrawing()) { // when plock is picked up, context menu isn't able to open
 		// Handle global position
 		QPoint globalPos = mapToGlobal(pos);
 
@@ -81,17 +84,24 @@ void BlockEditor::showContextMenu(QPoint pos) {
 
 void BlockEditor::deleteBlock() {
 	scene->removeItem(item);
+	blocks.remove(blocks.indexOf(dynamic_cast<Block*>(item), 0));
 	item = nullptr;
 }
 
 void BlockEditor::spawnBlock() {
+
+	dialog = new Dialog();
+	dialog->exec();
+
 	// get cursor position
 	QPointF cursorPos = mapFromGlobal(QCursor::pos());
 	// draw a block
-	Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this);
+	Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this, 
+		dialog->getOperation(), dialog->getIPorts(), dialog->getOPorts());
 
 	block->parent = this;
 
+	blocks.push_back(block);
 	scene->addItem(block);
 	//pickUpBlock(block, cursorPos);
 }

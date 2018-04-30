@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Block.h"
+#include "Dialog.h"
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
@@ -16,6 +17,7 @@ class BlockEditor : public QGraphicsView {
 
 		// events
 		void mouseMoveEvent(QMouseEvent* event);
+		//void mousePressEvent(QMouseEvent* event);
 
 		// constructors
 		BlockEditor(QWidget* parent = NULL);
@@ -36,13 +38,15 @@ class BlockEditor : public QGraphicsView {
 
 	private:
 		// attributes
-		QGraphicsItem * item = nullptr;
+		QGraphicsItem* item = nullptr;
 		QPointF originalPos;
 		QPointF mouseClickPos = QPointF(-1, -1);
 		Block* blockToPlace = NULL;
 		bool drawing = false;;
 		QGraphicsLineItem* line = NULL;
 		QPointF lineStart = QPointF(-1, -1);
+		QVector<Block*> blocks;
+		Dialog* dialog;
 
 		// methods
 		void drawGUI();
