@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QMenu>
 #include <QDialog>
+#include <cmath>
 
 BlockEditor::BlockEditor(QWidget* parent) {
 	// disable scroll bar
@@ -82,6 +83,7 @@ void BlockEditor::showContextMenu(QPoint pos) {
 			QMenu myMenu;
 			myMenu.addAction("New Scheme");
 			myMenu.addAction("New Block", this, SLOT(spawnBlock()));
+			myMenu.addAction("New Const Block", this, SLOT(spawnConstBlock()));
 			myMenu.exec(globalPos);
 		}
 	} else if (isDrawing()) {
@@ -150,14 +152,33 @@ void BlockEditor::spawnBlock() {
 	QPointF cursorPos = mapFromGlobal(QCursor::pos());
 	// draw a block
 	Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this, 
-		dialog->getOperation(), dialog->getIPorts(), dialog->getOPorts());
+		dialog->getOperation(), dialog->getInputType(), dialog->getOutputType());
 
 	block->parent = this;
 
 	blocks.push_back(block);
 	scene->addItem(block);
-	//pickUpBlock(block, cursorPos);
 }
+
+void BlockEditor::spawnConstBlock() {
+	
+	dialogConst = new DialogConst();
+	dialogConst->move(QCursor::pos().x() - dialogConst->width() / 2,
+		QCursor::pos().y() - dialogConst->height() / 2);
+	dialogConst->exec();
+
+	// get cursor position
+	QPointF cursorPos = mapFromGlobal(QCursor::pos());
+	// draw a block
+	Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this,
+		std::floor((dialogConst->getValue() * 100) + .5) / 100, dialogConst->getOutputType());
+
+	block->parent = this;
+
+	blocks.push_back(block);
+	scene->addItem(block);
+}
+
 
 void BlockEditor::mouseMoveEvent(QMouseEvent* event) {
 

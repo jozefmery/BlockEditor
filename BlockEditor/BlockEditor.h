@@ -7,6 +7,7 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsLineItem>
+#include "DialogConst.h"
 
 class BlockEditor : public QGraphicsView {
 
@@ -52,6 +53,7 @@ class BlockEditor : public QGraphicsView {
 		QVector<Block*> blocks;
 		QVector<Line*> lines;
 		Dialog* dialog{};
+		DialogConst* dialogConst{};
 
 		// methods
 		void drawGUI();
@@ -61,6 +63,7 @@ class BlockEditor : public QGraphicsView {
 		void showContextMenu(QPoint pos);
 		void deleteBlock();
 		void spawnBlock();
+		void spawnConstBlock();
 
 };
 

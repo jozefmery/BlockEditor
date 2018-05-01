@@ -51,6 +51,9 @@
     <ClCompile Include="Line.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DialogConst.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MainWindow.h">
@@ -62,12 +65,18 @@
     <QtMoc Include="Dialog.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="DialogConst.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="MainWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="Dialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="DialogConst.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

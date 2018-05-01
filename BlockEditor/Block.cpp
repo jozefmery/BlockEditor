@@ -9,10 +9,8 @@
 
 //extern BlockEditor *blockEditor;
 
-Block::Block(const int x, const int y, BlockEditor* parent, QString operation, int iPorts, int oPorts) :
+Block::Block(const int x, const int y, BlockEditor* parent, QString operation, QString inputType, QString outputType) :
 	parent(parent) {
-
-	//setFlag(ItemIsMovable);
 
 	this->parent = parent;
 
@@ -28,20 +26,44 @@ Block::Block(const int x, const int y, BlockEditor* parent, QString operation, i
 	text->setPos(x + rect().width() / 2 - text->boundingRect().width() / 2,
 				y + rect().width() / 2 - text->boundingRect().height() / 2);
 
-	if (iPorts == 1) {
-		input.push_back(new BlockIO(x, y + 37, INPUT, parent, this));
-	} else {
-		input.push_back(new BlockIO(x, y, INPUT, parent, this));
-		input.push_back(new BlockIO(x, y + 37, INPUT, parent, this));
+
+	if (operation == "+" || operation == "-") {
+		input.push_back(new BlockIO(x, y, INPUT, inputType, 0, parent, this));
+		input.push_back(new BlockIO(x, y + 37, INPUT, inputType, 0, parent, this));
+	} else if (operation == "*" || operation == "/") {
+		input.push_back(new BlockIO(x, y, INPUT, inputType, 1, parent, this));
+		input.push_back(new BlockIO(x, y + 37, INPUT, inputType, 1, parent, this));
 	}
 	
-	if (oPorts == 1) {
-		output.push_back(new BlockIO(x + 37, y + 37, OUTPUT, parent, this));
-	}
-	else {
-		output.push_back(new BlockIO(x + 37, y, OUTPUT, parent, this));
-		output.push_back(new BlockIO(x + 37, y + 37, OUTPUT, parent, this));
-	}
+	output.push_back(new BlockIO(x + 43, y + 19, OUTPUT, outputType, 0, parent, this));
+	
+	setIsPlaced(true);
+
+	setZValue(0);
+
+	// allow reposing to hover events
+	setCursor(Qt::OpenHandCursor);
+	setAcceptHoverEvents(true);
+}
+
+Block::Block(const int x, const int y, BlockEditor* parent, double value, QString outputType)
+	: parent(parent) {
+
+	this->parent = parent;
+
+	// draw the block
+	setRect(x, y, 50, 50);
+	QBrush brush;
+	brush.setStyle(Qt::SolidPattern);
+	brush.setColor(Qt::yellow);
+	setBrush(brush);
+
+	QGraphicsTextItem* text = new QGraphicsTextItem(QString::number(value), this);
+	text->setFont(QFont("comic sans", 7));
+	text->setPos(x + rect().width() / 2 - text->boundingRect().width() / 2,
+		y + rect().width() / 2 - text->boundingRect().height() / 2);
+
+	output.push_back(new BlockIO(x + 43, y + 19, OUTPUT, outputType, value, parent, this));
 
 	setIsPlaced(true);
 
@@ -73,22 +95,24 @@ void Block::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
 //													BlockIO														  //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Block::BlockIO::BlockIO(int x, int y, int IO, BlockEditor* editor, QGraphicsRectItem* parentBlock) : QGraphicsRectItem(parentBlock) {
+Block::BlockIO::BlockIO(int x, int y, int IO, QString name, double value, BlockEditor* editor, QGraphicsRectItem* parentBlock) : QGraphicsRectItem(parentBlock) {
 
 	setFlag(ItemSendsScenePositionChanges);
 
 	this->IO = IO;
 	this->editor = editor;
 	this->parentBlock = parentBlock;
+	this->name = name;
+	this->value = value;
 	line = nullptr;
 
 	if (IO == INPUT) {
-		setRect(x, y, 13, 13);
+		setRect(x, y, 6, 12);
 		setBrush(QBrush(QColor(Qt::green)));
 		setCursor(Qt::ArrowCursor);
 	}
 	else if (IO == OUTPUT) {
-		setRect(x, y, 13, 13);
+		setRect(x, y, 6, 12);
 		setBrush(QBrush(QColor(Qt::blue)));
 		setCursor(Qt::PointingHandCursor);
 	}

@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QWidget" name="Dialog">
+ <class>DialogConst</class>
+ <widget class="QWidget" name="DialogConst">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>263</width>
-    <height>152</height>
+    <width>264</width>
+    <height>117</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>DialogConst</string>
   </property>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>10</y>
      <width>244</width>
-     <height>141</height>
+     <height>96</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -30,7 +30,7 @@
         <item>
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>Operation:</string>
+           <string>Value:</string>
           </property>
          </widget>
         </item>
@@ -41,74 +41,20 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>40</width>
+            <width>95</width>
             <height>20</height>
            </size>
           </property>
          </spacer>
         </item>
         <item>
-         <widget class="QComboBox" name="opration">
-          <item>
-           <property name="text">
-            <string>+</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>-</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>*</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>/</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Input type:</string>
+         <widget class="QLineEdit" name="value">
+          <property name="enabled">
+           <bool>true</bool>
           </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="input">
-          <item>
-           <property name="text">
-            <string>double</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>integer</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>real</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>float</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>constant</string>
-           </property>
-          </item>
+          <property name="text">
+           <string>0</string>
+          </property>
          </widget>
         </item>
        </layout>
@@ -116,7 +62,7 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="QLabel" name="label_4">
+         <widget class="QLabel" name="outputText">
           <property name="text">
            <string>Output type:</string>
           </property>

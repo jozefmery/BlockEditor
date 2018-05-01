@@ -15,7 +15,8 @@ class Block : public QGraphicsRectItem {
 
 	public:
 		// constructors
-		Block(const int x, const int y, BlockEditor* parent, QString operation, int iPorts, int oPorts);
+		Block(const int x, const int y, BlockEditor* parent, QString operation, QString input, QString output);
+		Block(const int x, const int y, BlockEditor* parent, double value, QString outputType);
 
 		// events
 		void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
@@ -27,7 +28,7 @@ class Block : public QGraphicsRectItem {
 
 			public:
 				// constructors
-				BlockIO(int x, int y, int IO, BlockEditor* editor, QGraphicsRectItem* parentBlock);
+				BlockIO(int x, int y, int IO, QString name, double value, BlockEditor* editor, QGraphicsRectItem* parentBlock);
 
 				// events
 				void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
@@ -39,9 +40,13 @@ class Block : public QGraphicsRectItem {
 
 				// getters
 				QGraphicsLineItem* getLine() const { return line; };
+				QString getName() const { return name; };
+				double getValue() const { return value; };
 
 				// setters
 				void setLine(Line* line);
+				void setName(const QString name) { this->name = name; };
+				void setValue(const double value) { this->value = value; };
 
 			private:
 				// attributes
@@ -50,12 +55,15 @@ class Block : public QGraphicsRectItem {
 				int IO;
 				Line* line;
 				bool isP1 = false;
+				QString name;
+				double value;
 		};
 
 		// getters
 		bool isPlaced() const { return placed; };
 		QVector<BlockIO*> getInputs() const { return input; };
 		QVector<BlockIO*> getOutputs() const { return output; };
+
 		// setters
 		void setIsPlaced(bool const placed) { this->placed = placed; };
 

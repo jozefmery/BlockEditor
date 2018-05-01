@@ -12,8 +12,8 @@ Dialog::Dialog(QWidget *parent)
 }
 
 void Dialog::ok() {
-	iPorts = ui.iPorts->currentText().toInt();
-	oPorts = ui.oPorts->currentText().toInt();
+	inputType = ui.input->currentText();
+	outputType = ui.output->currentText();
 	operation = ui.opration->currentText();
 
 	close();
