@@ -1,5 +1,4 @@
 #include "BlockEditor.h"
-#include "Scaler.h"
 
 #include <QBrush>
 #include <QMouseEvent>
@@ -14,11 +13,11 @@ BlockEditor::BlockEditor(QWidget* parent) {
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 	// set size of view
-	resize(Scaler::scaleX(1024), Scaler::scaleY(695));
+	resize(1024, 1024);
 
 	// set up scene
 	scene = new QGraphicsScene();
-	scene->setSceneRect(0, 0, Scaler::scaleX(1024), Scaler::scaleY(695));
+	scene->setSceneRect(0, 0, 1024, 1024);
 	setScene(scene);
 	
 	drawGUI();
@@ -290,5 +289,9 @@ void BlockEditor::setIsDrawing(const bool drawing) {
 	this->drawing = drawing;
 };
 
+void BlockEditor::resizeEvent(QResizeEvent *event)
+{
+	auto size = event->size();
 
-
+	scene->setSceneRect(0, 0, size.width(), size.height());
+}

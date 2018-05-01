@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ui_MainWindow.h"
-#include "Scaler.h"
 #include "Block.h"
 #include <QTabWidget>
 #include <QtWidgets/QMainWindow>
