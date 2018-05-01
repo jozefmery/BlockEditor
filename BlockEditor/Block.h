@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Line.h"
+
 #include <QGraphicsRectItem>
 #include <QGraphicsLineItem>
 
@@ -16,12 +18,7 @@ class Block : public QGraphicsRectItem {
 		Block(const int x, const int y, BlockEditor* parent, QString operation, int iPorts, int oPorts);
 
 		// events
-		void mousePressEvent(QGraphicsSceneMouseEvent* event);
-
-		// getters
-		inline bool isPlaced() const { return placed; };
-		// setters
-		inline void setIsPlaced(bool const placed) { this->placed = placed; };
+		void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 
 		BlockEditor *parent;
 
@@ -35,7 +32,7 @@ class Block : public QGraphicsRectItem {
 				void mousePressEvent(QGraphicsSceneMouseEvent* event);
 
 				// methods
-				void addLine(QGraphicsLineItem *line, bool isPoint1);
+				void addLine(Line *line, bool isPoint1);
 				QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 				void moveLineToCenter(QPointF newPos);
 
@@ -43,16 +40,23 @@ class Block : public QGraphicsRectItem {
 				inline QGraphicsLineItem* getLine() const { return line; };
 
 				// setters
-				inline void setLine(QGraphicsLineItem* line) { this->line = line; };
+				inline void setLine(Line* line) { this->line = line; };
 
 			private:
 				// attributes
-				QGraphicsRectItem * parentBlock;
+				QGraphicsRectItem* parentBlock;
 				BlockEditor* editor;
 				int IO;
-				QGraphicsLineItem* line;
+				Line* line;
 				bool isP1 = false;
 		};
+
+		// getters
+		inline bool isPlaced() const { return placed; };
+		inline QVector<BlockIO*> getInputs() const { return input; };
+		inline QVector<BlockIO*> getOutputs() const { return output; };
+		// setters
+		inline void setIsPlaced(bool const placed) { this->placed = placed; };
 
 
 	private:

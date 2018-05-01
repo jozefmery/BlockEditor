@@ -3,12 +3,9 @@
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
-#include <QDebug>
 #include <QBrush>
 #include <QCursor>
 #include <QDebug>
-#include <QWidget>
-#include <qfutureinterface.h>
 
 //extern BlockEditor *blockEditor;
 
@@ -37,11 +34,11 @@ Block::Block(const int x, const int y, BlockEditor* parent, QString operation, i
 	}
 	
 	if (oPorts == 1) {
-		input.push_back(new BlockIO(x + 37, y + 37, OUTPUT, parent, this));
+		output.push_back(new BlockIO(x + 37, y + 37, OUTPUT, parent, this));
 	}
 	else {
-		input.push_back(new BlockIO(x + 37, y, OUTPUT, parent, this));
-		input.push_back(new BlockIO(x + 37, y + 37, OUTPUT, parent, this));
+		output.push_back(new BlockIO(x + 37, y, OUTPUT, parent, this));
+		output.push_back(new BlockIO(x + 37, y + 37, OUTPUT, parent, this));
 	}
 
 	setIsPlaced(true);
@@ -94,7 +91,7 @@ Block::BlockIO::BlockIO(int x, int y, int IO, BlockEditor* editor, QGraphicsRect
 	setAcceptHoverEvents(true);
 }
 
-void Block::BlockIO::addLine(QGraphicsLineItem *line, bool isPoint1) {
+void Block::BlockIO::addLine(Line* line, bool isPoint1) {
 	this->line = line;
 	isP1 = isPoint1;
 }
@@ -126,15 +123,17 @@ void Block::BlockIO::moveLineToCenter(QPointF newPos) {
 
 void Block::BlockIO::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 	if (IO == INPUT && editor->isDrawing()) {
-		QGraphicsLineItem *line = editor->getLine();
+		Line *line = editor->getLine();
 		editor->setIsDrawing(false);
 		addLine(line, false);
-	}
-	else if (IO == OUTPUT && !editor->isDrawing()) {
-		QGraphicsLineItem *line = editor->scene->addLine(QLineF(event->pos(), event->pos()));
+	} else if (IO == OUTPUT && !editor->isDrawing()) {
+		Line* line = new Line(event->pos(), event->pos());
+		editor->scene->addItem(line);
 		addLine(line, true);
 		editor->setIsDrawing(true);
 		editor->setLine(line);
 		editor->setLineStart(QCursor::pos());
 	}
 }
+
+

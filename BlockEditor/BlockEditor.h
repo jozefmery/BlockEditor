@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Line.h"
 #include "Block.h"
 #include "Dialog.h"
 
@@ -16,24 +17,27 @@ class BlockEditor : public QGraphicsView {
 		QGraphicsScene * scene;
 
 		// events
-		void mouseMoveEvent(QMouseEvent* event);
+		void mouseMoveEvent(QMouseEvent* event) override;
 		//void mousePressEvent(QMouseEvent* event);
 
 		// constructors
-		BlockEditor(QWidget* parent = NULL);
+		explicit BlockEditor(QWidget* parent = NULL);
 
 		// methods
-		void pickUpBlock(Block* card, QPointF pos);
+		void pickUpBlock(Block* block, QPointF pos);
 		void placeBlock(Block* block);
 
 		// getters
 		inline bool isDrawing() const { return drawing; };
-		inline QGraphicsLineItem* getLine() const { return line; };
+		inline Line* getLine() const { return line; };
 		inline QPointF getLineStart() const { return lineStart; };
 
 		//setters
 		inline void setIsDrawing(const bool drawing) { this->drawing = drawing; };
-		inline void setLine(QGraphicsLineItem* line) { this->line = line; };
+		inline void setLine(Line* line){
+			this->line = line;
+			lines.push_back(line);
+		};
 		inline void setLineStart(const QPoint lineStart) { this->lineStart = mapFromGlobal(lineStart); };
 
 	private:
@@ -41,15 +45,17 @@ class BlockEditor : public QGraphicsView {
 		QGraphicsItem* item = nullptr;
 		QPointF originalPos;
 		QPointF mouseClickPos = QPointF(-1, -1);
-		Block* blockToPlace = NULL;
+		Block* blockToPlace = nullptr;
 		bool drawing = false;;
-		QGraphicsLineItem* line = NULL;
+		Line* line = nullptr;
 		QPointF lineStart = QPointF(-1, -1);
 		QVector<Block*> blocks;
+		QVector<Line*> lines;
 		Dialog* dialog;
 
 		// methods
 		void drawGUI();
+		void removeLines(Block* actual);
 
 	public slots:
 		void showContextMenu(QPoint pos);

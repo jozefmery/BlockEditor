@@ -2,7 +2,6 @@
 #include "Scaler.h"
 
 #include <QBrush>
-#include <QComboBox>
 #include <QMouseEvent>
 #include <QDebug>
 #include <QMenu>
@@ -20,14 +19,14 @@ BlockEditor::BlockEditor(QWidget* parent) {
 	scene = new QGraphicsScene();
 	scene->setSceneRect(0, 0, Scaler::scaleX(1024), Scaler::scaleY(695));
 	setScene(scene);
-
+	
 	drawGUI();
 }
 
 void BlockEditor::drawGUI() {
 	// background
 	QBrush brush;
-	brush.setStyle(Qt::SolidPattern);
+	brush.setStyle(Qt::Dense1Pattern);
 	brush.setColor(Qt::darkGray);
 	scene->setBackgroundBrush(brush);
 }
@@ -69,22 +68,61 @@ void BlockEditor::showContextMenu(QPoint pos) {
 
 		item = itemAt(pos.x(), pos.y());
 		if (item) {
-			QMenu myMenu;
-			myMenu.addAction("Delete Block", this, SLOT(deleteBlock()));
-			myMenu.addAction("Change Operation");
-			myMenu.exec(globalPos);
+			if (dynamic_cast<Block*>(item) || dynamic_cast<Block*>(item->parentItem())) {
+				QMenu myMenu;
+				myMenu.addAction("Delete Block", this, SLOT(deleteBlock()));
+				myMenu.addAction("Edit Block");
+				myMenu.exec(globalPos);
+			} else if (dynamic_cast<Line*>(item)) {
+				QMenu myMenu;
+				myMenu.addAction("Delete Connection", this, SLOT(deleteBlock()));
+				myMenu.exec(globalPos);
+			}
 		} else {
 			QMenu myMenu;
 			myMenu.addAction("New Scheme");
 			myMenu.addAction("New Block", this, SLOT(spawnBlock()));
 			myMenu.exec(globalPos);
 		}
+	} else if (isDrawing()) {
+		item = line;
+		setIsDrawing(false);
+		deleteBlock();
+	}
+}
+
+void BlockEditor::removeLines(Block* actual) {
+	QVector<Block::BlockIO*> inputs = actual->getInputs();
+	for (Block::BlockIO* input : inputs) {
+		if (input->getLine()) {
+			item = input->getLine();
+			deleteBlock();
+		}
+	}
+	QVector<Block::BlockIO*> outputs = actual->getOutputs();
+	for (Block::BlockIO* output : outputs) {
+		if (output->getLine()) {
+			item = output->getLine();
+			deleteBlock();
+		}
 	}
 }
 
 void BlockEditor::deleteBlock() {
-	scene->removeItem(item);
-	blocks.remove(blocks.indexOf(dynamic_cast<Block*>(item), 0));
+	
+	if (dynamic_cast<Block*>(item)) {
+		blocks.remove(blocks.indexOf(dynamic_cast<Block*>(item), 0));
+		scene->removeItem(item);
+		removeLines(dynamic_cast<Block*>(item));
+	} else if (dynamic_cast<Block*>(item->parentItem())) {
+		blocks.remove(blocks.indexOf(dynamic_cast<Block*>(item->parentItem()), 0));
+		scene->removeItem(item->parentItem());
+		removeLines(dynamic_cast<Block*>(item->parentItem()));
+	} else if (dynamic_cast<Line*>(item)) {
+		lines.remove(lines.indexOf(dynamic_cast<Line*>(item), 0));
+		scene->removeItem(item);
+	}
+
 	item = nullptr;
 }
 
