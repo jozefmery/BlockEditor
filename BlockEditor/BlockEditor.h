@@ -21,24 +21,24 @@ class BlockEditor : public QGraphicsView {
 		//void mousePressEvent(QMouseEvent* event);
 
 		// constructors
-		explicit BlockEditor(QWidget* parent = NULL);
+		explicit BlockEditor(QWidget* parent = nullptr);
 
 		// methods
 		void pickUpBlock(Block* block, QPointF pos);
 		void placeBlock(Block* block);
 
 		// getters
-		inline bool isDrawing() const { return drawing; };
-		inline Line* getLine() const { return line; };
-		inline QPointF getLineStart() const { return lineStart; };
+		bool isDrawing() const;
+		Line* getLine() const { return line; };
+		QPointF getLineStart() const { return lineStart; };
 
 		//setters
-		inline void setIsDrawing(const bool drawing) { this->drawing = drawing; };
-		inline void setLine(Line* line){
+		void setIsDrawing(const bool drawing);
+		void setLine(Line* line){
 			this->line = line;
 			lines.push_back(line);
 		};
-		inline void setLineStart(const QPoint lineStart) { this->lineStart = mapFromGlobal(lineStart); };
+		void setLineStart(const QPoint lineStart) { this->lineStart = mapFromGlobal(lineStart); };
 
 	private:
 		// attributes

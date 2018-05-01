@@ -12,6 +12,8 @@
 Block::Block(const int x, const int y, BlockEditor* parent, QString operation, int iPorts, int oPorts) :
 	parent(parent) {
 
+	//setFlag(ItemIsMovable);
+
 	this->parent = parent;
 
 	// draw the block
@@ -52,12 +54,16 @@ Block::Block(const int x, const int y, BlockEditor* parent, QString operation, i
 
 void Block::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 	if (isPlaced()) { // block is placed
-		if (event->buttons() == Qt::LeftButton && !parent->isDrawing()) {
+		if (event->button() == Qt::LeftButton && !parent->isDrawing()) {
 			// pick up the block
 			parent->pickUpBlock(this, event->pos());
 		}
-	} else {
-		if (event->buttons() == Qt::LeftButton) { // place the block
+	}
+}
+
+void Block::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
+	if (!isPlaced()) {
+		if (event->button() == Qt::LeftButton) {
 			parent->placeBlock(this);
 		}
 	}
@@ -69,8 +75,7 @@ void Block::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 
 Block::BlockIO::BlockIO(int x, int y, int IO, BlockEditor* editor, QGraphicsRectItem* parentBlock) : QGraphicsRectItem(parentBlock) {
 
-	setFlag(QGraphicsItem::ItemIsMovable);
-	setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
+	setFlag(ItemSendsScenePositionChanges);
 
 	this->IO = IO;
 	this->editor = editor;
@@ -80,13 +85,14 @@ Block::BlockIO::BlockIO(int x, int y, int IO, BlockEditor* editor, QGraphicsRect
 	if (IO == INPUT) {
 		setRect(x, y, 13, 13);
 		setBrush(QBrush(QColor(Qt::green)));
+		setCursor(Qt::ArrowCursor);
 	}
 	else if (IO == OUTPUT) {
 		setRect(x, y, 13, 13);
 		setBrush(QBrush(QColor(Qt::blue)));
+		setCursor(Qt::PointingHandCursor);
 	}
 
-	setCursor(Qt::PointingHandCursor);
 	setAcceptedMouseButtons(Qt::LeftButton);
 	setAcceptHoverEvents(true);
 }
@@ -94,6 +100,7 @@ Block::BlockIO::BlockIO(int x, int y, int IO, BlockEditor* editor, QGraphicsRect
 void Block::BlockIO::addLine(Line* line, bool isPoint1) {
 	this->line = line;
 	isP1 = isPoint1;
+	setCursor(Qt::ArrowCursor);
 }
 
 QVariant Block::BlockIO::itemChange(GraphicsItemChange change, const QVariant &value) {
@@ -122,18 +129,30 @@ void Block::BlockIO::moveLineToCenter(QPointF newPos) {
 }
 
 void Block::BlockIO::mousePressEvent(QGraphicsSceneMouseEvent* event) {
-	if (IO == INPUT && editor->isDrawing()) {
-		Line *line = editor->getLine();
-		editor->setIsDrawing(false);
-		addLine(line, false);
-	} else if (IO == OUTPUT && !editor->isDrawing()) {
-		Line* line = new Line(event->pos(), event->pos());
+	Block* block = dynamic_cast<Block*>(parentBlock);
+	if (IO == INPUT && editor->isDrawing() && line == nullptr) {
+		if (editor->getLine()->getOutBlock() != block) {
+			Line *line = editor->getLine();
+			line->setInBlock(block);
+			editor->setIsDrawing(false);
+			addLine(line, false);
+		}
+	} else if (IO == OUTPUT && !editor->isDrawing() && line == nullptr) {
+		Line* line = new Line(event->pos(), event->pos(), block->parent);
 		editor->scene->addItem(line);
 		addLine(line, true);
-		editor->setIsDrawing(true);
+		line->setOutBlock(block);
 		editor->setLine(line);
 		editor->setLineStart(QCursor::pos());
+		editor->setIsDrawing(true);
 	}
 }
+
+void Block::BlockIO::setLine(Line* line) {
+	if (line == nullptr) {
+		setCursor(Qt::PointingHandCursor);
+	}
+	this->line = line;
+};
 
 

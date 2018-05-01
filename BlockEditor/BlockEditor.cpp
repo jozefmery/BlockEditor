@@ -161,7 +161,7 @@ void BlockEditor::spawnBlock() {
 
 void BlockEditor::mouseMoveEvent(QMouseEvent* event) {
 
-	// if there is a cardToPlace, then make it follow the mouse
+	// if there is a blockToPlace, then make it follow the mouse
 	if (blockToPlace) {
 		int shiftX = event->pos().x() - mouseClickPos.x();
 		int shiftY = event->pos().y() - mouseClickPos.y();
@@ -173,3 +173,40 @@ void BlockEditor::mouseMoveEvent(QMouseEvent* event) {
 
 	QGraphicsView::mouseMoveEvent(event);
 }
+
+
+bool BlockEditor::isDrawing() const { return drawing; };
+
+void BlockEditor::setIsDrawing(const bool drawing) {
+
+	if (drawing) {
+		for (Block* block : blocks) {
+			block->setCursor(Qt::ArrowCursor);
+			for (Block::BlockIO* input : block->getInputs()) {
+				if (input->getLine() == nullptr && line->getOutBlock() != block) {
+					input->setCursor(Qt::PointingHandCursor);
+				}
+			}
+			for (Block::BlockIO* output : block->getOutputs()) {
+				output->setCursor(Qt::ArrowCursor);
+			}
+		}
+	} else {
+		for (Block* block : blocks) {
+			block->setCursor(Qt::OpenHandCursor);
+			for (Block::BlockIO* input : block->getInputs()) {
+				input->setCursor(Qt::ArrowCursor);
+			}
+			for (Block::BlockIO* output : block->getOutputs()) {
+				if (output->getLine() == nullptr) {
+					output->setCursor(Qt::PointingHandCursor);
+				}
+			}
+		}
+	}
+
+	this->drawing = drawing;
+};
+
+
+

@@ -19,6 +19,7 @@ class Block : public QGraphicsRectItem {
 
 		// events
 		void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+		void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 
 		BlockEditor *parent;
 
@@ -29,7 +30,7 @@ class Block : public QGraphicsRectItem {
 				BlockIO(int x, int y, int IO, BlockEditor* editor, QGraphicsRectItem* parentBlock);
 
 				// events
-				void mousePressEvent(QGraphicsSceneMouseEvent* event);
+				void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 
 				// methods
 				void addLine(Line *line, bool isPoint1);
@@ -37,10 +38,10 @@ class Block : public QGraphicsRectItem {
 				void moveLineToCenter(QPointF newPos);
 
 				// getters
-				inline QGraphicsLineItem* getLine() const { return line; };
+				QGraphicsLineItem* getLine() const { return line; };
 
 				// setters
-				inline void setLine(Line* line) { this->line = line; };
+				void setLine(Line* line);
 
 			private:
 				// attributes
@@ -52,11 +53,11 @@ class Block : public QGraphicsRectItem {
 		};
 
 		// getters
-		inline bool isPlaced() const { return placed; };
-		inline QVector<BlockIO*> getInputs() const { return input; };
-		inline QVector<BlockIO*> getOutputs() const { return output; };
+		bool isPlaced() const { return placed; };
+		QVector<BlockIO*> getInputs() const { return input; };
+		QVector<BlockIO*> getOutputs() const { return output; };
 		// setters
-		inline void setIsPlaced(bool const placed) { this->placed = placed; };
+		void setIsPlaced(bool const placed) { this->placed = placed; };
 
 
 	private:
