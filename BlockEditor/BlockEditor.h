@@ -51,11 +51,11 @@ class BlockEditor : public QGraphicsView {
 		QPointF lineStart = QPointF(-1, -1);
 		QVector<Block*> blocks;
 		QVector<Line*> lines;
-		Dialog* dialog;
+		Dialog* dialog{};
 
 		// methods
 		void drawGUI();
-		void removeLines(Block* actual);
+		void removeConnections(Block* actual);
 
 	public slots:
 		void showContextMenu(QPoint pos);

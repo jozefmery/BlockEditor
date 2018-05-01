@@ -64,7 +64,7 @@ void BlockEditor::placeBlock(Block* block) {
 void BlockEditor::showContextMenu(QPoint pos) {
 	if (blockToPlace == nullptr && !isDrawing()) { // when plock is picked up, context menu isn't able to open
 		// Handle global position
-		QPoint globalPos = mapToGlobal(pos);
+		const QPoint globalPos = mapToGlobal(pos);
 
 		item = itemAt(pos.x(), pos.y());
 		if (item) {
@@ -91,7 +91,7 @@ void BlockEditor::showContextMenu(QPoint pos) {
 	}
 }
 
-void BlockEditor::removeLines(Block* actual) {
+void BlockEditor::removeConnections(Block* actual) {
 	QVector<Block::BlockIO*> inputs = actual->getInputs();
 	for (Block::BlockIO* input : inputs) {
 		if (input->getLine()) {
@@ -113,14 +113,27 @@ void BlockEditor::deleteBlock() {
 	if (dynamic_cast<Block*>(item)) {
 		blocks.remove(blocks.indexOf(dynamic_cast<Block*>(item), 0));
 		scene->removeItem(item);
-		removeLines(dynamic_cast<Block*>(item));
+		removeConnections(dynamic_cast<Block*>(item));
 	} else if (dynamic_cast<Block*>(item->parentItem())) {
 		blocks.remove(blocks.indexOf(dynamic_cast<Block*>(item->parentItem()), 0));
 		scene->removeItem(item->parentItem());
-		removeLines(dynamic_cast<Block*>(item->parentItem()));
+		removeConnections(dynamic_cast<Block*>(item->parentItem()));
 	} else if (dynamic_cast<Line*>(item)) {
 		lines.remove(lines.indexOf(dynamic_cast<Line*>(item), 0));
 		scene->removeItem(item);
+		Line* actual = dynamic_cast<Line*>(item);
+		for (Block* block: blocks) {
+			for (Block::BlockIO* input: block->getInputs()) {
+				if (actual == input->getLine()) {
+					input->setLine(nullptr);
+				}
+			}
+			for (Block::BlockIO* output : block->getOutputs()) {
+				if (actual == output->getLine()) {
+					output->setLine(nullptr);
+				}
+			}
+		}
 	}
 
 	item = nullptr;
@@ -129,6 +142,8 @@ void BlockEditor::deleteBlock() {
 void BlockEditor::spawnBlock() {
 
 	dialog = new Dialog();
+	dialog->move(QCursor::pos().x() - dialog->width() / 2, 
+		QCursor::pos().y() - dialog->height() / 2);
 	dialog->exec();
 
 	// get cursor position
