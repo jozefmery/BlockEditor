@@ -72,7 +72,7 @@ void BlockEditor::showContextMenu(QPoint pos) {
 			if (dynamic_cast<Block*>(item) || dynamic_cast<Block*>(item->parentItem())) {
 				QMenu myMenu;
 				myMenu.addAction("Delete Block", this, SLOT(deleteBlock()));
-				myMenu.addAction("Edit Block");
+				myMenu.addAction("Edit Block", this, SLOT(editBlock()));
 				myMenu.exec(globalPos);
 			} else if (dynamic_cast<Line*>(item)) {
 				QMenu myMenu;
@@ -81,7 +81,6 @@ void BlockEditor::showContextMenu(QPoint pos) {
 			}
 		} else {
 			QMenu myMenu;
-			myMenu.addAction("New Scheme");
 			myMenu.addAction("New Block", this, SLOT(spawnBlock()));
 			myMenu.addAction("New Const Block", this, SLOT(spawnConstBlock()));
 			myMenu.exec(globalPos);
@@ -141,6 +140,64 @@ void BlockEditor::deleteBlock() {
 	item = nullptr;
 }
 
+void BlockEditor::editBlock() {
+
+	Block* block;
+	if (dynamic_cast<Block*>(item)) {
+		block = dynamic_cast<Block*>(item);
+	} else {
+		block = dynamic_cast<Block*>(item->parentItem());
+	}
+
+	QTextCursor cursor(block->getOperationText()->document());
+	switch(block->getBlockType()) {
+		case BLOCK:
+			dialog = new Dialog();
+			dialog->move(QCursor::pos().x() - dialog->width() / 2,
+				QCursor::pos().y() - dialog->height() / 2);
+			dialog->exec();
+
+			cursor.select(QTextCursor::WordUnderCursor);
+			cursor.beginEditBlock();
+			cursor.insertText(dialog->getOperation());
+			cursor.endEditBlock();
+			cursor.removeSelectedText();
+
+			block->setOperation(dialog->getOperation());
+
+			for (Block::BlockIO* input: block->getInputs()) {
+				input->setName(dialog->getInputType());
+			}
+
+			for (Block::BlockIO* output: block->getOutputs()) {
+				output->setName(dialog->getOutputType());
+			}
+
+			break;
+		case CONSTBLOCK:
+			dialogConst = new DialogConst();
+			dialogConst->move(QCursor::pos().x() - dialogConst->width() / 2,
+				QCursor::pos().y() - dialogConst->height() / 2);
+			dialogConst->exec();
+
+			cursor.select(QTextCursor::WordUnderCursor);
+			cursor.beginEditBlock();
+			cursor.insertText(QString::number(dialogConst->getValue()));
+			cursor.endEditBlock();
+			cursor.removeSelectedText();
+
+			for (Block::BlockIO* output: block->getOutputs()) {
+				output->setValue(dialogConst->getValue());
+				output->setName(dialogConst->getOutputType());
+			}
+
+			break;
+		default: ;
+	}
+
+	item = nullptr;
+}
+
 void BlockEditor::spawnBlock() {
 
 	dialog = new Dialog();
@@ -158,6 +215,8 @@ void BlockEditor::spawnBlock() {
 
 	blocks.push_back(block);
 	scene->addItem(block);
+
+	item = nullptr;
 }
 
 void BlockEditor::spawnConstBlock() {
@@ -177,6 +236,8 @@ void BlockEditor::spawnConstBlock() {
 
 	blocks.push_back(block);
 	scene->addItem(block);
+
+	item = nullptr;
 }
 
 

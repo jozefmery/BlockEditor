@@ -62,6 +62,7 @@ class BlockEditor : public QGraphicsView {
 	public slots:
 		void showContextMenu(QPoint pos);
 		void deleteBlock();
+		void editBlock();
 		void spawnBlock();
 		void spawnConstBlock();
 

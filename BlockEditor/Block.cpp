@@ -6,6 +6,7 @@
 #include <QBrush>
 #include <QCursor>
 #include <QDebug>
+#include <QTextDocument>
 
 //extern BlockEditor *blockEditor;
 
@@ -13,6 +14,11 @@ Block::Block(const int x, const int y, BlockEditor* parent, QString operation, Q
 	parent(parent) {
 
 	this->parent = parent;
+	this->operation = operation;
+	this->x = x;
+	this->y = y;
+
+	setBlockType(BLOCK);
 
 	// draw the block
 	setRect(x, y, 50, 50);
@@ -21,11 +27,10 @@ Block::Block(const int x, const int y, BlockEditor* parent, QString operation, Q
 	brush.setColor(Qt::red);
 	setBrush(brush);
 
-	QGraphicsTextItem* text = new QGraphicsTextItem(QString(operation), this);
-	text->setFont(QFont("comic sans", 10));
-	text->setPos(x + rect().width() / 2 - text->boundingRect().width() / 2,
-				y + rect().width() / 2 - text->boundingRect().height() / 2);
-
+	operationText = new QGraphicsTextItem(QString(operation), this);
+	operationText->setFont(QFont("comic sans", 10));
+	operationText->setPos(x + rect().width() / 2 - operationText->boundingRect().width() / 2,
+				y + rect().height() / 2 - operationText->boundingRect().height() / 2);
 
 	if (operation == "+" || operation == "-") {
 		input.push_back(new BlockIO(x, y, INPUT, inputType, 0, parent, this));
@@ -50,6 +55,9 @@ Block::Block(const int x, const int y, BlockEditor* parent, double value, QStrin
 	: parent(parent) {
 
 	this->parent = parent;
+	this->operation = nullptr;
+
+	setBlockType(CONSTBLOCK);
 
 	// draw the block
 	setRect(x, y, 50, 50);
@@ -58,10 +66,10 @@ Block::Block(const int x, const int y, BlockEditor* parent, double value, QStrin
 	brush.setColor(Qt::yellow);
 	setBrush(brush);
 
-	QGraphicsTextItem* text = new QGraphicsTextItem(QString::number(value), this);
-	text->setFont(QFont("comic sans", 7));
-	text->setPos(x + rect().width() / 2 - text->boundingRect().width() / 2,
-		y + rect().width() / 2 - text->boundingRect().height() / 2);
+	operationText = new QGraphicsTextItem(QString::number(value), this);
+	operationText->setFont(QFont("comic sans", 7));
+	operationText->setPos(x + rect().width() / 2 - operationText->boundingRect().width() / 2,
+		y + rect().height() / 2 - operationText->boundingRect().height() / 2);
 
 	output.push_back(new BlockIO(x + 43, y + 19, OUTPUT, outputType, value, parent, this));
 

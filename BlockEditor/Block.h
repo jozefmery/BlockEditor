@@ -8,6 +8,8 @@
 #define INPUT  1
 #define OUTPUT 2
 
+#define CONSTBLOCK  1
+#define BLOCK		2
 
 class BlockEditor;
 
@@ -15,8 +17,8 @@ class Block : public QGraphicsRectItem {
 
 	public:
 		// constructors
-		Block(const int x, const int y, BlockEditor* parent, QString operation, QString input, QString output);
-		Block(const int x, const int y, BlockEditor* parent, double value, QString outputType);
+		Block(int x, int y, BlockEditor* parent, QString operation, QString inputType, QString outputType);
+		Block(int x, int y, BlockEditor* parent, double value, QString outputType);
 
 		// events
 		void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
@@ -63,15 +65,26 @@ class Block : public QGraphicsRectItem {
 		bool isPlaced() const { return placed; };
 		QVector<BlockIO*> getInputs() const { return input; };
 		QVector<BlockIO*> getOutputs() const { return output; };
+		QString getOperation() const { return operation; };
+		QGraphicsTextItem* getOperationText() const { return operationText; };
+		int getBlockType() const { return blockType; };
+		int getX() const { return x; };
+		int getY() const { return y; };
 
 		// setters
 		void setIsPlaced(bool const placed) { this->placed = placed; };
-
+		void setOperation(const QString operation) { this->operation = operation; };
+		void setOperationText(QGraphicsTextItem* operationText) { this->operationText = operationText; };
+		void setBlockType(const int blockType) { this->blockType = blockType; };
 
 	private:
 		// attributes
+		int blockType;
 		bool placed;
+		QString operation;
 		QVector<BlockIO*> input;
 		QVector<BlockIO*> output;
+		QGraphicsTextItem * operationText;
+		int x, y;
 };
 
