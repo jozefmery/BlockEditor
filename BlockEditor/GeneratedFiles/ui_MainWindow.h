@@ -39,6 +39,7 @@ public:
     QAction *actionPause;
     QAction *actionStop;
     QAction *actionClear;
+    QAction *actionAbout;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QTabWidget *tabWidget;
@@ -47,10 +48,6 @@ public:
     QMenuBar *menuBar;
     QMenu *menuFILE;
     QMenu *menuRecent;
-    QMenu *menuEDIT;
-    QMenu *menuVIEW;
-    QMenu *menuSCHEME;
-    QMenu *menuSETTINGS;
     QMenu *menuHELP;
     QToolBar *controlToolBar;
     QToolBar *fileToolBar;
@@ -60,18 +57,16 @@ public:
         if (MainWindowClass->objectName().isEmpty())
             MainWindowClass->setObjectName(QStringLiteral("MainWindowClass"));
         MainWindowClass->resize(584, 366);
-        MainWindowClass->setStyleSheet(QLatin1String("QWidget{\n"
+        MainWindowClass->setStyleSheet(QLatin1String("QMainWindow{\n"
+"\n"
+"	width: 1000px;\n"
+"}\n"
+"\n"
+"QWidget{\n"
 "	\n"
 "	color: rgb(244, 244, 244);\n"
 "	background: rgb(66,66,66);\n"
-"	font-size: 11p;\n"
-"}\n"
-"\n"
-"QToolBar {\n"
-"	\n"
-"	border: 0px;\n"
-"	font-size: 11p;\n"
-"\n"
+"	font-size: 12pt;\n"
 "}\n"
 "\n"
 "QMenuBar::item:selected {\n"
@@ -83,20 +78,19 @@ public:
 "	background: rgb(50, 50, 50);\n"
 "}\n"
 "\n"
-"QMenuBar {\n"
+"QMenuBar::item {\n"
 "\n"
-"	padding-left: 5px;\n"
-"	padding-right: 5px;\n"
-"	margin-top: 5px;\n"
-"	margin-bottom: 5px;\n"
-"\n"
+"	padding-left: 1.1em;\n"
+"	padding-right: 1.1em;\n"
+"	padding-top: 0.3em;\n"
+"	padding-bottom:  0.3em;\n"
 "}\n"
 "\n"
 "QMenu::separator {\n"
-"    height: 1px;\n"
+"    height: 0.1em;\n"
 "    background: rgb(112,112,112);\n"
-"    margin-left: 5px;\n"
-"    margin-right: 20px;\n"
+"    margin-left: 1em;\n"
+"    margin-right: 3em;\n"
 "}\n"
 "\n"
 "QMenu {\n"
@@ -107,21 +101,22 @@ public:
 "	background: rgb(112, 112, 112);\n"
 "}\n"
 "\n"
-"QTabWidget::pane{\n"
-"	\n"
-"}\n"
-"\n"
-"\n"
 "QTabBar::tab {\n"
 " \n"
-"    border: 1px solid rgb(255, 255, 255);\n"
+"    border: 0.1em solid rgb(255, 255, 255);\n"
 "    border-bottom-color: rgb(244, 244, 244);\n"
-"	min-width: 8ex;\n"
+"	min-width: 10ex;\n"
 "    min-height: 3ex;\n"
-"    padding: 2px;\n"
+"    padding: 0.3em;\n"
 "}\n"
 "\n"
+"QToolBar{\n"
+"	\n"
+"	border: 0px;\n"
+"}\n"
 ""));
+        MainWindowClass->setIconSize(QSize(40, 40));
+        MainWindowClass->setToolButtonStyle(Qt::ToolButtonIconOnly);
         MainWindowClass->setTabShape(QTabWidget::Rounded);
         actionNew = new QAction(MainWindowClass);
         actionNew->setObjectName(QStringLiteral("actionNew"));
@@ -174,6 +169,8 @@ public:
         QIcon icon6;
         icon6.addFile(QStringLiteral(":/Resources/clear.png"), QSize(), QIcon::Normal, QIcon::Off);
         actionClear->setIcon(icon6);
+        actionAbout = new QAction(MainWindowClass);
+        actionAbout->setObjectName(QStringLiteral("actionAbout"));
         centralWidget = new QWidget(MainWindowClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         centralWidget->setStyleSheet(QStringLiteral(""));
@@ -183,6 +180,8 @@ public:
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
+        tabWidget->setTabsClosable(true);
+        tabWidget->setMovable(true);
         tab = new QWidget();
         tab->setObjectName(QStringLiteral("tab"));
         tabWidget->addTab(tab, QString());
@@ -195,9 +194,9 @@ public:
         MainWindowClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindowClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 584, 26));
+        menuBar->setGeometry(QRect(0, 0, 584, 31));
         QFont font;
-        font.setPointSize(11);
+        font.setPointSize(12);
         menuBar->setFont(font);
         menuBar->setStyleSheet(QStringLiteral(""));
         menuFILE = new QMenu(menuBar);
@@ -207,14 +206,6 @@ public:
         menuFILE->setStyleSheet(QStringLiteral(""));
         menuRecent = new QMenu(menuFILE);
         menuRecent->setObjectName(QStringLiteral("menuRecent"));
-        menuEDIT = new QMenu(menuBar);
-        menuEDIT->setObjectName(QStringLiteral("menuEDIT"));
-        menuVIEW = new QMenu(menuBar);
-        menuVIEW->setObjectName(QStringLiteral("menuVIEW"));
-        menuSCHEME = new QMenu(menuBar);
-        menuSCHEME->setObjectName(QStringLiteral("menuSCHEME"));
-        menuSETTINGS = new QMenu(menuBar);
-        menuSETTINGS->setObjectName(QStringLiteral("menuSETTINGS"));
         menuHELP = new QMenu(menuBar);
         menuHELP->setObjectName(QStringLiteral("menuHELP"));
         MainWindowClass->setMenuBar(menuBar);
@@ -226,16 +217,12 @@ public:
         MainWindowClass->addToolBar(Qt::TopToolBarArea, controlToolBar);
         fileToolBar = new QToolBar(MainWindowClass);
         fileToolBar->setObjectName(QStringLiteral("fileToolBar"));
-        fileToolBar->setStyleSheet(QStringLiteral("border: 0px;"));
+        fileToolBar->setStyleSheet(QStringLiteral(""));
         fileToolBar->setAllowedAreas(Qt::TopToolBarArea);
         fileToolBar->setFloatable(false);
         MainWindowClass->addToolBar(Qt::TopToolBarArea, fileToolBar);
 
         menuBar->addAction(menuFILE->menuAction());
-        menuBar->addAction(menuEDIT->menuAction());
-        menuBar->addAction(menuVIEW->menuAction());
-        menuBar->addAction(menuSCHEME->menuAction());
-        menuBar->addAction(menuSETTINGS->menuAction());
         menuBar->addAction(menuHELP->menuAction());
         menuFILE->addAction(actionNew);
         menuFILE->addAction(actionOpen);
@@ -249,10 +236,17 @@ public:
         menuFILE->addAction(actionClose_all);
         menuFILE->addAction(actionExit);
         menuRecent->addAction(actionClear);
+        menuHELP->addAction(actionAbout);
+        controlToolBar->addAction(actionStart);
+        controlToolBar->addAction(actionPause);
+        controlToolBar->addAction(actionStop);
+        fileToolBar->addAction(actionNew);
+        fileToolBar->addAction(actionOpen);
+        fileToolBar->addAction(actionSave);
 
         retranslateUi(MainWindowClass);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindowClass);
@@ -322,14 +316,14 @@ public:
 #ifndef QT_NO_TOOLTIP
         actionClear->setToolTip(QApplication::translate("MainWindowClass", "Clear recent files", nullptr));
 #endif // QT_NO_TOOLTIP
+        actionAbout->setText(QApplication::translate("MainWindowClass", "About", nullptr));
+#ifndef QT_NO_SHORTCUT
+        actionAbout->setShortcut(QApplication::translate("MainWindowClass", "F1", nullptr));
+#endif // QT_NO_SHORTCUT
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindowClass", "Tab 1", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindowClass", "Tab 2", nullptr));
         menuFILE->setTitle(QApplication::translate("MainWindowClass", "FILE", nullptr));
         menuRecent->setTitle(QApplication::translate("MainWindowClass", "Recent", nullptr));
-        menuEDIT->setTitle(QApplication::translate("MainWindowClass", "EDIT", nullptr));
-        menuVIEW->setTitle(QApplication::translate("MainWindowClass", "VIEW", nullptr));
-        menuSCHEME->setTitle(QApplication::translate("MainWindowClass", "SCHEME", nullptr));
-        menuSETTINGS->setTitle(QApplication::translate("MainWindowClass", "SETTINGS", nullptr));
         menuHELP->setTitle(QApplication::translate("MainWindowClass", "HELP", nullptr));
         fileToolBar->setWindowTitle(QString());
     } // retranslateUi
