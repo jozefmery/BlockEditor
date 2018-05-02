@@ -120,11 +120,13 @@ Block::BlockIO::BlockIO(int x, int y, int IO, QString name, double value, BlockE
 		setRect(x, y, 6, 12);
 		setBrush(QBrush(QColor(Qt::white)));
 		setCursor(Qt::ArrowCursor);
+		cycle = false;
 	}
 	else if (IO == OUTPUT) {
 		setRect(x, y, 6, 12);
 		setBrush(QBrush(QColor(Qt::blue)));
 		setCursor(Qt::PointingHandCursor);
+		cycle = false;
 	}
 
 	setAcceptedMouseButtons(Qt::LeftButton);

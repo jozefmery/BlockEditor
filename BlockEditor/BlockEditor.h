@@ -27,6 +27,7 @@ class BlockEditor : public QGraphicsView {
 		// methods
 		void pickUpBlock(Block* block, QPointF pos);
 		void placeBlock(Block* block);
+		void checkCycle(Block* block);
 
 		// getters
 		bool isDrawing() const;

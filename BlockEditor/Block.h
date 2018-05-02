@@ -42,14 +42,16 @@ class Block : public QGraphicsRectItem {
 				void moveLineToCenter(QPointF newPos);
 
 				// getters
-				QGraphicsLineItem* getLine() const { return line; };
+				Line* getLine() const { return line; };
 				QString getName() const { return name; };
 				double getValue() const { return value; };
+				bool isCycle() const { return cycle; };
 
 				// setters
 				void setLine(Line* line);
 				void setName(const QString name) { this->name = name; };
 				void setValue(const double value) { this->value = value; };
+				void setCycle(const bool cycle) { this->cycle = cycle; };
 
 			private:
 				// attributes
@@ -60,6 +62,7 @@ class Block : public QGraphicsRectItem {
 				bool isP1 = false;
 				QString name;
 				double value;
+				bool cycle;
 		};
 
 		// getters
@@ -68,7 +71,6 @@ class Block : public QGraphicsRectItem {
 		QVector<BlockIO*> getOutputs() const { return output; };
 		QString getOperation() const { return operation; };
 		QGraphicsTextItem* getOperationText() const { return operationText; };
-		void setOperationText(QString opText);
 		int getBlockType() const { return blockType; };
 		int getX() const { return x; };
 		int getY() const { return y; };
