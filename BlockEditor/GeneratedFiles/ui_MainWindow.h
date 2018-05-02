@@ -56,17 +56,13 @@ public:
     {
         if (MainWindowClass->objectName().isEmpty())
             MainWindowClass->setObjectName(QStringLiteral("MainWindowClass"));
-        MainWindowClass->resize(584, 366);
-        MainWindowClass->setStyleSheet(QLatin1String("QMainWindow{\n"
-"\n"
-"	width: 1000px;\n"
-"}\n"
-"\n"
-"QWidget{\n"
+        MainWindowClass->resize(934, 756);
+        MainWindowClass->setStyleSheet(QLatin1String("QWidget{\n"
 "	\n"
 "	color: rgb(244, 244, 244);\n"
 "	background: rgb(66,66,66);\n"
 "	font-size: 12pt;\n"
+"	font-family: Verdana;\n"
 "}\n"
 "\n"
 "QMenuBar::item:selected {\n"
@@ -95,25 +91,69 @@ public:
 "\n"
 "QMenu {\n"
 "	background: rgb(50, 50, 50);\n"
+"	min-width: 70ex;\n"
 "}\n"
 "\n"
 "QMenu::item:selected{\n"
 "	background: rgb(112, 112, 112);\n"
 "}\n"
 "\n"
+"QTabWidget::pane { \n"
+"   \n"
+"	 border: 0.1em solid white;\n"
+"}\n"
+"\n"
 "QTabBar::tab {\n"
 " \n"
-"    border: 0.1em solid rgb(255, 255, 255);\n"
-"    border-bottom-color: rgb(244, 244, 244);\n"
-"	min-width: 10ex;\n"
+"    border: 0.1em solid white;\n"
+"	min-width: 25ex;\n"
 "    min-height: 3ex;\n"
-"    padding: 0.3em;\n"
+"    padding: 0.4em;\n"
+"	border-top-left-radius: 0.3em;\n"
+"    border-top-right-radius: 0.3em;\n"
+""
+                        "}\n"
+"\n"
+"QTabBar::tab:selected, QTabBar::tab:hover {\n"
+"    background: rgb(112, 112, 112);\n"
+"}\n"
+"\n"
+"QTabBar::tab:selected{\n"
+"    margin-left: -4px;\n"
+"    margin-right:  -4px;\n"
+"	border-bottom-width: 0px;\n"
+"}\n"
+"\n"
+"QTabBar::tab:!selected{\n"
+"    margin-top: 0.2em;\n"
+"}\n"
+"\n"
+"QTabBar::tab:first:selected {\n"
+"    margin-left: 0;\n"
+"}\n"
+"\n"
+"QTabBar::tab:last:selected {\n"
+"    margin-right: 0; \n"
+"}\n"
+"\n"
+"QTabBar::tab:only-one {\n"
+"    margin: 0;\n"
+"}\n"
+"\n"
+"QTabBar::close-button:hover{\n"
+"	image: url(\":/Resources/close.png\");\n"
+"}\n"
+"\n"
+"QTabBar::close-button{\n"
+"	image: url(\":/Resources/close_off.png\");\n"
 "}\n"
 "\n"
 "QToolBar{\n"
 "	\n"
 "	border: 0px;\n"
 "}\n"
+"\n"
+"\n"
 ""));
         MainWindowClass->setIconSize(QSize(40, 40));
         MainWindowClass->setToolButtonStyle(Qt::ToolButtonIconOnly);
@@ -144,6 +184,10 @@ public:
         actionSave_all->setShortcutVisibleInContextMenu(true);
         actionClose = new QAction(MainWindowClass);
         actionClose->setObjectName(QStringLiteral("actionClose"));
+        QIcon icon3;
+        icon3.addFile(QStringLiteral(":/Resources/close.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon3.addFile(QStringLiteral(":/Resources/close.png"), QSize(), QIcon::Normal, QIcon::On);
+        actionClose->setIcon(icon3);
         actionClose_all = new QAction(MainWindowClass);
         actionClose_all->setObjectName(QStringLiteral("actionClose_all"));
         actionExit = new QAction(MainWindowClass);
@@ -151,26 +195,29 @@ public:
         actionExit->setShortcutVisibleInContextMenu(true);
         actionStart = new QAction(MainWindowClass);
         actionStart->setObjectName(QStringLiteral("actionStart"));
-        QIcon icon3;
-        icon3.addFile(QStringLiteral(":/Resources/play.png"), QSize(), QIcon::Normal, QIcon::Off);
-        actionStart->setIcon(icon3);
+        QIcon icon4;
+        icon4.addFile(QStringLiteral(":/Resources/play.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionStart->setIcon(icon4);
         actionPause = new QAction(MainWindowClass);
         actionPause->setObjectName(QStringLiteral("actionPause"));
-        QIcon icon4;
-        icon4.addFile(QStringLiteral(":/Resources/pause.png"), QSize(), QIcon::Normal, QIcon::Off);
-        actionPause->setIcon(icon4);
+        QIcon icon5;
+        icon5.addFile(QStringLiteral(":/Resources/pause.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionPause->setIcon(icon5);
         actionStop = new QAction(MainWindowClass);
         actionStop->setObjectName(QStringLiteral("actionStop"));
-        QIcon icon5;
-        icon5.addFile(QStringLiteral(":/Resources/stop.png"), QSize(), QIcon::Normal, QIcon::Off);
-        actionStop->setIcon(icon5);
+        QIcon icon6;
+        icon6.addFile(QStringLiteral(":/Resources/stop.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionStop->setIcon(icon6);
         actionClear = new QAction(MainWindowClass);
         actionClear->setObjectName(QStringLiteral("actionClear"));
-        QIcon icon6;
-        icon6.addFile(QStringLiteral(":/Resources/clear.png"), QSize(), QIcon::Normal, QIcon::Off);
-        actionClear->setIcon(icon6);
+        QIcon icon7;
+        icon7.addFile(QStringLiteral(":/Resources/clear.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionClear->setIcon(icon7);
         actionAbout = new QAction(MainWindowClass);
         actionAbout->setObjectName(QStringLiteral("actionAbout"));
+        QIcon icon8;
+        icon8.addFile(QStringLiteral(":/Resources/about.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionAbout->setIcon(icon8);
         centralWidget = new QWidget(MainWindowClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         centralWidget->setStyleSheet(QStringLiteral(""));
@@ -194,8 +241,9 @@ public:
         MainWindowClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindowClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 584, 31));
+        menuBar->setGeometry(QRect(0, 0, 934, 27));
         QFont font;
+        font.setFamily(QStringLiteral("Verdana"));
         font.setPointSize(12);
         menuBar->setFont(font);
         menuBar->setStyleSheet(QStringLiteral(""));
@@ -246,7 +294,7 @@ public:
 
         retranslateUi(MainWindowClass);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindowClass);

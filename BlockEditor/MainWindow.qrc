@@ -9,5 +9,8 @@
         <file>Resources/open_file.png</file>
         <file>Resources/save.png</file>
         <file>Resources/clear.png</file>
+        <file>Resources/about.png</file>
+        <file>Resources/close.png</file>
+        <file>Resources/close_off.png</file>
     </qresource>
 </RCC>
