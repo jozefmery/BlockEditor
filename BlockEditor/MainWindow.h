@@ -35,5 +35,6 @@ private slots:
 
 	void createNewFile();
 	void openFile();
+	void showAbout();
 
 };

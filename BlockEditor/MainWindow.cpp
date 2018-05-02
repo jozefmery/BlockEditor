@@ -1,9 +1,10 @@
-#include "MainWindow.h"
+﻿#include "MainWindow.h"
 #include "BlockEditor.h"
 #include <QDebug>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 #include <cassert>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -26,6 +27,7 @@ inline void MainWindow::setUpChildren() {
 	connect(ui.actionStop, &QAction::triggered, this, &MainWindow::stop);
 	connect(ui.actionNew, &QAction::triggered, this, &MainWindow::createNewFile);
 	connect(ui.actionOpen, &QAction::triggered, this, &MainWindow::openFile);
+	connect(ui.actionAbout, &QAction::triggered, this, &MainWindow::showAbout);
 }
 
 void MainWindow::start() {
@@ -72,6 +74,15 @@ void MainWindow::createNewTab(QString& path) {
 
 	editorTabs->addTab(blockEditor, tab_name);
 
+}
+
+void MainWindow::showAbout() {
+
+
+	QMessageBox::information(this, "About", "Simple block scheme editor application written for ICP project.\n"
+											"Authors:\n"
+											"Denis Dovicic - xdovic01@stud.fit.vutbr.cz\n"
+											"Jozef Mery    - xmeryj00@stud.fit.vutbr.cz");	
 }
 
  
