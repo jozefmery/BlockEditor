@@ -16,15 +16,19 @@ class DialogConst : public QDialog
 		// getters
 		QString getOutputType() const { return outputType; };
 		double getValue() const { return value; };
+		bool isOK() const { return clickedOk; };
 
 		// setters
 		void setOutputType(const QString outputType) { this->outputType = outputType; };
 		void setValue(const double value) { this->value = value; };
+		void setClickedOk(const bool clickedOk) { this->clickedOk = clickedOk; };
 
 	private:
+		// attributes
 		Ui::DialogConst ui;
 		QString outputType;
 		double value;
+		bool clickedOk;
 
 	signals:
 		void clicked();

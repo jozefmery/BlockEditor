@@ -57,9 +57,9 @@ class BlockEditor : public QGraphicsView {
 
 		// methods
 		void drawGUI();
-		void removeConnections(Block* actual);
+		void removeConnections(Block* actual, bool input, bool output);
 
-		void resizeEvent(QResizeEvent *event);
+		void resizeEvent(QResizeEvent *event) override;
 
 	public slots:
 		void showContextMenu(QPoint pos);

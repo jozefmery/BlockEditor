@@ -7,6 +7,8 @@
 #include <QCursor>
 #include <QDebug>
 #include <QTextDocument>
+#include <cmath>
+#include <QToolTip>
 
 //extern BlockEditor *blockEditor;
 
@@ -116,7 +118,7 @@ Block::BlockIO::BlockIO(int x, int y, int IO, QString name, double value, BlockE
 
 	if (IO == INPUT) {
 		setRect(x, y, 6, 12);
-		setBrush(QBrush(QColor(Qt::green)));
+		setBrush(QBrush(QColor(Qt::white)));
 		setCursor(Qt::ArrowCursor);
 	}
 	else if (IO == OUTPUT) {
@@ -147,10 +149,10 @@ QVariant Block::BlockIO::itemChange(GraphicsItemChange change, const QVariant &v
 
 void Block::BlockIO::moveLineToCenter(QPointF newPos) {
 	// Converts the port position to its center position
-	int xOffset = rect().x() + rect().width() / 2;
-	int yOffset = rect().y() + rect().height() / 2;
+	const int xOffset = rect().x() + rect().width() / 2;
+	const int yOffset = rect().y() + rect().height() / 2;
 
-	QPointF newCenterPos = QPointF(newPos.x() + xOffset, newPos.y() + yOffset);
+	const QPointF newCenterPos = QPointF(newPos.x() + xOffset, newPos.y() + yOffset);
 
 	// Move the required point of the line to the center of the port
 	QPointF p1 = isP1 ? newCenterPos : line->line().p1();
@@ -179,6 +181,20 @@ void Block::BlockIO::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 		editor->setIsDrawing(true);
 	}
 }
+
+void Block::BlockIO::hoverEnterEvent(QGraphicsSceneHoverEvent* event) {
+	setToolTip(getName() + ": " + QString::number(std::floor((getValue() * 100) + .5) / 100));
+	if (!editor->isDrawing()) {
+		QToolTip::showText(QCursor::pos(), toolTip());
+	}
+}
+
+void Block::BlockIO::hoverLeaveEvent(QGraphicsSceneHoverEvent* event) {
+	if (!editor->isDrawing()) {
+		QToolTip::hideText();
+	}
+}
+
 
 void Block::BlockIO::setLine(Line* line) {
 	if (line == nullptr) {

@@ -3,7 +3,6 @@
 #include "Line.h"
 
 #include <QGraphicsRectItem>
-#include <QGraphicsLineItem>
 
 #define INPUT  1
 #define OUTPUT 2
@@ -34,10 +33,12 @@ class Block : public QGraphicsRectItem {
 
 				// events
 				void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+				void hoverEnterEvent(QGraphicsSceneHoverEvent* event) override;
+				void hoverLeaveEvent(QGraphicsSceneHoverEvent* event) override;
 
 				// methods
 				void addLine(Line *line, bool isPoint1);
-				QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+				QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 				void moveLineToCenter(QPointF newPos);
 
 				// getters
@@ -67,6 +68,7 @@ class Block : public QGraphicsRectItem {
 		QVector<BlockIO*> getOutputs() const { return output; };
 		QString getOperation() const { return operation; };
 		QGraphicsTextItem* getOperationText() const { return operationText; };
+		void setOperationText(QString opText);
 		int getBlockType() const { return blockType; };
 		int getX() const { return x; };
 		int getY() const { return y; };
@@ -80,7 +82,7 @@ class Block : public QGraphicsRectItem {
 	private:
 		// attributes
 		int blockType;
-		bool placed;
+		bool placed{};
 		QString operation;
 		QVector<BlockIO*> input;
 		QVector<BlockIO*> output;

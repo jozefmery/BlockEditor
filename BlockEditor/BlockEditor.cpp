@@ -91,19 +91,24 @@ void BlockEditor::showContextMenu(QPoint pos) {
 	}
 }
 
-void BlockEditor::removeConnections(Block* actual) {
-	QVector<Block::BlockIO*> inputs = actual->getInputs();
-	for (Block::BlockIO* input : inputs) {
-		if (input->getLine()) {
-			item = input->getLine();
-			deleteBlock();
+void BlockEditor::removeConnections(Block* actual, bool input, bool output) {
+	if (input) {
+		QVector<Block::BlockIO*> inputs = actual->getInputs();
+		for (Block::BlockIO* input : inputs) {
+			if (input->getLine()) {
+				item = input->getLine();
+				deleteBlock();
+			}
 		}
 	}
-	QVector<Block::BlockIO*> outputs = actual->getOutputs();
-	for (Block::BlockIO* output : outputs) {
-		if (output->getLine()) {
-			item = output->getLine();
-			deleteBlock();
+
+	if (output) {
+		QVector<Block::BlockIO*> outputs = actual->getOutputs();
+		for (Block::BlockIO* output : outputs) {
+			if (output->getLine()) {
+				item = output->getLine();
+				deleteBlock();
+			}
 		}
 	}
 }
@@ -113,11 +118,11 @@ void BlockEditor::deleteBlock() {
 	if (dynamic_cast<Block*>(item)) {
 		blocks.remove(blocks.indexOf(dynamic_cast<Block*>(item), 0));
 		scene->removeItem(item);
-		removeConnections(dynamic_cast<Block*>(item));
+		removeConnections(dynamic_cast<Block*>(item), true, true);
 	} else if (dynamic_cast<Block*>(item->parentItem())) {
 		blocks.remove(blocks.indexOf(dynamic_cast<Block*>(item->parentItem()), 0));
 		scene->removeItem(item->parentItem());
-		removeConnections(dynamic_cast<Block*>(item->parentItem()));
+		removeConnections(dynamic_cast<Block*>(item->parentItem()), true, true);
 	} else if (dynamic_cast<Line*>(item)) {
 		lines.remove(lines.indexOf(dynamic_cast<Line*>(item), 0));
 		scene->removeItem(item);
@@ -149,12 +154,17 @@ void BlockEditor::editBlock() {
 	}
 
 	QTextCursor cursor(block->getOperationText()->document());
+	bool different;
 	switch(block->getBlockType()) {
 		case BLOCK:
 			dialog = new Dialog();
 			dialog->move(QCursor::pos().x() - dialog->width() / 2,
 				QCursor::pos().y() - dialog->height() / 2);
 			dialog->exec();
+
+			if (!dialog->isOK()) {
+				return;
+			}
 
 			cursor.select(QTextCursor::WordUnderCursor);
 			cursor.beginEditBlock();
@@ -164,13 +174,29 @@ void BlockEditor::editBlock() {
 
 			block->setOperation(dialog->getOperation());
 
+			different = false;
 			for (Block::BlockIO* input: block->getInputs()) {
-				input->setName(dialog->getInputType());
+				if (dialog->getInputType() != input->getName()) {
+					input->setName(dialog->getInputType());
+					different = true;
+				}
+			}
+			if (different) {
+				removeConnections(block, true, false);
 			}
 
+			different = false;
 			for (Block::BlockIO* output: block->getOutputs()) {
-				output->setName(dialog->getOutputType());
+				if (dialog->getOutputType() != output->getName()) {
+					output->setName(dialog->getOutputType());
+					different = true;
+				}
 			}
+			if (different) {
+				removeConnections(block, false, true);
+			}
+
+			dialog->setClickedOk(false);
 
 			break;
 		case CONSTBLOCK:
@@ -179,16 +205,29 @@ void BlockEditor::editBlock() {
 				QCursor::pos().y() - dialogConst->height() / 2);
 			dialogConst->exec();
 
+			if (!dialogConst->isOK()) {
+				return;
+			}
+
 			cursor.select(QTextCursor::WordUnderCursor);
 			cursor.beginEditBlock();
 			cursor.insertText(QString::number(dialogConst->getValue()));
 			cursor.endEditBlock();
 			cursor.removeSelectedText();
 
+			different = false;
 			for (Block::BlockIO* output: block->getOutputs()) {
-				output->setValue(dialogConst->getValue());
-				output->setName(dialogConst->getOutputType());
+				if (dialogConst->getOutputType() != output->getName()) {
+					output->setValue(dialogConst->getValue());
+					output->setName(dialogConst->getOutputType());
+					different = true;
+				}
 			}
+			if (different) {
+				removeConnections(block, false, true);
+			}
+
+			dialogConst->setClickedOk(false);
 
 			break;
 		default: ;
@@ -204,16 +243,20 @@ void BlockEditor::spawnBlock() {
 		QCursor::pos().y() - dialog->height() / 2);
 	dialog->exec();
 
-	// get cursor position
-	QPointF cursorPos = mapFromGlobal(QCursor::pos());
-	// draw a block
-	Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this, 
-		dialog->getOperation(), dialog->getInputType(), dialog->getOutputType());
+	if (dialog->isOK()) {
+		// get cursor position
+		QPointF cursorPos = mapFromGlobal(QCursor::pos());
+		// draw a block
+		Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this,
+			dialog->getOperation(), dialog->getInputType(), dialog->getOutputType());
 
-	block->parent = this;
+		block->parent = this;
 
-	blocks.push_back(block);
-	scene->addItem(block);
+		blocks.push_back(block);
+		scene->addItem(block);
+
+		dialog->setClickedOk(false);
+	}
 
 	item = nullptr;
 }
@@ -225,16 +268,20 @@ void BlockEditor::spawnConstBlock() {
 		QCursor::pos().y() - dialogConst->height() / 2);
 	dialogConst->exec();
 
-	// get cursor position
-	QPointF cursorPos = mapFromGlobal(QCursor::pos());
-	// draw a block
-	Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this,
-		std::floor((dialogConst->getValue() * 100) + .5) / 100, dialogConst->getOutputType());
+	if (dialogConst->isOK()) {
+		// get cursor position
+		QPointF cursorPos = mapFromGlobal(QCursor::pos());
+		// draw a block
+		Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this,
+			std::floor((dialogConst->getValue() * 100) + .5) / 100, dialogConst->getOutputType());
 
-	block->parent = this;
+		block->parent = this;
 
-	blocks.push_back(block);
-	scene->addItem(block);
+		blocks.push_back(block);
+		scene->addItem(block);
+
+		dialogConst->setClickedOk(false);
+	}
 
 	item = nullptr;
 }
@@ -265,7 +312,10 @@ void BlockEditor::setIsDrawing(const bool drawing) {
 			block->setCursor(Qt::ArrowCursor);
 			for (Block::BlockIO* input : block->getInputs()) {
 				if (input->getLine() == nullptr && line->getOutBlock() != block) {
-					input->setCursor(Qt::PointingHandCursor);
+					if (input->getName() == line->getOutBlock()->getOutputs()[0]->getName()) {
+						input->setCursor(Qt::PointingHandCursor);
+						input->setBrush(QBrush(QColor(Qt::green)));
+					}
 				}
 			}
 			for (Block::BlockIO* output : block->getOutputs()) {
@@ -277,6 +327,7 @@ void BlockEditor::setIsDrawing(const bool drawing) {
 			block->setCursor(Qt::OpenHandCursor);
 			for (Block::BlockIO* input : block->getInputs()) {
 				input->setCursor(Qt::ArrowCursor);
+				input->setBrush(QBrush(QColor(Qt::white)));
 			}
 			for (Block::BlockIO* output : block->getOutputs()) {
 				if (output->getLine() == nullptr) {

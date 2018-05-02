@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QGraphicsLineItem>
-#include <QGraphicsSceneHoverEvent>
 #include <QDebug>
 
 class Block;

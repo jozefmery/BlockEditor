@@ -16,11 +16,13 @@ class Dialog : public QDialog {
 		QString getInputType() const { return inputType; };
 		QString getOutputType() const { return outputType; };
 		QString getOperation() const { return operation; };
+		bool isOK() const { return clickedOk; };
 
 		// setters
 		void setInputType(const QString inputType)  { this->inputType = inputType; };
 		void setOutputType(const QString outputType) { this->outputType = outputType; };
 		void setOperation(const QString operation) { this->operation = operation; };
+		void setClickedOk(const bool clickedOk) { this->clickedOk = clickedOk; };
 
 	private:
 		// attributes
@@ -28,6 +30,7 @@ class Dialog : public QDialog {
 		QString inputType;
 		QString outputType;
 		QString operation;
+		bool clickedOk;
 
 	signals:
 		void clicked();

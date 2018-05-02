@@ -9,6 +9,8 @@ Dialog::Dialog(QWidget *parent)
 
 	connect(ui.ok, SIGNAL(clicked()), SLOT(ok()));
 	connect(ui.cancel, SIGNAL(clicked()), SLOT(cancel()));
+
+	clickedOk = false;
 }
 
 void Dialog::ok() {
@@ -16,9 +18,14 @@ void Dialog::ok() {
 	outputType = ui.output->currentText();
 	operation = ui.opration->currentText();
 
+	clickedOk = true;
+
 	close();
 }
 
 void Dialog::cancel() {
+
+	clickedOk = false;
+
 	close();
 }
