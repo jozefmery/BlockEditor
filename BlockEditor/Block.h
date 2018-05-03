@@ -9,6 +9,7 @@
 
 #define CONSTBLOCK  1
 #define BLOCK		2
+#define RESULT		3
 
 class BlockEditor;
 
@@ -18,6 +19,7 @@ class Block : public QGraphicsRectItem {
 		// constructors
 		Block(int x, int y, BlockEditor* parent, QString operation, QString inputType, QString outputType);
 		Block(int x, int y, BlockEditor* parent, double value, QString outputType);
+		Block(int x, int y, BlockEditor* parent);
 
 		// events
 		void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
@@ -74,8 +76,6 @@ class Block : public QGraphicsRectItem {
 		QString getOperation() const { return operation; };
 		QGraphicsTextItem* getOperationText() const { return operationText; };
 		int getBlockType() const { return blockType; };
-		int getX() const { return x; };
-		int getY() const { return y; };
 
 		// setters
 		void setIsPlaced(bool const placed) { this->placed = placed; };
@@ -91,6 +91,6 @@ class Block : public QGraphicsRectItem {
 		QVector<BlockIO*> input;
 		QVector<BlockIO*> output;
 		QGraphicsTextItem * operationText;
-		int x, y;
+
 };
 

@@ -10,8 +10,6 @@
 #include <cmath>
 #include <QToolTip>
 
-//extern BlockEditor *blockEditor;
-
 /**
  * \brief Constructor of block with operation.
  * \param x position ax
@@ -26,8 +24,6 @@ Block::Block(const int x, const int y, BlockEditor* parent, QString operation, Q
 
 	this->parent = parent;
 	this->operation = operation;
-	this->x = x;
-	this->y = y;
 
 	setBlockType(BLOCK);
 
@@ -101,6 +97,41 @@ Block::Block(const int x, const int y, BlockEditor* parent, double value, QStrin
 	setAcceptHoverEvents(true);
 }
 
+/**
+* \brief Constructor of a result block.
+* \param x position ax
+* \param y position ay
+* \param parent view
+*/
+Block::Block(const int x, const int y, BlockEditor* parent) :
+	parent(parent) {
+
+	this->parent = parent;
+	operation = nullptr;
+
+	setBlockType(RESULT);
+
+	// draw the block
+	setRect(x, y, 60, 50);
+	QBrush brush;
+	brush.setStyle(Qt::SolidPattern);
+	brush.setColor(Qt::white);
+	setBrush(brush);
+
+	operationText = new QGraphicsTextItem(this);
+	operationText->setPos(x + rect().width() / 2, y + rect().height() / 2);
+
+	input.push_back(new BlockIO(x, y + 19, INPUT, nullptr, NULL, parent, this));
+
+	setIsPlaced(true);
+
+	setZValue(0);
+
+	// allow reposing to hover events
+	setCursor(Qt::OpenHandCursor);
+	setAcceptHoverEvents(true);
+}
+
 void Block::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 	if (isPlaced()) { // block is placed
 		if (event->button() == Qt::LeftButton && !parent->isDrawing()) {
@@ -146,13 +177,17 @@ Block::BlockIO::BlockIO(int x, int y, int IO, QString name, double value, BlockE
 	line = nullptr;
 
 	if (IO == INPUT) {
-		setRect(x, y, 6, 12);
-		setBrush(QBrush(QColor(Qt::white)));
+		setRect(x, y, 7, 12);
+		if (dynamic_cast<Block*>(parentBlock)->getBlockType() == RESULT) {
+			setBrush(QBrush(QColor(Qt::green)));
+		} else {
+			setBrush(QBrush(QColor(Qt::white)));
+		}
 		setCursor(Qt::ArrowCursor);
 		cycle = false;
 	}
 	else if (IO == OUTPUT) {
-		setRect(x, y, 6, 12);
+		setRect(x, y, 7, 12);
 		setBrush(QBrush(QColor(Qt::blue)));
 		setCursor(Qt::PointingHandCursor);
 		cycle = false;

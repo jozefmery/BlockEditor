@@ -8,6 +8,7 @@
 #include <QMenu>
 #include <QDialog>
 #include <cmath>
+#include <QMessageBox>
 
 /**
  * \brief Constructor of a view (central widget of main window).
@@ -25,6 +26,8 @@ BlockEditor::BlockEditor(QWidget* parent) {
 	scene = new QGraphicsScene();
 	scene->setSceneRect(0, 0, 1024, 1024);
 	setScene(scene);
+
+	resultBlock = nullptr;
 	
 	drawGUI();
 }
@@ -91,11 +94,29 @@ void BlockEditor::showContextMenu(QPoint pos) {
 
 		item = itemAt(pos.x(), pos.y());
 		if (item) {
-			if (dynamic_cast<Block*>(item) || dynamic_cast<Block*>(item->parentItem())) {
-				QMenu myMenu;
-				myMenu.addAction("Delete Block", this, SLOT(deleteBlock()));
-				myMenu.addAction("Edit Block", this, SLOT(editBlock()));
-				myMenu.exec(globalPos);
+			if (dynamic_cast<Block*>(item)) {
+				if (dynamic_cast<Block*>(item)->getBlockType() == RESULT) {
+					QMenu myMenu;
+					myMenu.addAction("Delete Block", this, SLOT(deleteBlock()));
+					myMenu.exec(globalPos);
+				} else {
+					QMenu myMenu;
+					myMenu.addAction("Delete Block", this, SLOT(deleteBlock()));
+					myMenu.addAction("Edit Block", this, SLOT(editBlock()));
+					myMenu.exec(globalPos);
+				}
+			} else if (dynamic_cast<Block*>(item->parentItem())){
+				if (dynamic_cast<Block*>(item->parentItem())->getBlockType() == RESULT) {
+					QMenu myMenu;
+					myMenu.addAction("Delete Block", this, SLOT(deleteBlock()));
+					myMenu.exec(globalPos);
+				}
+				else {
+					QMenu myMenu;
+					myMenu.addAction("Delete Block", this, SLOT(deleteBlock()));
+					myMenu.addAction("Edit Block", this, SLOT(editBlock()));
+					myMenu.exec(globalPos);
+				}
 			} else if (dynamic_cast<Line*>(item)) {
 				QMenu myMenu;
 				myMenu.addAction("Delete Connection", this, SLOT(deleteBlock()));
@@ -105,6 +126,7 @@ void BlockEditor::showContextMenu(QPoint pos) {
 			QMenu myMenu;
 			myMenu.addAction("New Block", this, SLOT(spawnBlock()));
 			myMenu.addAction("New Const Block", this, SLOT(spawnConstBlock()));
+			myMenu.addAction("New Result Block", this, SLOT(spawnResultBlock()));
 			myMenu.exec(globalPos);
 		}
 	} else if (isDrawing()) {
@@ -149,10 +171,22 @@ void BlockEditor::removeConnections(Block* actual, bool input, bool output) {
 void BlockEditor::deleteBlock() {
 	
 	if (dynamic_cast<Block*>(item)) {
+		if (dynamic_cast<Block*>(item)->getBlockType() == RESULT) {
+			resultBlock = nullptr;
+			scene->removeItem(item);
+			removeConnections(dynamic_cast<Block*>(item), true, false);
+			return;
+		}
 		blocks.remove(blocks.indexOf(dynamic_cast<Block*>(item), 0));
 		scene->removeItem(item);
 		removeConnections(dynamic_cast<Block*>(item), true, true);
 	} else if (dynamic_cast<Block*>(item->parentItem())) {
+		if (dynamic_cast<Block*>(item->parentItem())->getBlockType() == RESULT) {
+			resultBlock = nullptr;
+			scene->removeItem(item);
+			removeConnections(dynamic_cast<Block*>(item), true, false);
+			return;
+		}
 		blocks.remove(blocks.indexOf(dynamic_cast<Block*>(item->parentItem()), 0));
 		scene->removeItem(item->parentItem());
 		removeConnections(dynamic_cast<Block*>(item->parentItem()), true, true);
@@ -160,16 +194,19 @@ void BlockEditor::deleteBlock() {
 		lines.remove(lines.indexOf(dynamic_cast<Line*>(item), 0));
 		scene->removeItem(item);
 		Line* actual = dynamic_cast<Line*>(item);
-		for (Block* block: blocks) {
+		QVector<Block*> inOut;
+		inOut.push_back(actual->getOutBlock());
+		inOut.push_back(actual->getInBlock());
+		for (Block* block: inOut) {
+			if (block->getBlockType() == RESULT) {
+				block->getInputs()[0]->setValue(NULL);
+				block->getInputs()[0]->setName(nullptr);
+			}
 			for (Block::BlockIO* input: block->getInputs()) {
-				if (actual == input->getLine()) {
-					input->setLine(nullptr);
-				}
+				input->setLine(nullptr);
 			}
 			for (Block::BlockIO* output : block->getOutputs()) {
-				if (actual == output->getLine()) {
-					output->setLine(nullptr);
-				}
+				output->setLine(nullptr);
 			}
 		}
 	}
@@ -289,8 +326,6 @@ void BlockEditor::spawnBlock() {
 		Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this,
 			dialog->getOperation(), dialog->getInputType(), dialog->getOutputType());
 
-		block->parent = this;
-
 		blocks.push_back(block);
 		scene->addItem(block);
 
@@ -317,12 +352,31 @@ void BlockEditor::spawnConstBlock() {
 		Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this,
 			std::floor((dialogConst->getValue() * 100) + .5) / 100, dialogConst->getOutputType());
 
-		block->parent = this;
-
 		blocks.push_back(block);
 		scene->addItem(block);
 
 		dialogConst->setClickedOk(false);
+	}
+
+	item = nullptr;
+}
+
+void BlockEditor::spawnResultBlock() {
+
+	if (resultBlock == nullptr) {
+		// get cursor position
+		QPointF cursorPos = mapFromGlobal(QCursor::pos());
+		// draw a block
+		Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this);
+
+		resultBlock = block;
+
+		scene->addItem(block);
+	} else {
+		QMessageBox messageBox;
+		messageBox.setText("You cannot have two result blocks in one project!");
+		messageBox.setStyleSheet("QLabel{min-width: 350px;}");
+		messageBox.exec();
 	}
 
 	item = nullptr;
@@ -381,6 +435,16 @@ void BlockEditor::setIsDrawing(const bool drawing) {
 		for (Block* block : blocks) {
 			block->setCursor(Qt::ArrowCursor);
 			for (Block::BlockIO* input : block->getInputs()) {
+				if (line->getOutBlock()->getBlockType() == RESULT) {
+					input->setConnectable(true);
+					if (input->getLine() == nullptr) {
+						input->setCursor(Qt::PointingHandCursor);
+					} else {
+						input->setCursor(Qt::ArrowCursor);
+					}
+					input->setBrush(QBrush(QColor(Qt::green)));
+					continue;
+				}
 				input->setConnectable(false);
 				if (input->getLine() == nullptr && line->getOutBlock() != block &&
 					input->getName() == line->getOutBlock()->getOutputs()[0]->getName()

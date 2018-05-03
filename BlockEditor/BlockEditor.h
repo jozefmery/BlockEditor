@@ -55,6 +55,7 @@ class BlockEditor : public QGraphicsView {
 		QVector<Line*> lines;
 		Dialog* dialog{};
 		DialogConst* dialogConst{};
+		Block* resultBlock;
 
 		// methods
 		void drawGUI();
@@ -68,6 +69,7 @@ class BlockEditor : public QGraphicsView {
 		void editBlock();
 		void spawnBlock();
 		void spawnConstBlock();
+		void spawnResultBlock();
 
 };
 
