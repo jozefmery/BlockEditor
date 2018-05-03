@@ -27,7 +27,7 @@ QT_BEGIN_NAMESPACE
 class Ui_Dialog
 {
 public:
-    QWidget *layoutWidget;
+    QVBoxLayout *verticalLayout_3;
     QVBoxLayout *verticalLayout_2;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *horizontalLayout_2;
@@ -49,22 +49,31 @@ public:
     {
         if (Dialog->objectName().isEmpty())
             Dialog->setObjectName(QStringLiteral("Dialog"));
-        Dialog->resize(263, 152);
-        layoutWidget = new QWidget(Dialog);
-        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(10, 10, 244, 141));
-        verticalLayout_2 = new QVBoxLayout(layoutWidget);
+        Dialog->resize(473, 261);
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(Dialog->sizePolicy().hasHeightForWidth());
+        Dialog->setSizePolicy(sizePolicy);
+        Dialog->setStyleSheet(QLatin1String("QWidget {\n"
+"\n"
+"	font-size: 12pt;\n"
+"}"));
+        verticalLayout_3 = new QVBoxLayout(Dialog);
+        verticalLayout_3->setSpacing(6);
+        verticalLayout_3->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        verticalLayout_2 = new QVBoxLayout();
         verticalLayout_2->setSpacing(6);
-        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
-        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
+        verticalLayout_2->setSizeConstraint(QLayout::SetDefaultConstraint);
         verticalLayout = new QVBoxLayout();
         verticalLayout->setSpacing(6);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        label = new QLabel(layoutWidget);
+        label = new QLabel(Dialog);
         label->setObjectName(QStringLiteral("label"));
 
         horizontalLayout_2->addWidget(label);
@@ -73,7 +82,7 @@ public:
 
         horizontalLayout_2->addItem(horizontalSpacer_2);
 
-        opration = new QComboBox(layoutWidget);
+        opration = new QComboBox(Dialog);
         opration->addItem(QString());
         opration->addItem(QString());
         opration->addItem(QString());
@@ -88,12 +97,12 @@ public:
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setSpacing(6);
         horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
-        label_2 = new QLabel(layoutWidget);
+        label_2 = new QLabel(Dialog);
         label_2->setObjectName(QStringLiteral("label_2"));
 
         horizontalLayout_3->addWidget(label_2);
 
-        input = new QComboBox(layoutWidget);
+        input = new QComboBox(Dialog);
         input->addItem(QString());
         input->addItem(QString());
         input->addItem(QString());
@@ -109,12 +118,12 @@ public:
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setSpacing(6);
         horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
-        label_4 = new QLabel(layoutWidget);
+        label_4 = new QLabel(Dialog);
         label_4->setObjectName(QStringLiteral("label_4"));
 
         horizontalLayout_4->addWidget(label_4);
 
-        output = new QComboBox(layoutWidget);
+        output = new QComboBox(Dialog);
         output->addItem(QString());
         output->addItem(QString());
         output->addItem(QString());
@@ -133,7 +142,7 @@ public:
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        ok = new QPushButton(layoutWidget);
+        ok = new QPushButton(Dialog);
         ok->setObjectName(QStringLiteral("ok"));
 
         horizontalLayout->addWidget(ok);
@@ -142,13 +151,16 @@ public:
 
         horizontalLayout->addItem(horizontalSpacer);
 
-        cancel = new QPushButton(layoutWidget);
+        cancel = new QPushButton(Dialog);
         cancel->setObjectName(QStringLiteral("cancel"));
 
         horizontalLayout->addWidget(cancel);
 
 
         verticalLayout_2->addLayout(horizontalLayout);
+
+
+        verticalLayout_3->addLayout(verticalLayout_2);
 
 
         retranslateUi(Dialog);
@@ -158,7 +170,7 @@ public:
 
     void retranslateUi(QWidget *Dialog)
     {
-        Dialog->setWindowTitle(QApplication::translate("Dialog", "Dialog", nullptr));
+        Dialog->setWindowTitle(QApplication::translate("Dialog", "Configure block", nullptr));
         label->setText(QApplication::translate("Dialog", "Operation:", nullptr));
         opration->setItemText(0, QApplication::translate("Dialog", "+", nullptr));
         opration->setItemText(1, QApplication::translate("Dialog", "-", nullptr));

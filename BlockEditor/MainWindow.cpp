@@ -2,6 +2,7 @@
 #include "BlockEditor.h"
 #include <QDebug>
 #include <QMessageBox>
+#include <QDesktopWidget>
 
 constexpr int NOT_FOUND = -1;
 
@@ -32,6 +33,12 @@ inline void MainWindow::setUpChildren() {
 	connect(editorTabs, SIGNAL(tabCloseRequested(int)), this, SLOT(closeFile(int)));
 	connect(ui.actionClose_all, &QAction::triggered, this, &MainWindow::closeAll);
 	connect(ui.actionExit, &QAction::triggered, this, &MainWindow::exitApp);
+
+	auto rect = QApplication::desktop()->availableGeometry();
+
+	resize(static_cast<int>(rect.width() * 0.7), static_cast<int>(rect.height() * 0.7));
+
+	this->setIconSize(QSize(50 * (rect.width() / 1920), 50 * (rect.width() / 1920)));
 }
 
 void MainWindow::start() {
