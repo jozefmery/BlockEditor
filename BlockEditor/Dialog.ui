@@ -20,10 +20,7 @@
    <string>Configure block</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget {
-
-	font-size: 12pt;
-}</string>
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0">
    <item>

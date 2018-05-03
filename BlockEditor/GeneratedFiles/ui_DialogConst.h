@@ -48,10 +48,7 @@ public:
         if (DialogConst->objectName().isEmpty())
             DialogConst->setObjectName(QStringLiteral("DialogConst"));
         DialogConst->resize(457, 261);
-        DialogConst->setStyleSheet(QLatin1String("QWidget {\n"
-"\n"
-"	font-size: 12pt;\n"
-"}"));
+        DialogConst->setStyleSheet(QStringLiteral(""));
         verticalLayout_3 = new QVBoxLayout(DialogConst);
         verticalLayout_3->setSpacing(6);
         verticalLayout_3->setContentsMargins(11, 11, 11, 11);

@@ -342,7 +342,7 @@ void BlockEditor::setAsStartBlock() {
 	if (resultBlock == nullptr || resultBlock->getInputs()[0]->getLine() == nullptr) {
 		QMessageBox messageBox;
 		messageBox.setText("Missing connection to Result Block!");
-		messageBox.setStyleSheet("QLabel{min-width: 350px;}");
+		messageBox.setStyleSheet("QLabel{min-width: 15em;}");
 		messageBox.exec();
 		return;
 	}
