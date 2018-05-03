@@ -97,11 +97,11 @@ void BlockEditor::showContextMenu(QPoint pos) {
 		if (item) {
 			if (dynamic_cast<Block*>(item)) {
 				if (dynamic_cast<Block*>(item)->getBlockType() == RESULT) {
-					QMenu myMenu;
+					QMenu myMenu(this);
 					myMenu.addAction("Delete Block", this, SLOT(deleteBlock()));
 					myMenu.exec(globalPos);
 				} else {
-					QMenu myMenu;
+					QMenu myMenu(this);
 					myMenu.addAction("Delete Block", this, SLOT(deleteBlock()));
 					myMenu.addAction("Edit Block", this, SLOT(editBlock()));
 					if (!dynamic_cast<Block*>(item)->isActualBlock()) {
@@ -113,12 +113,12 @@ void BlockEditor::showContextMenu(QPoint pos) {
 				}
 			} else if (dynamic_cast<Block*>(item->parentItem())){
 				if (dynamic_cast<Block*>(item->parentItem())->getBlockType() == RESULT) {
-					QMenu myMenu;
+					QMenu myMenu(this);
 					myMenu.addAction("Delete Block", this, SLOT(deleteBlock()));
 					myMenu.exec(globalPos);
 				}
 				else {
-					QMenu myMenu;
+					QMenu myMenu(this);
 					myMenu.addAction("Delete Block", this, SLOT(deleteBlock()));
 					myMenu.addAction("Edit Block", this, SLOT(editBlock()));
 					if (!dynamic_cast<Block*>(item->parentItem())->isActualBlock()) {
@@ -129,12 +129,12 @@ void BlockEditor::showContextMenu(QPoint pos) {
 					myMenu.exec(globalPos);
 				}
 			} else if (dynamic_cast<Line*>(item)) {
-				QMenu myMenu;
+				QMenu myMenu(this);
 				myMenu.addAction("Delete Connection", this, SLOT(deleteBlock()));
 				myMenu.exec(globalPos);
 			}
 		} else {
-			QMenu myMenu;
+			QMenu myMenu(this);
 			myMenu.addAction("New Block", this, SLOT(spawnBlock()));
 			myMenu.addAction("New Const Block", this, SLOT(spawnConstBlock()));
 			myMenu.addAction("New Result Block", this, SLOT(spawnResultBlock()));
