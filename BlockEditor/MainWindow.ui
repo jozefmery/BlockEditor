@@ -44,6 +44,8 @@ QMenu::separator {
     background: rgb(112,112,112);
     margin-left: 1em;
     margin-right: 3em;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
 }
 
 QMenu {
@@ -160,7 +162,7 @@ QToolBar{
      <x>0</x>
      <y>0</y>
      <width>934</width>
-     <height>27</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="font">
@@ -257,6 +259,7 @@ QToolBar{
    <addaction name="actionNew"/>
    <addaction name="actionOpen"/>
    <addaction name="actionSave"/>
+   <addaction name="actionClose"/>
   </widget>
   <action name="actionNew">
    <property name="icon">

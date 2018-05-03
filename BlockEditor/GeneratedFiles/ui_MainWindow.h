@@ -87,6 +87,8 @@ public:
 "    background: rgb(112,112,112);\n"
 "    margin-left: 1em;\n"
 "    margin-right: 3em;\n"
+"	margin-top: 0.5em;\n"
+"	margin-bottom: 0.5em;\n"
 "}\n"
 "\n"
 "QMenu {\n"
@@ -109,10 +111,10 @@ public:
 "	min-width: 25ex;\n"
 "    min-height: 3ex;\n"
 "    padding: 0.4em;\n"
-"	border-top-left-radius: 0.3em;\n"
+"	border-top-left-radiu"
+                        "s: 0.3em;\n"
 "    border-top-right-radius: 0.3em;\n"
-""
-                        "}\n"
+"}\n"
 "\n"
 "QTabBar::tab:selected, QTabBar::tab:hover {\n"
 "    background: rgb(112, 112, 112);\n"
@@ -241,7 +243,7 @@ public:
         MainWindowClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindowClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 934, 27));
+        menuBar->setGeometry(QRect(0, 0, 934, 31));
         QFont font;
         font.setFamily(QStringLiteral("Verdana"));
         font.setPointSize(12);
@@ -291,6 +293,7 @@ public:
         fileToolBar->addAction(actionNew);
         fileToolBar->addAction(actionOpen);
         fileToolBar->addAction(actionSave);
+        fileToolBar->addAction(actionClose);
 
         retranslateUi(MainWindowClass);
 
