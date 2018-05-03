@@ -6,6 +6,12 @@
 #include <QToolTip>
 #include <QCursor>
 
+/**
+ * \brief Constructor
+ * \param p1 first point of a connection
+ * \param p2 second point of a connection
+ * \param parent view
+ */
 Line::Line(QPointF p1, QPointF p2, BlockEditor* parent) : parent(parent) {
 
 	this->parent = parent;

@@ -1,3 +1,5 @@
+
+
 #include "BlockEditor.h"
 
 #include <QBrush>
@@ -7,6 +9,10 @@
 #include <QDialog>
 #include <cmath>
 
+/**
+ * \brief Constructor of a view (central widget of main window).
+ * \param parent 
+ */
 BlockEditor::BlockEditor(QWidget* parent) {
 	// disable scroll bar
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -23,6 +29,9 @@ BlockEditor::BlockEditor(QWidget* parent) {
 	drawGUI();
 }
 
+/**
+ * \brief Set background.
+ */
 void BlockEditor::drawGUI() {
 	// background
 	QBrush brush;
@@ -31,6 +40,12 @@ void BlockEditor::drawGUI() {
 	scene->setBackgroundBrush(brush);
 }
 
+
+/**
+ * \brief Sets position of placed block and picks the block up.
+ * \param block placed plock
+ * \param pos position of placed block
+ */
 void BlockEditor::pickUpBlock(Block* block, QPointF pos) {
 	if (blockToPlace == nullptr) {
 		block->setCursor(Qt::ClosedHandCursor);
@@ -42,6 +57,10 @@ void BlockEditor::pickUpBlock(Block* block, QPointF pos) {
 	}
 }
 
+/**
+ * \brief Places block.
+ * \param block block to place
+ */
 void BlockEditor::placeBlock(Block* block) {
 	// get cursor position
 	QPointF cursorPos = mapFromGlobal(QCursor::pos());
@@ -61,6 +80,10 @@ void BlockEditor::placeBlock(Block* block) {
 	block->setZValue(0);
 }
 
+/**
+ * \brief Shows context menu, depending on right-clicked item.
+ * \param pos 
+ */
 void BlockEditor::showContextMenu(QPoint pos) {
 	if (blockToPlace == nullptr && !isDrawing()) { // when plock is picked up, context menu isn't able to open
 		// Handle global position
@@ -91,6 +114,12 @@ void BlockEditor::showContextMenu(QPoint pos) {
 	}
 }
 
+/**
+ * \brief Removes connections of given block.
+ * \param actual block that connections will be deleted
+ * \param input input connection to remove indicator
+ * \param output output connection to remove indicator 
+ */
 void BlockEditor::removeConnections(Block* actual, bool input, bool output) {
 	if (input) {
 		QVector<Block::BlockIO*> inputs = actual->getInputs();
@@ -113,6 +142,10 @@ void BlockEditor::removeConnections(Block* actual, bool input, bool output) {
 	}
 }
 
+/**
+ * \brief Removes block (block to remove is set in showContextMenu slot as
+ * attribute item).
+ */
 void BlockEditor::deleteBlock() {
 	
 	if (dynamic_cast<Block*>(item)) {
@@ -144,6 +177,9 @@ void BlockEditor::deleteBlock() {
 	item = nullptr;
 }
 
+/**
+ * \brief Edit block, based on user input.
+ */
 void BlockEditor::editBlock() {
 
 	Block* block;
@@ -236,6 +272,9 @@ void BlockEditor::editBlock() {
 	item = nullptr;
 }
 
+/**
+ * \brief Spawn block, based on user input.
+ */
 void BlockEditor::spawnBlock() {
 
 	dialog = new Dialog();
@@ -261,6 +300,9 @@ void BlockEditor::spawnBlock() {
 	item = nullptr;
 }
 
+/**
+ * \brief Spawn block, based on user input.
+ */
 void BlockEditor::spawnConstBlock() {
 	
 	dialogConst = new DialogConst();
@@ -286,7 +328,6 @@ void BlockEditor::spawnConstBlock() {
 	item = nullptr;
 }
 
-
 void BlockEditor::mouseMoveEvent(QMouseEvent* event) {
 
 	// if there is a blockToPlace, then make it follow the mouse
@@ -302,6 +343,11 @@ void BlockEditor::mouseMoveEvent(QMouseEvent* event) {
 	QGraphicsView::mouseMoveEvent(event);
 }
 
+/**
+ * \brief Recursively checks weather the connection to input port, doesn't
+ * create cycle.
+ * \param block 
+ */
 void BlockEditor::checkCycle(Block* block) {
 	
 	if (block->getBlockType() == BLOCK) {
@@ -316,13 +362,22 @@ void BlockEditor::checkCycle(Block* block) {
 	}
 }
 
-bool BlockEditor::isDrawing() const { return drawing; };
 
+/**
+ * \brief Getter.
+ * \return return wether connection is being drawn.
+ */
+bool BlockEditor::isDrawing() const { return drawing; }
+
+/**
+ * \brief Setter.
+ * \param drawing conenction is being drawn indicator.
+ */
 void BlockEditor::setIsDrawing(const bool drawing) {
 
-	checkCycle(line->getOutBlock());
-
 	if (drawing) {
+		checkCycle(line->getOutBlock());
+
 		for (Block* block : blocks) {
 			block->setCursor(Qt::ArrowCursor);
 			for (Block::BlockIO* input : block->getInputs()) {
@@ -357,6 +412,10 @@ void BlockEditor::setIsDrawing(const bool drawing) {
 	this->drawing = drawing;
 };
 
+/**
+ * \brief ???
+ * \param event 
+ */
 void BlockEditor::resizeEvent(QResizeEvent *event)
 {
 	auto size = event->size();

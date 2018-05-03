@@ -12,6 +12,15 @@
 
 //extern BlockEditor *blockEditor;
 
+/**
+ * \brief Constructor of block with operation.
+ * \param x position ax
+ * \param y position ay
+ * \param parent view
+ * \param operation operation of block
+ * \param inputType type of input port values
+ * \param outputType type of output port values
+ */
 Block::Block(const int x, const int y, BlockEditor* parent, QString operation, QString inputType, QString outputType) :
 	parent(parent) {
 
@@ -53,6 +62,14 @@ Block::Block(const int x, const int y, BlockEditor* parent, QString operation, Q
 	setAcceptHoverEvents(true);
 }
 
+/**
+ * \brief Constructor of block with constant value.
+ * \param x position ax
+ * \param y position ay
+ * \param parent view
+ * \param value constant value
+ * \param outputType type of output port values
+ */
 Block::Block(const int x, const int y, BlockEditor* parent, double value, QString outputType)
 	: parent(parent) {
 
@@ -105,6 +122,16 @@ void Block::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
 //													BlockIO														  //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * \brief Constructor of block's port.
+ * \param x position in ax
+ * \param y position in ay
+ * \param IO type of port INPUT/OUTPUT
+ * \param name type of port value
+ * \param value value of port
+ * \param editor view
+ * \param parentBlock parent block
+ */
 Block::BlockIO::BlockIO(int x, int y, int IO, QString name, double value, BlockEditor* editor, QGraphicsRectItem* parentBlock) : QGraphicsRectItem(parentBlock) {
 
 	setFlag(ItemSendsScenePositionChanges);
@@ -133,6 +160,11 @@ Block::BlockIO::BlockIO(int x, int y, int IO, QString name, double value, BlockE
 	setAcceptHoverEvents(true);
 }
 
+/**
+ * \brief Set attributes of port.
+ * \param line connection
+ * \param isPoint1 first point of connection indicator
+ */
 void Block::BlockIO::addLine(Line* line, bool isPoint1) {
 	this->line = line;
 	isP1 = isPoint1;
@@ -149,6 +181,11 @@ QVariant Block::BlockIO::itemChange(GraphicsItemChange change, const QVariant &v
 	return QGraphicsItem::itemChange(change, value);
 }
 
+/**
+ * \brief Set position of first point of connection in the middle of the
+ * port.
+ * \param newPos position of moved parent block
+ */
 void Block::BlockIO::moveLineToCenter(QPointF newPos) {
 	// Converts the port position to its center position
 	const int xOffset = rect().x() + rect().width() / 2;
