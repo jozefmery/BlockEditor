@@ -408,7 +408,7 @@ void BlockEditor::unsetAsStartBlock() {
  */
 void BlockEditor::spawnBlock() {
 
-	dialog = new Dialog();
+	dialog = new Dialog(this);
 	dialog->move(QCursor::pos().x() - dialog->width() / 2, 
 		QCursor::pos().y() - dialog->height() / 2);
 	dialog->exec();
@@ -434,7 +434,7 @@ void BlockEditor::spawnBlock() {
  */
 void BlockEditor::spawnConstBlock() {
 	
-	dialogConst = new DialogConst();
+	dialogConst = new DialogConst(this);
 	dialogConst->move(QCursor::pos().x() - dialogConst->width() / 2,
 		QCursor::pos().y() - dialogConst->height() / 2);
 	dialogConst->exec();

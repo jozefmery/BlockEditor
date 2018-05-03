@@ -57,7 +57,7 @@ public:
         if (MainWindowClass->objectName().isEmpty())
             MainWindowClass->setObjectName(QStringLiteral("MainWindowClass"));
         MainWindowClass->resize(934, 756);
-        MainWindowClass->setStyleSheet(QLatin1String("QWidget{\n"
+        MainWindowClass->setStyleSheet(QLatin1String("QWidget, QDialog{\n"
 "	\n"
 "	color: rgb(244, 244, 244);\n"
 "	background: rgb(66,66,66);\n"
@@ -111,8 +111,8 @@ public:
 "	min-width: 25ex;\n"
 "    min-height: 3ex;\n"
 "    padding: 0.4em;\n"
-"	border-top-left-radiu"
-                        "s: 0.3em;\n"
+"	border-top-l"
+                        "eft-radius: 0.3em;\n"
 "    border-top-right-radius: 0.3em;\n"
 "}\n"
 "\n"

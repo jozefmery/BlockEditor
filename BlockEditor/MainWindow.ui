@@ -14,7 +14,7 @@
    <string>BlockEditor</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget{
+   <string notr="true">QWidget, QDialog{
 	
 	color: rgb(244, 244, 244);
 	background: rgb(66,66,66);

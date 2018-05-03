@@ -47,7 +47,12 @@ public:
     {
         if (DialogConst->objectName().isEmpty())
             DialogConst->setObjectName(QStringLiteral("DialogConst"));
-        DialogConst->resize(457, 261);
+        DialogConst->resize(300, 107);
+        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(DialogConst->sizePolicy().hasHeightForWidth());
+        DialogConst->setSizePolicy(sizePolicy);
         DialogConst->setStyleSheet(QStringLiteral(""));
         verticalLayout_3 = new QVBoxLayout(DialogConst);
         verticalLayout_3->setSpacing(6);
