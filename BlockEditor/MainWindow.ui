@@ -6,24 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>584</width>
-    <height>366</height>
+    <width>934</width>
+    <height>756</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>BlockEditor</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QMainWindow{
-
-	width: 1000px;
-}
-
-QWidget{
+   <string notr="true">QWidget{
 	
 	color: rgb(244, 244, 244);
 	background: rgb(66,66,66);
 	font-size: 12pt;
+	font-family: Verdana;
 }
 
 QMenuBar::item:selected {
@@ -48,29 +44,74 @@ QMenu::separator {
     background: rgb(112,112,112);
     margin-left: 1em;
     margin-right: 3em;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
 }
 
 QMenu {
 	background: rgb(50, 50, 50);
+	min-width: 70ex;
 }
 
 QMenu::item:selected{
 	background: rgb(112, 112, 112);
 }
 
+QTabWidget::pane { 
+   
+	 border: 0.1em solid white;
+}
+
 QTabBar::tab {
  
-    border: 0.1em solid rgb(255, 255, 255);
-    border-bottom-color: rgb(244, 244, 244);
-	min-width: 10ex;
+    border: 0.1em solid white;
+	min-width: 25ex;
     min-height: 3ex;
-    padding: 0.3em;
+    padding: 0.4em;
+	border-top-left-radius: 0.3em;
+    border-top-right-radius: 0.3em;
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+    background: rgb(112, 112, 112);
+}
+
+QTabBar::tab:selected{
+    margin-left: -4px;
+    margin-right:  -4px;
+	border-bottom-width: 0px;
+}
+
+QTabBar::tab:!selected{
+    margin-top: 0.2em;
+}
+
+QTabBar::tab:first:selected {
+    margin-left: 0;
+}
+
+QTabBar::tab:last:selected {
+    margin-right: 0; 
+}
+
+QTabBar::tab:only-one {
+    margin: 0;
+}
+
+QTabBar::close-button:hover{
+	image: url(&quot;:/Resources/close.png&quot;);
+}
+
+QTabBar::close-button{
+	image: url(&quot;:/Resources/close_off.png&quot;);
 }
 
 QToolBar{
 	
 	border: 0px;
 }
+
+
 </string>
   </property>
   <property name="iconSize">
@@ -93,7 +134,7 @@ QToolBar{
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="tabsClosable">
        <bool>true</bool>
@@ -120,12 +161,13 @@ QToolBar{
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>584</width>
+     <width>934</width>
      <height>31</height>
     </rect>
    </property>
    <property name="font">
     <font>
+     <family>Verdana</family>
      <pointsize>12</pointsize>
     </font>
    </property>
@@ -135,6 +177,7 @@ QToolBar{
    <widget class="QMenu" name="menuFILE">
     <property name="font">
      <font>
+      <family>Verdana</family>
       <pointsize>12</pointsize>
      </font>
     </property>
@@ -216,6 +259,7 @@ QToolBar{
    <addaction name="actionNew"/>
    <addaction name="actionOpen"/>
    <addaction name="actionSave"/>
+   <addaction name="actionClose"/>
   </widget>
   <action name="actionNew">
    <property name="icon">
@@ -303,6 +347,11 @@ QToolBar{
    </property>
   </action>
   <action name="actionClose">
+   <property name="icon">
+    <iconset resource="MainWindow.qrc">
+     <normaloff>:/Resources/close.png</normaloff>
+     <normalon>:/Resources/close.png</normalon>:/Resources/close.png</iconset>
+   </property>
    <property name="text">
     <string>Close</string>
    </property>
@@ -375,6 +424,10 @@ QToolBar{
    </property>
   </action>
   <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="MainWindow.qrc">
+     <normaloff>:/Resources/about.png</normaloff>:/Resources/about.png</iconset>
+   </property>
    <property name="text">
     <string>About</string>
    </property>

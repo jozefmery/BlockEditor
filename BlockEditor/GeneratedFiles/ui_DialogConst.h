@@ -28,7 +28,7 @@ QT_BEGIN_NAMESPACE
 class Ui_DialogConst
 {
 public:
-    QWidget *widget;
+    QVBoxLayout *verticalLayout_3;
     QVBoxLayout *verticalLayout_2;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *horizontalLayout_2;
@@ -47,22 +47,25 @@ public:
     {
         if (DialogConst->objectName().isEmpty())
             DialogConst->setObjectName(QStringLiteral("DialogConst"));
-        DialogConst->resize(264, 117);
-        widget = new QWidget(DialogConst);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setGeometry(QRect(10, 10, 244, 96));
-        verticalLayout_2 = new QVBoxLayout(widget);
+        DialogConst->resize(457, 261);
+        DialogConst->setStyleSheet(QLatin1String("QWidget {\n"
+"\n"
+"	font-size: 12pt;\n"
+"}"));
+        verticalLayout_3 = new QVBoxLayout(DialogConst);
+        verticalLayout_3->setSpacing(6);
+        verticalLayout_3->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        verticalLayout_2 = new QVBoxLayout();
         verticalLayout_2->setSpacing(6);
-        verticalLayout_2->setContentsMargins(11, 11, 11, 11);
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
-        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
         verticalLayout = new QVBoxLayout();
         verticalLayout->setSpacing(6);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        label = new QLabel(widget);
+        label = new QLabel(DialogConst);
         label->setObjectName(QStringLiteral("label"));
 
         horizontalLayout_2->addWidget(label);
@@ -71,7 +74,7 @@ public:
 
         horizontalLayout_2->addItem(horizontalSpacer_2);
 
-        value = new QLineEdit(widget);
+        value = new QLineEdit(DialogConst);
         value->setObjectName(QStringLiteral("value"));
         value->setEnabled(true);
 
@@ -83,12 +86,12 @@ public:
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setSpacing(6);
         horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
-        outputText = new QLabel(widget);
+        outputText = new QLabel(DialogConst);
         outputText->setObjectName(QStringLiteral("outputText"));
 
         horizontalLayout_4->addWidget(outputText);
 
-        output = new QComboBox(widget);
+        output = new QComboBox(DialogConst);
         output->addItem(QString());
         output->addItem(QString());
         output->addItem(QString());
@@ -107,7 +110,7 @@ public:
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        ok = new QPushButton(widget);
+        ok = new QPushButton(DialogConst);
         ok->setObjectName(QStringLiteral("ok"));
 
         horizontalLayout->addWidget(ok);
@@ -116,13 +119,16 @@ public:
 
         horizontalLayout->addItem(horizontalSpacer);
 
-        cancel = new QPushButton(widget);
+        cancel = new QPushButton(DialogConst);
         cancel->setObjectName(QStringLiteral("cancel"));
 
         horizontalLayout->addWidget(cancel);
 
 
         verticalLayout_2->addLayout(horizontalLayout);
+
+
+        verticalLayout_3->addLayout(verticalLayout_2);
 
 
         retranslateUi(DialogConst);
@@ -132,7 +138,7 @@ public:
 
     void retranslateUi(QWidget *DialogConst)
     {
-        DialogConst->setWindowTitle(QApplication::translate("DialogConst", "DialogConst", nullptr));
+        DialogConst->setWindowTitle(QApplication::translate("DialogConst", "Configure constant Block", nullptr));
         label->setText(QApplication::translate("DialogConst", "Value:", nullptr));
         value->setText(QApplication::translate("DialogConst", "0", nullptr));
         outputText->setText(QApplication::translate("DialogConst", "Output type:", nullptr));

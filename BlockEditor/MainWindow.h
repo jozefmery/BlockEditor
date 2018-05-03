@@ -1,12 +1,11 @@
 #pragma once
 
 #include "ui_MainWindow.h"
-#include "Block.h"
 #include <QTabWidget>
 #include <QtWidgets/QMainWindow>
-#include <QGraphicsItem>
 #include <QFileDialog>
-#include <QtXml/QtXml>
+#include <vector>
+#include "EditorFile.h"
 
 class MainWindow : public QMainWindow
 {
@@ -16,24 +15,33 @@ public:
 	MainWindow(QWidget *parent = nullptr);
 
 private:
+
 	inline void setUpChildren();
 
-	void createNewTab(QString& path);
+	void createNewTab(const QString& name);
+	int getFileIndex(const QString fullPath);
+	void openFile(const QString path, const bool addToRecent);
 
+private:
 	Ui::MainWindowClass ui;
-
 	QTabWidget *editorTabs;
+	std::vector<EditorFile> files;
 
 signals:
 	void customContextMenuRequested(QPoint pos);
 
-private slots:
-	
+	private slots:
+
 	void start();
 	void pause();
 	void stop();
 
 	void createNewFile();
-	void openFile();
-
+	void showAbout();
+	void clearHistory();
+	void openFileBrowse();
+	void closeFile(const int idx);
+	void closeCurrent();
+	void closeAll();
+	void exitApp();
 };
