@@ -94,9 +94,9 @@ void BlockEditor::showContextMenu(QPoint pos) {
 void BlockEditor::removeConnections(Block* actual, bool input, bool output) {
 	if (input) {
 		QVector<Block::BlockIO*> inputs = actual->getInputs();
-		for (Block::BlockIO* input : inputs) {
-			if (input->getLine()) {
-				item = input->getLine();
+		for (Block::BlockIO* inputPort : inputs) {
+			if (inputPort->getLine()) {
+				item = inputPort->getLine();
 				deleteBlock();
 			}
 		}
@@ -104,9 +104,9 @@ void BlockEditor::removeConnections(Block* actual, bool input, bool output) {
 
 	if (output) {
 		QVector<Block::BlockIO*> outputs = actual->getOutputs();
-		for (Block::BlockIO* output : outputs) {
-			if (output->getLine()) {
-				item = output->getLine();
+		for (Block::BlockIO* outputPort : outputs) {
+			if (outputPort->getLine()) {
+				item = outputPort->getLine();
 				deleteBlock();
 			}
 		}
@@ -302,20 +302,36 @@ void BlockEditor::mouseMoveEvent(QMouseEvent* event) {
 	QGraphicsView::mouseMoveEvent(event);
 }
 
+void BlockEditor::checkCycle(Block* block) {
+	
+	if (block->getBlockType() == BLOCK) {
+		QVector<Block::BlockIO*> inputs = block->getInputs();
+		for (Block::BlockIO* input: inputs) {
+			if (input->getLine() == nullptr) {
+				input->setCycle(true);
+			} else {
+				checkCycle(input->getLine()->getOutBlock());
+			}
+		}
+	}
+}
 
 bool BlockEditor::isDrawing() const { return drawing; };
 
 void BlockEditor::setIsDrawing(const bool drawing) {
 
+	checkCycle(line->getOutBlock());
+
 	if (drawing) {
 		for (Block* block : blocks) {
 			block->setCursor(Qt::ArrowCursor);
 			for (Block::BlockIO* input : block->getInputs()) {
-				if (input->getLine() == nullptr && line->getOutBlock() != block) {
-					if (input->getName() == line->getOutBlock()->getOutputs()[0]->getName()) {
-						input->setCursor(Qt::PointingHandCursor);
-						input->setBrush(QBrush(QColor(Qt::green)));
-					}
+				if (input->getLine() == nullptr && line->getOutBlock() != block &&
+					input->getName() == line->getOutBlock()->getOutputs()[0]->getName()
+					&& !input->isCycle()) {
+
+					input->setCursor(Qt::PointingHandCursor);
+					input->setBrush(QBrush(QColor(Qt::green)));
 				}
 			}
 			for (Block::BlockIO* output : block->getOutputs()) {
@@ -328,6 +344,7 @@ void BlockEditor::setIsDrawing(const bool drawing) {
 			for (Block::BlockIO* input : block->getInputs()) {
 				input->setCursor(Qt::ArrowCursor);
 				input->setBrush(QBrush(QColor(Qt::white)));
+				input->setCycle(false);
 			}
 			for (Block::BlockIO* output : block->getOutputs()) {
 				if (output->getLine() == nullptr) {
