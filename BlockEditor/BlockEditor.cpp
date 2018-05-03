@@ -106,6 +106,8 @@ void BlockEditor::showContextMenu(QPoint pos) {
 					myMenu.addAction("Edit Block", this, SLOT(editBlock()));
 					if (!dynamic_cast<Block*>(item)->isActualBlock()) {
 						myMenu.addAction("Set as Start", this, SLOT(setAsStartBlock()));
+					} else {
+						myMenu.addAction("Unset as Start", this, SLOT(unsetAsStartBlock()));
 					}
 					myMenu.exec(globalPos);
 				}
@@ -209,34 +211,30 @@ void BlockEditor::deleteBlock() {
 		lines.remove(lines.indexOf(dynamic_cast<Line*>(item), 0));
 		scene->removeItem(item);
 		Line* actual = dynamic_cast<Line*>(item);
-		QVector<Block*> inOut;
-		inOut.push_back(actual->getOutBlock());
-		if (actual->getInBlock()) {
-			inOut.push_back(actual->getInBlock());
+
+		if (actualBlock) {
+			if (actualBlock->getBlockType() == BLOCK) {
+				actualBlock->setBrush(QBrush(QColor(Qt::red)));
+			} else {
+				actualBlock->setBrush(QBrush(QColor(Qt::yellow)));
+			}
+			actualBlock->setActualBlock(false);
+			actualBlock = nullptr;
 		}
-		for (Block* block: inOut) {
-			if (actualBlock) {
-				if (actualBlock->getBlockType() == BLOCK) {
-					actualBlock->setBrush(QBrush(QColor(Qt::red)));
-				} else {
-					actualBlock->setBrush(QBrush(QColor(Qt::yellow)));
-				}
-				actualBlock->setActualBlock(false);
-				actualBlock = nullptr;
+
+		if (actual->getInBlock()->getBlockType() == RESULT) {
+			actual->getInBlock()->getInputs()[0]->setValue(NULL);
+			actual->getInBlock()->getInputs()[0]->setName(nullptr);
+		}
+			
+		for (Block::BlockIO* input: actual->getInBlock()->getInputs()) {
+			if (input->getLine() == actual) {
+				input->setLine(nullptr);
 			}
-			if (block->getBlockType() == RESULT) {
-				block->getInputs()[0]->setValue(NULL);
-				block->getInputs()[0]->setName(nullptr);
-			}
-			for (Block::BlockIO* input: block->getInputs()) {
-				if (actual->getInBlock() == block && input->getLine() == line) {
-					input->setLine(nullptr);
-				}
-			}
-			for (Block::BlockIO* output : block->getOutputs()) {
-				if (actual->getOutBlock() == block && output->getLine() == line) {
-					output->setLine(nullptr);
-				}
+		}
+		for (Block::BlockIO* output : actual->getOutBlock()->getOutputs()) {
+			if (output->getLine() == actual) {
+				output->setLine(nullptr);
 			}
 		}
 	}
