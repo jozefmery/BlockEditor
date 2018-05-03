@@ -76,16 +76,19 @@ class Block : public QGraphicsRectItem {
 		QString getOperation() const { return operation; };
 		QGraphicsTextItem* getOperationText() const { return operationText; };
 		int getBlockType() const { return blockType; };
+		bool isActualBlock() const { return startBlock; };
 
 		// setters
 		void setIsPlaced(bool const placed) { this->placed = placed; };
 		void setOperation(const QString operation) { this->operation = operation; };
 		void setOperationText(QGraphicsTextItem* operationText) { this->operationText = operationText; };
 		void setBlockType(const int blockType) { this->blockType = blockType; };
+		void setActualBlock(const bool startBlock) { this->startBlock = startBlock; };
 
 	private:
 		// attributes
 		int blockType;
+		bool startBlock;
 		bool placed{};
 		QString operation;
 		QVector<BlockIO*> input;

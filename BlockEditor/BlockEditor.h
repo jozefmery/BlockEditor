@@ -33,6 +33,7 @@ class BlockEditor : public QGraphicsView {
 		bool isDrawing() const;
 		Line* getLine() const { return line; };
 		QPointF getLineStart() const { return lineStart; };
+		Block* getActualBlock() const { return actualBlock; };
 
 		//setters
 		void setIsDrawing(const bool drawing);
@@ -56,6 +57,7 @@ class BlockEditor : public QGraphicsView {
 		Dialog* dialog{};
 		DialogConst* dialogConst{};
 		Block* resultBlock;
+		Block* actualBlock;
 
 		// methods
 		void drawGUI();
@@ -67,6 +69,8 @@ class BlockEditor : public QGraphicsView {
 		void showContextMenu(QPoint pos);
 		void deleteBlock();
 		void editBlock();
+		void setAsStartBlock();
+		void unsetAsStartBlock();
 		void spawnBlock();
 		void spawnConstBlock();
 		void spawnResultBlock();

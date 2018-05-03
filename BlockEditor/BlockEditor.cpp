@@ -27,6 +27,7 @@ BlockEditor::BlockEditor(QWidget* parent) {
 	scene->setSceneRect(0, 0, 1024, 1024);
 	setScene(scene);
 
+	actualBlock = nullptr;
 	resultBlock = nullptr;
 	
 	drawGUI();
@@ -103,6 +104,9 @@ void BlockEditor::showContextMenu(QPoint pos) {
 					QMenu myMenu;
 					myMenu.addAction("Delete Block", this, SLOT(deleteBlock()));
 					myMenu.addAction("Edit Block", this, SLOT(editBlock()));
+					if (!dynamic_cast<Block*>(item)->isActualBlock()) {
+						myMenu.addAction("Set as Start", this, SLOT(setAsStartBlock()));
+					}
 					myMenu.exec(globalPos);
 				}
 			} else if (dynamic_cast<Block*>(item->parentItem())){
@@ -115,6 +119,11 @@ void BlockEditor::showContextMenu(QPoint pos) {
 					QMenu myMenu;
 					myMenu.addAction("Delete Block", this, SLOT(deleteBlock()));
 					myMenu.addAction("Edit Block", this, SLOT(editBlock()));
+					if (!dynamic_cast<Block*>(item->parentItem())->isActualBlock()) {
+						myMenu.addAction("Set as Start", this, SLOT(setAsStartBlock()));
+					} else {
+						myMenu.addAction("Unset as Start", this, SLOT(unsetAsStartBlock()));
+					}
 					myMenu.exec(globalPos);
 				}
 			} else if (dynamic_cast<Line*>(item)) {
@@ -171,6 +180,9 @@ void BlockEditor::removeConnections(Block* actual, bool input, bool output) {
 void BlockEditor::deleteBlock() {
 	
 	if (dynamic_cast<Block*>(item)) {
+		if (dynamic_cast<Block*>(item)->isActualBlock()) {
+			actualBlock = nullptr;
+		}
 		if (dynamic_cast<Block*>(item)->getBlockType() == RESULT) {
 			resultBlock = nullptr;
 			scene->removeItem(item);
@@ -181,6 +193,9 @@ void BlockEditor::deleteBlock() {
 		scene->removeItem(item);
 		removeConnections(dynamic_cast<Block*>(item), true, true);
 	} else if (dynamic_cast<Block*>(item->parentItem())) {
+		if (dynamic_cast<Block*>(item->parentItem())->isActualBlock()) {
+			actualBlock = nullptr;
+		}
 		if (dynamic_cast<Block*>(item->parentItem())->getBlockType() == RESULT) {
 			resultBlock = nullptr;
 			scene->removeItem(item);
@@ -196,17 +211,32 @@ void BlockEditor::deleteBlock() {
 		Line* actual = dynamic_cast<Line*>(item);
 		QVector<Block*> inOut;
 		inOut.push_back(actual->getOutBlock());
-		inOut.push_back(actual->getInBlock());
+		if (actual->getInBlock()) {
+			inOut.push_back(actual->getInBlock());
+		}
 		for (Block* block: inOut) {
+			if (actualBlock) {
+				if (actualBlock->getBlockType() == BLOCK) {
+					actualBlock->setBrush(QBrush(QColor(Qt::red)));
+				} else {
+					actualBlock->setBrush(QBrush(QColor(Qt::yellow)));
+				}
+				actualBlock->setActualBlock(false);
+				actualBlock = nullptr;
+			}
 			if (block->getBlockType() == RESULT) {
 				block->getInputs()[0]->setValue(NULL);
 				block->getInputs()[0]->setName(nullptr);
 			}
 			for (Block::BlockIO* input: block->getInputs()) {
-				input->setLine(nullptr);
+				if (actual->getInBlock() == block && input->getLine() == line) {
+					input->setLine(nullptr);
+				}
 			}
 			for (Block::BlockIO* output : block->getOutputs()) {
-				output->setLine(nullptr);
+				if (actual->getOutBlock() == block && output->getLine() == line) {
+					output->setLine(nullptr);
+				}
 			}
 		}
 	}
@@ -308,6 +338,72 @@ void BlockEditor::editBlock() {
 
 	item = nullptr;
 }
+
+void BlockEditor::setAsStartBlock() {
+
+	if (resultBlock == nullptr || resultBlock->getInputs()[0]->getLine() == nullptr) {
+		QMessageBox messageBox;
+		messageBox.setText("Missing connection to Result Block!");
+		messageBox.setStyleSheet("QLabel{min-width: 350px;}");
+		messageBox.exec();
+		return;
+	}
+
+	bool missingConnection = false;
+	for (Block* block: blocks) {
+		for (Block::BlockIO* input: block->getInputs()) {
+			if (input->getLine() == nullptr) {
+				missingConnection = true;
+				break;
+			}
+		}
+		for (Block::BlockIO* output : block->getOutputs()) {
+			if (output->getLine() == nullptr) {
+				missingConnection = true;
+				break;
+			}
+		}
+		if (missingConnection) {
+			QMessageBox messageBox;
+			messageBox.setText("Some ports are not connected!");
+			messageBox.setStyleSheet("QLabel{min-width: 350px;}");
+			messageBox.exec();
+			return;
+		}
+	}
+
+	Block* block;
+	if (dynamic_cast<Block*>(item)) {
+		block = dynamic_cast<Block*>(item);
+	} else {
+		block = dynamic_cast<Block*>(item->parentItem());
+	}
+
+	if (actualBlock) {
+		if (actualBlock->getBlockType() == BLOCK) {
+			actualBlock->setBrush(QBrush(QColor(Qt::red)));
+		} else {
+			actualBlock->setBrush(QBrush(QColor(Qt::yellow)));
+		}
+		actualBlock->setActualBlock(false);
+		actualBlock = nullptr;
+	}
+
+	actualBlock = block;
+	actualBlock->setBrush(QBrush(QColor(Qt::green)));
+	actualBlock->setActualBlock(true);
+}
+
+void BlockEditor::unsetAsStartBlock() {
+	if (actualBlock->getBlockType() == BLOCK) {
+		actualBlock->setBrush(QBrush(QColor(Qt::red)));
+	} else {
+		actualBlock->setBrush(QBrush(QColor(Qt::yellow)));
+	}
+	actualBlock->setActualBlock(false);
+	actualBlock = nullptr;
+}
+
 
 /**
  * \brief Spawn block, based on user input.
@@ -431,25 +527,18 @@ void BlockEditor::setIsDrawing(const bool drawing) {
 
 	if (drawing) {
 		checkCycle(line->getOutBlock());
+		if (resultBlock) {
+			resultBlock->getInputs()[0]->setCursor(Qt::PointingHandCursor);
+		}
 
 		for (Block* block : blocks) {
 			block->setCursor(Qt::ArrowCursor);
 			for (Block::BlockIO* input : block->getInputs()) {
-				if (line->getOutBlock()->getBlockType() == RESULT) {
-					input->setConnectable(true);
-					if (input->getLine() == nullptr) {
-						input->setCursor(Qt::PointingHandCursor);
-					} else {
-						input->setCursor(Qt::ArrowCursor);
-					}
-					input->setBrush(QBrush(QColor(Qt::green)));
-					continue;
-				}
 				input->setConnectable(false);
 				if (input->getLine() == nullptr && line->getOutBlock() != block &&
 					input->getName() == line->getOutBlock()->getOutputs()[0]->getName()
 					&& !input->isCycle()) {
-
+			
 					input->setConnectable(true);
 					input->setCursor(Qt::PointingHandCursor);
 					input->setBrush(QBrush(QColor(Qt::green)));
@@ -460,6 +549,9 @@ void BlockEditor::setIsDrawing(const bool drawing) {
 			}
 		}
 	} else {
+		if (resultBlock) {
+			resultBlock->getInputs()[0]->setCursor(Qt::ArrowCursor);
+		}
 		for (Block* block : blocks) {
 			block->setCursor(Qt::OpenHandCursor);
 			for (Block::BlockIO* input : block->getInputs()) {

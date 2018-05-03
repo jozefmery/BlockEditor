@@ -24,6 +24,7 @@ Block::Block(const int x, const int y, BlockEditor* parent, QString operation, Q
 
 	this->parent = parent;
 	this->operation = operation;
+	this->startBlock = false;
 
 	setBlockType(BLOCK);
 
@@ -71,6 +72,7 @@ Block::Block(const int x, const int y, BlockEditor* parent, double value, QStrin
 
 	this->parent = parent;
 	this->operation = nullptr;
+	this->startBlock = false;
 
 	setBlockType(CONSTBLOCK);
 
@@ -107,7 +109,8 @@ Block::Block(const int x, const int y, BlockEditor* parent) :
 	parent(parent) {
 
 	this->parent = parent;
-	operation = nullptr;
+	this->operation = nullptr;
+	this->startBlock = false;
 
 	setBlockType(RESULT);
 
