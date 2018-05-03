@@ -141,6 +141,8 @@ Block::BlockIO::BlockIO(int x, int y, int IO, QString name, double value, BlockE
 	this->parentBlock = parentBlock;
 	this->name = name;
 	this->value = value;
+	this->connectable = true;
+
 	line = nullptr;
 
 	if (IO == INPUT) {
@@ -204,7 +206,7 @@ void Block::BlockIO::moveLineToCenter(QPointF newPos) {
 void Block::BlockIO::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 	Block* block = dynamic_cast<Block*>(parentBlock);
 	if (IO == INPUT && editor->isDrawing() && line == nullptr) {
-		if (editor->getLine()->getOutBlock() != block) {
+		if (editor->getLine()->getOutBlock() != block && connectable) {
 			Line *line = editor->getLine();
 			line->setInBlock(block);
 			editor->setIsDrawing(false);

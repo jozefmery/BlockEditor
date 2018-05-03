@@ -52,6 +52,7 @@ class Block : public QGraphicsRectItem {
 				void setName(const QString name) { this->name = name; };
 				void setValue(const double value) { this->value = value; };
 				void setCycle(const bool cycle) { this->cycle = cycle; };
+				void setConnectable(const bool connectable) { this->connectable = connectable; };
 
 			private:
 				// attributes
@@ -63,6 +64,7 @@ class Block : public QGraphicsRectItem {
 				QString name;
 				double value;
 				bool cycle;
+				bool connectable;
 		};
 
 		// getters

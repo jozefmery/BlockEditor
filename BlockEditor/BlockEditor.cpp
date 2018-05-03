@@ -381,10 +381,12 @@ void BlockEditor::setIsDrawing(const bool drawing) {
 		for (Block* block : blocks) {
 			block->setCursor(Qt::ArrowCursor);
 			for (Block::BlockIO* input : block->getInputs()) {
+				input->setConnectable(false);
 				if (input->getLine() == nullptr && line->getOutBlock() != block &&
 					input->getName() == line->getOutBlock()->getOutputs()[0]->getName()
 					&& !input->isCycle()) {
 
+					input->setConnectable(true);
 					input->setCursor(Qt::PointingHandCursor);
 					input->setBrush(QBrush(QColor(Qt::green)));
 				}
