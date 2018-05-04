@@ -1,5 +1,4 @@
 #include "Line.h"
-#include "Block.h"
 #include "BlockEditor.h"
 
 #include <QPen>
@@ -41,8 +40,14 @@ void Line::hoverLeaveEvent(QGraphicsSceneHoverEvent* event) {
 	}
 }
 
-Block* Line::getOutBlock() const { return outBlock; };
-Block* Line::getInBlock() const { return inBlock; };
+Block* Line::getOutBlock() const { return outBlock; }
+Block* Line::getInBlock() const { return inBlock; }
 
-void Line::setOutBlock(Block* outBlock) { this->outBlock = outBlock; };
-void Line::setInBlock(Block* inBlock) { this->inBlock = inBlock; };
+void Line::setOutBlock(Block* outBlock) { this->outBlock = outBlock; }
+void Line::setInBlock(Block* inBlock) { this->inBlock = inBlock; }
+
+Block::BlockIO* Line::getInPort() const { return input; }
+Block::BlockIO* Line::getOutPort() const { return output; }
+
+void Line::setInPort(Block::BlockIO* input) { this->input = input; }
+void Line::setOutPort(Block::BlockIO* output) { this->output = output; }

@@ -1,4 +1,5 @@
 #include "Block.h"
+#include "Line.h"
 #include "BlockEditor.h"
 
 #include <QGraphicsSceneMouseEvent>
@@ -176,6 +177,7 @@ Block::BlockIO::BlockIO(int x, int y, int IO, QString name, double value, BlockE
 	this->name = name;
 	this->value = value;
 	this->connectable = true;
+	this->hasValue = false;
 
 	line = nullptr;
 
@@ -190,6 +192,9 @@ Block::BlockIO::BlockIO(int x, int y, int IO, QString name, double value, BlockE
 		cycle = false;
 	}
 	else if (IO == OUTPUT) {
+		if (dynamic_cast<Block*>(parentBlock)->getBlockType() == CONSTBLOCK) {
+			this->hasValue = true;
+		}
 		setRect(x, y, 7, 12);
 		setBrush(QBrush(QColor(Qt::blue)));
 		setCursor(Qt::PointingHandCursor);
@@ -247,6 +252,7 @@ void Block::BlockIO::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 		if (editor->getLine()->getOutBlock() != block && connectable) {
 			Line *line = editor->getLine();
 			line->setInBlock(block);
+			line->setInPort(this);
 			editor->setIsDrawing(false);
 			addLine(line, false);
 		}
@@ -255,6 +261,7 @@ void Block::BlockIO::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 		editor->scene->addItem(line);
 		addLine(line, true);
 		line->setOutBlock(block);
+		line->setOutPort(this);
 		editor->setLine(line);
 		editor->setLineStart(QCursor::pos());
 		editor->setIsDrawing(true);

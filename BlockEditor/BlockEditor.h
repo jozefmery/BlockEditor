@@ -34,6 +34,7 @@ class BlockEditor : public QGraphicsView {
 		Line* getLine() const { return line; };
 		QPointF getLineStart() const { return lineStart; };
 		Block* getActualBlock() const { return actualBlock; };
+		Block* getResultBlock() const { return resultBlock; };
 
 		//setters
 		void setIsDrawing(const bool drawing);
@@ -42,6 +43,7 @@ class BlockEditor : public QGraphicsView {
 			lines.push_back(line);
 		};
 		void setLineStart(const QPoint lineStart) { this->lineStart = mapFromGlobal(lineStart); };
+		void setActualBlock(Block* block);
 
 	private:
 		// attributes

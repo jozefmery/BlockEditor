@@ -1,9 +1,11 @@
 #pragma once
 
+#include "Block.h"
+
 #include <QGraphicsLineItem>
 #include <QDebug>
 
-class Block;
+
 class BlockEditor;
 
 class Line : public QGraphicsLineItem {
@@ -23,15 +25,21 @@ class Line : public QGraphicsLineItem {
 		// getters
 		Block* getOutBlock() const;
 		Block* getInBlock() const;
+		Block::BlockIO* getInPort() const;
+		Block::BlockIO* getOutPort() const;
 
 		// setters
 		void setOutBlock(Block* outBlock);
 		void setInBlock(Block* inBlock);
+		void setInPort(Block::BlockIO* input);
+		void setOutPort(Block::BlockIO* output);
 
 	private:
 		// atributes
 		Block* outBlock = nullptr;
 		Block* inBlock = nullptr;
+		Block::BlockIO* input;
+		Block::BlockIO* output;
 
 };
 

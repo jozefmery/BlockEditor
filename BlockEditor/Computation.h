@@ -3,7 +3,12 @@
 
 #include <QThread>
 
-class Computation : public QObject {
+#define ADD	'+';
+#define SUB	'-';
+#define MUL '*';
+#define DIV '/';
+
+class Computation : public QThread {
 
 	Q_OBJECT
 
@@ -12,6 +17,7 @@ class Computation : public QObject {
 		Computation(BlockEditor* currentView);
 
 		// methods
+		void run();
 
 		// getters
 		BlockEditor* getCurrentView() const { return currentView; };
@@ -22,12 +28,17 @@ class Computation : public QObject {
 	private:
 		// attributes
 		BlockEditor* currentView;
+		Block* actualBlock;
+		bool result;
 
-	public slots:
-		void process();
-
-	signals:
-		void finished();
+		// methods
+		void compute();
+		void getValue();
+		int getOperation();
+		void add();
+		void sub();
+		void mul();
+		void div();
 
 };
 

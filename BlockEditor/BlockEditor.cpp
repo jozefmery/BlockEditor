@@ -319,11 +319,13 @@ void BlockEditor::editBlock() {
 			different = false;
 			for (Block::BlockIO* output: block->getOutputs()) {
 				if (dialogConst->getOutputType() != output->getName()) {
-					output->setValue(dialogConst->getValue());
-					output->setName(dialogConst->getOutputType());
 					different = true;
 				}
+
+				output->setValue(dialogConst->getValue());
+				output->setName(dialogConst->getOutputType());
 			}
+
 			if (different) {
 				removeConnections(block, false, true);
 			}
@@ -567,6 +569,26 @@ void BlockEditor::setIsDrawing(const bool drawing) {
 
 	this->drawing = drawing;
 };
+
+void BlockEditor::setActualBlock(Block* block) {
+
+	if (actualBlock) {
+		if (actualBlock->getBlockType() == BLOCK) {
+			actualBlock->setBrush(QBrush(QColor(Qt::red)));
+		}
+		else {
+			actualBlock->setBrush(QBrush(QColor(Qt::yellow)));
+		}
+		actualBlock->setActualBlock(false);
+		actualBlock = nullptr;
+	}
+
+	actualBlock = block;
+	if (actualBlock) {
+		actualBlock->setBrush(QBrush(QColor(Qt::green)));
+		actualBlock->setActualBlock(true);
+	}
+}
 
 /**
  * \brief ???

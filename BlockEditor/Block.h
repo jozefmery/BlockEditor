@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Line.h"
-
 #include <QGraphicsRectItem>
 
 #define INPUT  1
@@ -11,6 +9,7 @@
 #define BLOCK		2
 #define RESULT		3
 
+class Line;
 class BlockEditor;
 
 class Block : public QGraphicsRectItem {
@@ -48,13 +47,15 @@ class Block : public QGraphicsRectItem {
 				QString getName() const { return name; };
 				double getValue() const { return value; };
 				bool isCycle() const { return cycle; };
+				bool hasVal() const { return hasValue; };
 
 				// setters
 				void setLine(Line* line);
 				void setName(const QString name) { this->name = name; };
-				void setValue(const double value) { this->value = value; };
+				void setValue(const double value) { this->value = value; hasValue = true; };
 				void setCycle(const bool cycle) { this->cycle = cycle; };
 				void setConnectable(const bool connectable) { this->connectable = connectable; };
+				void setHasVal(const bool hasValue) { this->hasValue = hasValue; };
 
 			private:
 				// attributes
@@ -67,6 +68,7 @@ class Block : public QGraphicsRectItem {
 				double value;
 				bool cycle;
 				bool connectable;
+				bool hasValue;
 		};
 
 		// getters
