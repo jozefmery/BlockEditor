@@ -54,6 +54,9 @@
     <ClCompile Include="EditorFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Computation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MainWindow.h">
@@ -66,6 +69,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="DialogConst.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Computation.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

@@ -1,6 +1,9 @@
 ﻿#include "MainWindow.h"
 #include "BlockEditor.h"
+#include "Computation.h"
+
 #include <QDebug>
+#include <QThread>
 #include <QMessageBox>
 #include <QDesktopWidget>
 
@@ -43,6 +46,23 @@ inline void MainWindow::setUpChildren() {
 
 void MainWindow::start() {
 	
+	int index = editorTabs->currentIndex();
+
+	if (index == -1) { return; }
+
+	BlockEditor* currentView = dynamic_cast<BlockEditor*>(editorTabs->currentWidget());
+
+	if (currentView->getActualBlock()) {
+		QThread* thread = new QThread;
+
+		Computation* compute = new Computation(currentView);
+		compute->moveToThread(thread);
+		connect(thread, SIGNAL(started()), compute, SLOT(asdfg()));
+		connect(compute, SIGNAL(finished()), thread, SLOT(quit()));
+		connect(compute, SIGNAL(finished()), compute, SLOT(deleteLater()));
+		connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+		thread->start();
+	}
 	
 }
 
