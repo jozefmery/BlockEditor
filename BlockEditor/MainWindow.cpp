@@ -6,6 +6,7 @@
 #include <QDesktopWidget>
 
 constexpr int NOT_FOUND = -1;
+Computation* computation;
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -17,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 inline void MainWindow::setUpChildren() {
 	
-	compute = nullptr;
+	computation = nullptr;
 
 	editorTabs = new QTabWidget(this);
 	setCentralWidget(editorTabs);
@@ -50,10 +51,42 @@ void MainWindow::start() {
 
 	BlockEditor* currentView = dynamic_cast<BlockEditor*>(editorTabs->currentWidget());
 
-	if (compute == nullptr && currentView->getActualBlock()) {
+	if (computation == nullptr && currentView->getActualBlock()) {
+		currentView->getResultBlock()->getInputs()[0]->setValue(NULL);
+		currentView->getResultBlock()->getInputs()[0]->setName(nullptr);
+		currentView->getResultBlock()->getInputs()[0]->setHasVal(false);
 
-		compute = new Computation(currentView);
-		compute->start();
+		QTextCursor cursor(currentView->getResultBlock()->getOperationText()->document());
+		cursor.setPosition(0);
+		cursor.select(QTextCursor::WordUnderCursor);
+		cursor.beginEditBlock();
+		cursor.insertText("RESULT");
+		cursor.endEditBlock();
+		cursor.removeSelectedText();
+
+		for (Block* block: currentView->getBlocks()) {
+			if (block->getBlockType() == BLOCK) {
+				for (Block::BlockIO* input : block->getInputs()) {
+					input->setValue(NULL);
+					input->setHasVal(false);
+				}
+				for (Block::BlockIO* output : block->getOutputs()) {
+					output->setValue(NULL);
+					output->setHasVal(false);
+				}
+			}
+		}
+
+		computation = new Computation(currentView);
+		computation->start();
+	} else if (currentView->getActualBlock() == nullptr) {
+		QMessageBox messageBox;
+		messageBox.setText("Set start position!");
+		messageBox.exec();
+	} else if (computation != nullptr) {
+		QMessageBox messageBox;
+		messageBox.setText("Computation in progress!");
+		messageBox.exec();
 	}
 }
 

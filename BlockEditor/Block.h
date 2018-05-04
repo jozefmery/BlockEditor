@@ -77,7 +77,7 @@ class Block : public QGraphicsRectItem {
 		QVector<BlockIO*> getOutputs() const { return output; };
 		QString getOperation() const { return operation; };
 		QGraphicsTextItem* getOperationText() const { return operationText; };
-		int getBlockType() const { return blockType; };
+		int getBlockType() const;
 		bool isActualBlock() const { return startBlock; };
 
 		// setters

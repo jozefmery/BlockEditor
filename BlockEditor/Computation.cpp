@@ -1,6 +1,9 @@
 #include "Computation.h"
-#include <QMessageBox>
 
+#include <QMessageBox>
+#include <QCursor>
+
+extern Computation* computation;
 
 Computation::Computation(BlockEditor* currentView) {
 
@@ -14,7 +17,7 @@ void Computation::run() {
 
 	compute();
 
-	quit();
+	computation = nullptr;
 }
 
 void Computation::compute() {
@@ -32,6 +35,14 @@ void Computation::compute() {
 				currentView->setActualBlock(output->getLine()->getInBlock());
 				actualBlock = currentView->getActualBlock();
 			} else {
+				QTextCursor cursor(output->getLine()->getInBlock()->getOperationText()->document());
+				cursor.setPosition(0);
+				cursor.select(QTextCursor::WordUnderCursor);
+				cursor.beginEditBlock();
+				cursor.insertText(QString::number(output->getValue()));
+				cursor.endEditBlock();
+				cursor.removeSelectedText();
+				input->setName(output->getName());
 				result = false;
 				currentView->setActualBlock(nullptr);
 			}
@@ -76,8 +87,15 @@ void Computation::compute() {
 				!currentView->getResultBlock()->getInputs()[0]->hasVal()) {
 				currentView->setActualBlock(output->getLine()->getInBlock());
 				actualBlock = currentView->getActualBlock();
-			}
-			else {
+			} else {
+				QTextCursor cursor(output->getLine()->getInBlock()->getOperationText()->document());
+				cursor.setPosition(0);
+				cursor.select(QTextCursor::WordUnderCursor);
+				cursor.beginEditBlock();
+				cursor.insertText(QString::number(output->getValue()));
+				cursor.endEditBlock();
+				cursor.removeSelectedText();
+				input->setName(output->getName());
 				result = false;
 				currentView->setActualBlock(nullptr);
 			}

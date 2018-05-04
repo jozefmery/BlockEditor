@@ -35,6 +35,7 @@ class BlockEditor : public QGraphicsView {
 		QPointF getLineStart() const { return lineStart; };
 		Block* getActualBlock() const { return actualBlock; };
 		Block* getResultBlock() const { return resultBlock; };
+		QVector<Block*> getBlocks() const { return blocks; };
 
 		//setters
 		void setIsDrawing(const bool drawing);

@@ -26,7 +26,6 @@ class MainWindow : public QMainWindow
 		Ui::MainWindowClass ui;
 		QTabWidget *editorTabs;
 		std::vector<EditorFile> files;
-		Computation* compute;
 
 	signals:
 		void customContextMenuRequested(QPoint pos);

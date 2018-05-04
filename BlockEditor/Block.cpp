@@ -26,8 +26,7 @@ Block::Block(const int x, const int y, BlockEditor* parent, QString operation, Q
 	this->parent = parent;
 	this->operation = operation;
 	this->startBlock = false;
-
-	setBlockType(BLOCK);
+	this->blockType = BLOCK;
 
 	// draw the block
 	setRect(x, y, 50, 50);
@@ -41,13 +40,8 @@ Block::Block(const int x, const int y, BlockEditor* parent, QString operation, Q
 	operationText->setPos(x + rect().width() / 2 - operationText->boundingRect().width() / 2,
 				y + rect().height() / 2 - operationText->boundingRect().height() / 2);
 
-	if (operation == "+" || operation == "-") {
-		input.push_back(new BlockIO(x, y, INPUT, inputType, 0, parent, this));
-		input.push_back(new BlockIO(x, y + 37, INPUT, inputType, 0, parent, this));
-	} else if (operation == "*" || operation == "/") {
-		input.push_back(new BlockIO(x, y, INPUT, inputType, 1, parent, this));
-		input.push_back(new BlockIO(x, y + 37, INPUT, inputType, 1, parent, this));
-	}
+	input.push_back(new BlockIO(x, y, INPUT, inputType, 0, parent, this));
+	input.push_back(new BlockIO(x, y + 37, INPUT, inputType, 0, parent, this));
 	
 	output.push_back(new BlockIO(x + 43, y + 19, OUTPUT, outputType, 0, parent, this));
 	
@@ -74,8 +68,7 @@ Block::Block(const int x, const int y, BlockEditor* parent, double value, QStrin
 	this->parent = parent;
 	this->operation = nullptr;
 	this->startBlock = false;
-
-	setBlockType(CONSTBLOCK);
+	this->blockType = CONSTBLOCK;
 
 	// draw the block
 	setRect(x, y, 50, 50);
@@ -112,18 +105,18 @@ Block::Block(const int x, const int y, BlockEditor* parent) :
 	this->parent = parent;
 	this->operation = nullptr;
 	this->startBlock = false;
-
-	setBlockType(RESULT);
+	this->blockType = RESULT;
 
 	// draw the block
-	setRect(x, y, 60, 50);
+	setRect(x, y, 70, 50);
 	QBrush brush;
 	brush.setStyle(Qt::SolidPattern);
 	brush.setColor(Qt::white);
 	setBrush(brush);
 
-	operationText = new QGraphicsTextItem(this);
-	operationText->setPos(x + rect().width() / 2, y + rect().height() / 2);
+	operationText = new QGraphicsTextItem("RESULT", this);
+	operationText->setPos(x + rect().width() / 2 - operationText->boundingRect().width() / 2,
+		y + rect().height() / 2 - operationText->boundingRect().height() / 2);
 
 	input.push_back(new BlockIO(x, y + 19, INPUT, nullptr, NULL, parent, this));
 
@@ -151,6 +144,10 @@ void Block::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
 			parent->placeBlock(this);
 		}
 	}
+}
+
+int Block::getBlockType() const { 
+	return blockType; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

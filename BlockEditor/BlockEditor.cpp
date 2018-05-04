@@ -221,17 +221,20 @@ void BlockEditor::deleteBlock() {
 			actualBlock->setActualBlock(false);
 			actualBlock = nullptr;
 		}
+		
+		if (actual->getInBlock()) {
+			if (actual->getInBlock()->getBlockType() == RESULT) {
+				actual->getInBlock()->getInputs()[0]->setValue(NULL);
+				actual->getInBlock()->getInputs()[0]->setName(nullptr);
+			}
 
-		if (actual->getInBlock()->getBlockType() == RESULT) {
-			actual->getInBlock()->getInputs()[0]->setValue(NULL);
-			actual->getInBlock()->getInputs()[0]->setName(nullptr);
-		}
-			
-		for (Block::BlockIO* input: actual->getInBlock()->getInputs()) {
-			if (input->getLine() == actual) {
-				input->setLine(nullptr);
+			for (Block::BlockIO* input : actual->getInBlock()->getInputs()) {
+				if (input->getLine() == actual) {
+					input->setLine(nullptr);
+				}
 			}
 		}
+
 		for (Block::BlockIO* output : actual->getOutBlock()->getOutputs()) {
 			if (output->getLine() == actual) {
 				output->setLine(nullptr);
@@ -267,6 +270,7 @@ void BlockEditor::editBlock() {
 				return;
 			}
 
+			cursor.setPosition(0);
 			cursor.select(QTextCursor::WordUnderCursor);
 			cursor.beginEditBlock();
 			cursor.insertText(dialog->getOperation());
@@ -310,6 +314,7 @@ void BlockEditor::editBlock() {
 				return;
 			}
 
+			cursor.setPosition(0);
 			cursor.select(QTextCursor::WordUnderCursor);
 			cursor.beginEditBlock();
 			cursor.insertText(QString::number(dialogConst->getValue()));
@@ -324,6 +329,11 @@ void BlockEditor::editBlock() {
 
 				output->setValue(dialogConst->getValue());
 				output->setName(dialogConst->getOutputType());
+
+				if (output->getLine()) {
+					output->getLine()->getInPort()->setHasVal(false);
+					output->getLine()->getInPort()->setValue(0);
+				}
 			}
 
 			if (different) {
