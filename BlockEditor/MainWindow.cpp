@@ -46,9 +46,7 @@ inline void MainWindow::setUpChildren() {
 
 void MainWindow::start() {
 	
-	int index = editorTabs->currentIndex();
-
-	if (index == -1) { return; }
+	if (editorTabs->currentIndex() == -1) { return; }
 
 	BlockEditor* currentView = dynamic_cast<BlockEditor*>(editorTabs->currentWidget());
 
@@ -57,7 +55,7 @@ void MainWindow::start() {
 
 		Computation* compute = new Computation(currentView);
 		compute->moveToThread(thread);
-		connect(thread, SIGNAL(started()), compute, SLOT(asdfg()));
+		connect(thread, SIGNAL(started()), compute, SLOT(process()));
 		connect(compute, SIGNAL(finished()), thread, SLOT(quit()));
 		connect(compute, SIGNAL(finished()), compute, SLOT(deleteLater()));
 		connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
