@@ -43,4 +43,6 @@ class MainWindow : public QMainWindow
 		void closeCurrent();
 		void closeAll();
 		void exitApp();
+
+		void setResult();
 };

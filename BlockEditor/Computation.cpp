@@ -1,7 +1,6 @@
 #include "Computation.h"
 
 #include <QMessageBox>
-#include <QCursor>
 
 extern Computation* computation;
 
@@ -35,14 +34,9 @@ void Computation::compute() {
 				currentView->setActualBlock(output->getLine()->getInBlock());
 				actualBlock = currentView->getActualBlock();
 			} else {
-				QTextCursor cursor(output->getLine()->getInBlock()->getOperationText()->document());
-				cursor.setPosition(0);
-				cursor.select(QTextCursor::WordUnderCursor);
-				cursor.beginEditBlock();
-				cursor.insertText(QString::number(output->getValue()));
-				cursor.endEditBlock();
-				cursor.removeSelectedText();
+				emit done();
 				input->setName(output->getName());
+				input->getLine()->setToolTip(input->getName() + ": " + QString::number(input->getValue()));
 				result = false;
 				currentView->setActualBlock(nullptr);
 			}
@@ -57,7 +51,9 @@ void Computation::compute() {
 						getValue();
 					}
 					return;
-				}
+				} 
+				
+				input->getLine()->setToolTip(input->getName() + ": " + QString::number(input->getValue()));
 			}
 			sleep(1);
 			switch (getOperation()) {
@@ -88,14 +84,9 @@ void Computation::compute() {
 				currentView->setActualBlock(output->getLine()->getInBlock());
 				actualBlock = currentView->getActualBlock();
 			} else {
-				QTextCursor cursor(output->getLine()->getInBlock()->getOperationText()->document());
-				cursor.setPosition(0);
-				cursor.select(QTextCursor::WordUnderCursor);
-				cursor.beginEditBlock();
-				cursor.insertText(QString::number(output->getValue()));
-				cursor.endEditBlock();
-				cursor.removeSelectedText();
+				emit done();
 				input->setName(output->getName());
+				input->getLine()->setToolTip(input->getName() + ": " + QString::number(input->getValue()));
 				result = false;
 				currentView->setActualBlock(nullptr);
 			}

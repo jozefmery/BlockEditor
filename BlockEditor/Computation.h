@@ -40,5 +40,8 @@ class Computation : public QThread {
 		void mul();
 		void div();
 
+	signals:
+		void done();
+
 };
 

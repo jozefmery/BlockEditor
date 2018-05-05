@@ -77,7 +77,12 @@ void MainWindow::start() {
 			}
 		}
 
+		for (Line* line: currentView->getLines()) {
+			line->setToolTip("Nothing");
+		}
+
 		computation = new Computation(currentView);
+		connect(computation, SIGNAL(done()), this, SLOT(setResult()));
 		computation->start();
 	} else if (currentView->getActualBlock() == nullptr) {
 		QMessageBox messageBox;
@@ -243,4 +248,17 @@ void MainWindow::exitApp() {
 	closeAll();
 	QApplication::quit();
 
+}
+
+void MainWindow::setResult() {
+
+	BlockEditor* currentView = dynamic_cast<BlockEditor*>(editorTabs->currentWidget());
+
+	QTextCursor cursor(currentView->getResultBlock()->getOperationText()->document());
+	cursor.setPosition(0);
+	cursor.select(QTextCursor::WordUnderCursor);
+	cursor.beginEditBlock();
+	cursor.insertText(QString::number(currentView->getResultBlock()->getInputs()[0]->getValue()));
+	cursor.endEditBlock();
+	cursor.removeSelectedText();
 }
