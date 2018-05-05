@@ -250,6 +250,9 @@ void MainWindow::exitApp() {
 
 }
 
+/**
+ * Set result of computation to Result Block. 
+ */
 void MainWindow::setResult() {
 
 	BlockEditor* currentView = dynamic_cast<BlockEditor*>(editorTabs->currentWidget());

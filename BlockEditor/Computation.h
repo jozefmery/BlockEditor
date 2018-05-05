@@ -20,10 +20,10 @@ class Computation : public QThread {
 		void run();
 
 		// getters
-		BlockEditor* getCurrentView() const { return currentView; };
+		BlockEditor* getCurrentView() const;
 
 		// setters
-		void setCurrentView(BlockEditor* currentView) { this->currentView = currentView; };
+		void setCurrentView(BlockEditor* currentView);
 
 	private:
 		// attributes
