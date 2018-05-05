@@ -12,9 +12,11 @@ public:
 
 	inline const QString getFullPath() const { return fullPath; }
 	inline const QString getDisplayPath() const { return displayPath; }
-	inline const bool hasChanged() const { return changed; }
-
-	inline void setChanged(const bool val) { changed = val; }
+	inline void setFullPath(QString path)
+	{
+		fullPath = path;
+		setDisplayPath();
+	}
 
 private:
 
@@ -24,6 +26,5 @@ private:
 
 	QString fullPath;
 	QString displayPath;
-	bool changed;
 
 };

@@ -19,7 +19,6 @@ class BlockEditor : public QGraphicsView {
 
 		// events
 		void mouseMoveEvent(QMouseEvent* event) override;
-		//void mousePressEvent(QMouseEvent* event);
 
 		// constructors
 		explicit BlockEditor(QWidget* parent = nullptr);
@@ -37,6 +36,7 @@ class BlockEditor : public QGraphicsView {
 		Block* getResultBlock() const;
 		QVector<Block*> getBlocks() const;
 		QVector<Line*> getLines() const;
+		QPoint getMousePos() const;
 
 		//setters
 		void setIsDrawing(const bool drawing);
@@ -64,7 +64,6 @@ class BlockEditor : public QGraphicsView {
 		void drawGUI();
 		void removeConnections(Block* actual, bool input, bool output);
 
-		void resizeEvent(QResizeEvent *event) override;
 
 	public slots:
 		void showContextMenu(QPoint pos);

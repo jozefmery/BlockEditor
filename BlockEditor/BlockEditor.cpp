@@ -15,16 +15,9 @@
  * @param parent 
  */
 BlockEditor::BlockEditor(QWidget* parent) {
-	// disable scroll bar
-	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-	// set size of view
-	resize(1024, 1024);
 
 	// set up scene
 	scene = new QGraphicsScene();
-	scene->setSceneRect(0, 0, 1024, 1024);
 	setScene(scene);
 
 	actualBlock = nullptr;
@@ -67,7 +60,7 @@ void BlockEditor::pickUpBlock(Block* block, QPointF pos) {
  */
 void BlockEditor::placeBlock(Block* block) {
 	// get cursor position
-	QPointF cursorPos = mapFromGlobal(QCursor::pos());
+	QPointF cursorPos = mapToScene(mapFromGlobal(QCursor::pos()));
 
 	block->setCursor(Qt::OpenHandCursor);
 
@@ -200,8 +193,8 @@ void BlockEditor::deleteBlock() {
 		}
 		if (dynamic_cast<Block*>(item->parentItem())->getBlockType() == RESULT) {
 			resultBlock = nullptr;
-			scene->removeItem(item);
-			removeConnections(dynamic_cast<Block*>(item), true, false);
+			scene->removeItem(item->parentItem());
+			removeConnections(dynamic_cast<Block*>(item->parentItem()), true, false);
 			return;
 		}
 		blocks.remove(blocks.indexOf(dynamic_cast<Block*>(item->parentItem()), 0));
@@ -433,7 +426,7 @@ void BlockEditor::spawnBlock() {
 
 	if (dialog->isOK()) {
 		// get cursor position
-		QPointF cursorPos = mapFromGlobal(QCursor::pos());
+		QPointF cursorPos = mapToScene(mapFromGlobal(QCursor::pos()));
 		// draw a block
 		Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this,
 			dialog->getOperation(), dialog->getInputType(), dialog->getOutputType());
@@ -459,7 +452,7 @@ void BlockEditor::spawnConstBlock() {
 
 	if (dialogConst->isOK()) {
 		// get cursor position
-		QPointF cursorPos = mapFromGlobal(QCursor::pos());
+		QPointF cursorPos = mapToScene(mapFromGlobal(QCursor::pos()));;
 		// draw a block
 		Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this,
 			std::floor((dialogConst->getValue() * 100) + .5) / 100, dialogConst->getOutputType());
@@ -480,7 +473,7 @@ void BlockEditor::spawnResultBlock() {
 
 	if (resultBlock == nullptr) {
 		// get cursor position
-		QPointF cursorPos = mapFromGlobal(QCursor::pos());
+		QPointF cursorPos = mapToScene(mapFromGlobal(QCursor::pos()));;
 		// draw a block
 		Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this);
 
@@ -508,10 +501,12 @@ void BlockEditor::mouseMoveEvent(QMouseEvent* event) {
 	if (blockToPlace) {
 		int shiftX = event->pos().x() - mouseClickPos.x();
 		int shiftY = event->pos().y() - mouseClickPos.y();
-		QPointF newPoint(shiftX, shiftY);
-		blockToPlace->setPos(newPoint);
+		QPoint newPoint(shiftX, shiftY);
+		blockToPlace->setPos(mapToScene(newPoint));
 	} else if (isDrawing()) {
-		line->setLine(lineStart.x(), lineStart.y(), event->pos().x(), event->pos().y());
+		QPoint newPoint(event->pos().x(), event->pos().y());
+		newPoint = mapToScene(newPoint).toPoint();
+		line->setLine(lineStart.x(), lineStart.y(), newPoint.x(), newPoint.y());
 	}
 
 	QGraphicsView::mouseMoveEvent(event);
@@ -685,14 +680,11 @@ void BlockEditor::setLineStart(const QPoint lineStart) {
 	this->lineStart = mapFromGlobal(lineStart);
 };
 
+
 /**
- * ???
- * @param event 
+ * Get mouse position.
+ * @return mouse position
  */
-void BlockEditor::resizeEvent(QResizeEvent *event)
-{
-	auto size = event->size();
-
-	scene->setSceneRect(0, 0, size.width(), size.height());
+QPoint BlockEditor::getMousePos() const {
+	return mapFromGlobal(QCursor::pos());
 }
-

@@ -37,6 +37,7 @@ inline void MainWindow::setUpChildren() {
 	connect(editorTabs, SIGNAL(tabCloseRequested(int)), this, SLOT(closeFile(int)));
 	connect(ui.actionClose_all, &QAction::triggered, this, &MainWindow::closeAll);
 	connect(ui.actionExit, &QAction::triggered, this, &MainWindow::exitApp);
+	connect(ui.actionSave, &QAction::triggered, this, &MainWindow::save);
 
 	auto rect = QApplication::desktop()->availableGeometry();
 
@@ -213,13 +214,6 @@ void MainWindow::openFile(const QString path, const bool addToRecent)
 
 void MainWindow::closeFile(const int idx) {
 
-	/*
-	int idx = editorTabs->currentIndex();
-
-	// no file open
-	if (idx == -1) { return; }
-	 */
-
 	editorTabs->removeTab(idx);
 	files.erase(files.begin() + idx);
 }
@@ -264,4 +258,55 @@ void MainWindow::setResult() {
 	cursor.insertText(QString::number(currentView->getResultBlock()->getInputs()[0]->getValue()));
 	cursor.endEditBlock();
 	cursor.removeSelectedText();
+}
+
+void MainWindow::saveCurrent() {
+	
+	int idx = editorTabs->currentIndex();
+
+	// no editor open
+	if (editorTabs->currentIndex() == -1) { return; }
+
+	save(idx);
+}
+
+void MainWindow::save(const int idx) {
+	
+	// new file
+	if(files[idx].getFullPath() == "")
+	{
+		auto path = QFileDialog::getSaveFileName(this, "Save as", "", "Scheme file (*.scheme);;All Files (*.*)");
+
+		files[idx].setFullPath(path);
+		editorTabs->setTabText(idx, files[idx].getDisplayPath());
+	}
+
+	writeXML(idx);
+}
+
+void MainWindow::writeXML(const int idx) const
+{
+	QString xml;
+
+	QXmlStreamWriter writer(&xml);
+	writer.setAutoFormatting(true);
+
+	writer.writeStartDocument();
+	writer.writeStartElement("scheme");
+
+
+
+	writer.writeEndElement(); // scheme
+
+	writer.writeEndDocument();
+
+	QFile file(files[idx].getFullPath());
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+
+		QMessageBox::critical(0, "File access error", "Error accessing: " + files[idx].getFullPath() + "for writing!");
+		return;
+	}
+
+	file.write(xml.toUtf8());
+
 }

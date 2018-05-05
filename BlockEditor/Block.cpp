@@ -367,7 +367,9 @@ void Block::BlockIO::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 			addLine(line, false);
 		}
 	} else if (IO == OUTPUT && !editor->isDrawing() && line == nullptr) {
-		Line* line = new Line(event->pos(), event->pos(), block->parent);
+		QPointF newPoint(QCursor::pos().x(), QCursor::pos().y());
+		newPoint = mapToScene(editor->getMousePos());
+		Line* line = new Line(newPoint, newPoint, block->parent);
 		editor->scene->addItem(line);
 		addLine(line, true);
 		line->setOutBlock(block);
