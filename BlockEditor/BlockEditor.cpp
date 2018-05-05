@@ -15,16 +15,9 @@
  * \param parent 
  */
 BlockEditor::BlockEditor(QWidget* parent) {
-	// disable scroll bar
-	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-	// set size of view
-	resize(1024, 1024);
 
 	// set up scene
 	scene = new QGraphicsScene();
-	scene->setSceneRect(0, 0, 1024, 1024);
 	setScene(scene);
 
 	actualBlock = nullptr;
@@ -67,7 +60,7 @@ void BlockEditor::pickUpBlock(Block* block, QPointF pos) {
  */
 void BlockEditor::placeBlock(Block* block) {
 	// get cursor position
-	QPointF cursorPos = mapFromGlobal(QCursor::pos());
+	QPointF cursorPos = mapToScene(mapFromGlobal(QCursor::pos()));
 
 	block->setCursor(Qt::OpenHandCursor);
 
@@ -427,7 +420,7 @@ void BlockEditor::spawnBlock() {
 
 	if (dialog->isOK()) {
 		// get cursor position
-		QPointF cursorPos = mapFromGlobal(QCursor::pos());
+		QPointF cursorPos = mapToScene(mapFromGlobal(QCursor::pos()));
 		// draw a block
 		Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this,
 			dialog->getOperation(), dialog->getInputType(), dialog->getOutputType());
@@ -453,7 +446,7 @@ void BlockEditor::spawnConstBlock() {
 
 	if (dialogConst->isOK()) {
 		// get cursor position
-		QPointF cursorPos = mapFromGlobal(QCursor::pos());
+		QPointF cursorPos = mapToScene(mapFromGlobal(QCursor::pos()));;
 		// draw a block
 		Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this,
 			std::floor((dialogConst->getValue() * 100) + .5) / 100, dialogConst->getOutputType());
@@ -471,7 +464,7 @@ void BlockEditor::spawnResultBlock() {
 
 	if (resultBlock == nullptr) {
 		// get cursor position
-		QPointF cursorPos = mapFromGlobal(QCursor::pos());
+		QPointF cursorPos = mapToScene(mapFromGlobal(QCursor::pos()));;
 		// draw a block
 		Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this);
 
@@ -604,9 +597,3 @@ void BlockEditor::setActualBlock(Block* block) {
  * \brief ???
  * \param event 
  */
-void BlockEditor::resizeEvent(QResizeEvent *event)
-{
-	auto size = event->size();
-
-	scene->setSceneRect(0, 0, size.width(), size.height());
-}

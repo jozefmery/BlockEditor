@@ -22,6 +22,8 @@ class MainWindow : public QMainWindow
 		void createNewTab(const QString& name);
 		int getFileIndex(const QString fullPath);
 		void openFile(const QString path, const bool addToRecent);
+		void writeXML(const int idx) const;
+		void save(const int idx);
 
 		Ui::MainWindowClass ui;
 		QTabWidget *editorTabs;
@@ -43,6 +45,6 @@ class MainWindow : public QMainWindow
 		void closeCurrent();
 		void closeAll();
 		void exitApp();
-
+		void saveCurrent();
 		void setResult();
 };

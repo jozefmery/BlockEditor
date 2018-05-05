@@ -44,7 +44,7 @@ class BlockEditor : public QGraphicsView {
 			this->line = line;
 			lines.push_back(line);
 		};
-		void setLineStart(const QPoint lineStart) { this->lineStart = mapFromGlobal(lineStart); };
+		void setLineStart(const QPoint lineStart) { this->lineStart = mapToScene(mapFromGlobal(QCursor::pos()));; };
 		void setActualBlock(Block* block);
 
 	private:
@@ -67,7 +67,6 @@ class BlockEditor : public QGraphicsView {
 		void drawGUI();
 		void removeConnections(Block* actual, bool input, bool output);
 
-		void resizeEvent(QResizeEvent *event) override;
 
 	public slots:
 		void showContextMenu(QPoint pos);
