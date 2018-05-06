@@ -24,6 +24,7 @@ BlockEditor::BlockEditor(QWidget* parent) {
 	resultBlock = nullptr;
 	
 	drawGUI();
+	setAlignment(Qt::AlignLeft | Qt::AlignTop);
 }
 
 /**
@@ -166,6 +167,11 @@ void BlockEditor::removeConnections(Block* actual, bool input, bool output) {
 			}
 		}
 	}
+}
+
+void BlockEditor::resizeEvent(QResizeEvent* event){
+	
+	QGraphicsView::resizeEvent(event);
 }
 
 /**
@@ -422,8 +428,11 @@ void BlockEditor::spawnBlock() {
 		// get cursor position
 		QPointF cursorPos = mapToScene(mapFromGlobal(QCursor::pos()));
 		// draw a block
-		Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this,
+		qDebug() << cursorPos.x() << " " << cursorPos.y();
+		
+		Block* block = new Block(cursorPos.x(), cursorPos.y(), this,
 			dialog->getOperation(), dialog->getInputType(), dialog->getOutputType());
+
 
 		blocks.push_back(block);
 		scene->addItem(block);
@@ -593,7 +602,3 @@ void BlockEditor::setActualBlock(Block* block) {
 	}
 }
 
-/**
- * \brief ???
- * \param event 
- */
