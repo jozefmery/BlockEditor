@@ -10,6 +10,10 @@
 
 #include <QDebug>
 
+/**
+ * Constructor of dialog.
+ * @param parent widget parent
+ */
 Dialog::Dialog(QWidget *parent)
 	: QDialog(parent)
 {
@@ -21,6 +25,9 @@ Dialog::Dialog(QWidget *parent)
 	clickedOk = false;
 }
 
+/**
+ * Slot for signal cliclked on OK button. Get values from widgets.
+ */
 void Dialog::ok() {
 	inputType = ui.input->currentText();
 	outputType = ui.output->currentText();
@@ -31,6 +38,9 @@ void Dialog::ok() {
 	close();
 }
 
+/**
+ * Slot for signal clicked on Cancel button. Close dialog.
+ */
 void Dialog::cancel() {
 
 	clickedOk = false;
