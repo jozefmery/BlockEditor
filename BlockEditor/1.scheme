@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<scheme>
+    <block x="0" y="0" type="const" output="double" value="0"/>
+    <block x="0" y="0" type="const" output="double" value="0"/>
+    <block x="0" y="0" type="const" output="double" value="0"/>
+</scheme>

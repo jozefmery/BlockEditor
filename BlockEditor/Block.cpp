@@ -129,7 +129,7 @@ Block::Block(const int x, const int y, BlockEditor* parent) :
 	operationText->setPos(x + rect().width() / 2 - operationText->boundingRect().width() / 2,
 		y + rect().height() / 2 - operationText->boundingRect().height() / 2);
 
-	input.push_back(new BlockIO(x, y + 19 * (desktop.width() / 1920), INPUT, nullptr, NULL, parent, this));
+	input.push_back(new BlockIO(x, y + 19 * (desktop.width() / 1920), INPUT, nullptr, 0, parent, this));
 
 	setIsPlaced(true);
 

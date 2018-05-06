@@ -23,7 +23,8 @@ class MainWindow : public QMainWindow
 		int getFileIndex(const QString fullPath);
 		void openFile(const QString path, const bool addToRecent);
 		void writeXML(const int idx) const;
-		void save(const int idx);
+		void readXML(const QString path);
+		void save(const int idx, bool ask);
 
 		Ui::MainWindowClass ui;
 		QTabWidget *editorTabs;
@@ -46,5 +47,7 @@ class MainWindow : public QMainWindow
 		void closeAll();
 		void exitApp();
 		void saveCurrent();
+		void saveAs();
+		void saveAll();
 		void setResult();
 };

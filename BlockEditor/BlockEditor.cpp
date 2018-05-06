@@ -82,7 +82,7 @@ void BlockEditor::placeBlock(Block* block) {
  * @param pos 
  */
 void BlockEditor::showContextMenu(QPoint pos) {
-	if (blockToPlace == nullptr && !isDrawing()) { // when plock is picked up, context menu isn't able to open
+	if (blockToPlace == nullptr && !isDrawing()) { // when block is picked up, context menu isn't able to open
 		// Handle global position
 		const QPoint globalPos = mapToGlobal(pos);
 
@@ -372,7 +372,7 @@ void BlockEditor::setAsStartBlock() {
 		if (missingConnection) {
 			QMessageBox messageBox;
 			messageBox.setText("Some ports are not connected!");
-			messageBox.setStyleSheet("QLabel{min-width: 350px;}");
+			messageBox.setStyleSheet("QLabel{min-width: 15em;}");
 			messageBox.exec();
 			return;
 		}
@@ -480,10 +480,12 @@ void BlockEditor::spawnResultBlock() {
 		resultBlock = block;
 
 		scene->addItem(block);
+
+
 	} else {
 		QMessageBox messageBox;
 		messageBox.setText("You cannot have two result blocks in one project!");
-		messageBox.setStyleSheet("QLabel{min-width: 350px;}");
+		messageBox.setStyleSheet("QLabel{min-width: 20em;}");
 		messageBox.exec();
 	}
 

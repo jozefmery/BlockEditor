@@ -4,6 +4,10 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QDesktopWidget>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
+#include <QtXml/QDomNode>
+#include <vector>
 
 constexpr int NOT_FOUND = -1;
 Computation* computation;
@@ -37,7 +41,10 @@ inline void MainWindow::setUpChildren() {
 	connect(editorTabs, SIGNAL(tabCloseRequested(int)), this, SLOT(closeFile(int)));
 	connect(ui.actionClose_all, &QAction::triggered, this, &MainWindow::closeAll);
 	connect(ui.actionExit, &QAction::triggered, this, &MainWindow::exitApp);
-	connect(ui.actionSave, &QAction::triggered, this, &MainWindow::save);
+	connect(ui.actionSave, &QAction::triggered, this, &MainWindow::saveCurrent);
+	connect(ui.actionSave_as, &QAction::triggered, this, &MainWindow::saveAs);
+	connect(ui.actionSave_all, &QAction::triggered, this, &MainWindow::saveAll);
+	
 
 	auto rect = QApplication::desktop()->availableGeometry();
 
@@ -205,6 +212,9 @@ void MainWindow::openFile(const QString path, const bool addToRecent)
 
 			connect(action, &QAction::triggered, this, [action, this] { this->openFile(action->text(), false); });
 		}
+
+		readXML(file.getFullPath());
+
 	} else {
 
 		// focus on file
@@ -267,15 +277,37 @@ void MainWindow::saveCurrent() {
 	// no editor open
 	if (editorTabs->currentIndex() == -1) { return; }
 
-	save(idx);
+	save(idx, false);
 }
 
-void MainWindow::save(const int idx) {
+void MainWindow::saveAs() {
+
+	int idx = editorTabs->currentIndex();
+
+	// no editor open
+	if (editorTabs->currentIndex() == -1) { return; }
+
+	save(idx, true);
+}
+
+void MainWindow::saveAll() {
+
+	qDebug() << editorTabs->count();
+
+	for(int i = 0; i < editorTabs->count(); i++) {
+		
+		save(i, false);
+	}
+}
+
+void MainWindow::save(const int idx, bool ask) {
 	
 	// new file
-	if(files[idx].getFullPath() == "")
+	if(files[idx].getFullPath() == "" || ask)
 	{
 		auto path = QFileDialog::getSaveFileName(this, "Save as", "", "Scheme file (*.scheme);;All Files (*.*)");
+
+		if (path == "") return;
 
 		files[idx].setFullPath(path);
 		editorTabs->setTabText(idx, files[idx].getDisplayPath());
@@ -294,7 +326,55 @@ void MainWindow::writeXML(const int idx) const
 	writer.writeStartDocument();
 	writer.writeStartElement("scheme");
 
+	BlockEditor* editor = dynamic_cast<BlockEditor*>(editorTabs->widget(idx));
 
+	for (int i = 0; i < editor->getBlocks().size(); i++) {
+
+		writer.writeStartElement("block");
+
+		writer.writeAttribute("x", QString::number(editor->getBlocks()[i]->pos().x()));
+		writer.writeAttribute("y", QString::number(editor->getBlocks()[i]->pos().y()));
+
+		switch (editor->getBlocks()[i]->getBlockType())
+		{
+		case CONSTBLOCK:
+			writer.writeAttribute("type", "const");
+			writer.writeAttribute("output", editor->getBlocks()[i]->getOutputs()[0]->getName());
+			writer.writeAttribute("value", editor->getBlocks()[i]->getOperationText()->toPlainText());
+			break;
+		case BLOCK:
+			writer.writeAttribute("type", "op");
+			writer.writeAttribute("operation", editor->getBlocks()[i]->getOperation());
+			writer.writeAttribute("input", editor->getBlocks()[i]->getInputs()[0]->getName());
+			writer.writeAttribute("output", editor->getBlocks()[i]->getOutputs()[0]->getName());
+			break;
+
+		}
+
+		writer.writeEndElement(); // block
+
+	}
+
+	if (editor->getResultBlock()) {
+		writer.writeStartElement("block");
+		writer.writeAttribute("x", QString::number(editor->getResultBlock()->pos().x()));
+		writer.writeAttribute("y", QString::number(editor->getResultBlock()->pos().y()));
+		writer.writeAttribute("type", "result");
+		writer.writeEndElement(); // block
+	}
+
+	for (int i = 0; i < editor->getLines().size(); i++) {
+		
+		writer.writeStartElement("line");
+
+		writer.writeAttribute("x1", QString::number(editor->getLines()[i]->line().x1()));
+		writer.writeAttribute("y1", QString::number(editor->getLines()[i]->line().y1()));
+		writer.writeAttribute("x2", QString::number(editor->getLines()[i]->line().x2()));
+		writer.writeAttribute("y2", QString::number(editor->getLines()[i]->line().y2()));
+
+		writer.writeEndElement(); // line
+
+	}
 
 	writer.writeEndElement(); // scheme
 
@@ -303,10 +383,133 @@ void MainWindow::writeXML(const int idx) const
 	QFile file(files[idx].getFullPath());
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 
-		QMessageBox::critical(0, "File access error", "Error accessing: " + files[idx].getFullPath() + "for writing!");
+		QMessageBox::critical(nullptr, "File access error", "Error accessing: " + files[idx].getFullPath() + " for writing!");
 		return;
 	}
 
 	file.write(xml.toUtf8());
+
+}
+
+void MainWindow::readXML(const QString path) {
+
+
+	QDomDocument doc;
+	QFile file(path);
+
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+
+		QMessageBox::critical(nullptr, "File access error", "Error accessing: " + path + " for reading!");
+		return;
+	}
+
+	QString error;
+	int line, column;
+
+
+	if (!doc.setContent(&file, &error, &line, &column)) {
+
+		QMessageBox::critical(nullptr, "XML read error", error);
+
+		file.close();
+		return;
+	}
+	file.close();
+
+	// print out the element names of all elements that are direct children
+	// of the outermost element.
+	QDomElement docElem = doc.documentElement();
+
+	if(docElem.tagName() != "scheme") {
+		
+		QMessageBox::critical(nullptr, "XML", "Unknown element: " + docElem.tagName());
+		return;
+	}
+
+	if(docElem.attributes().length() > 0) {
+		
+		QMessageBox::critical(nullptr, "XML", "Invalid attributs for scheme");
+		return;
+	}
+
+	QDomNode n = docElem.firstChild();
+	while (!n.isNull()) {
+		QDomElement e = n.toElement(); // try to convert the node to an element.
+		if (!e.isNull()) {
+			
+			if(e.tagName() != "block" && e.tagName() != "line") {
+
+				QMessageBox::critical(nullptr, "XML", "Unknown element: " + e.tagName());
+				return;
+
+			}
+
+			if(!e.firstChild().isNull()) {
+				
+				QMessageBox::critical(nullptr, "XML", "Invalid child elemenet for " + e.tagName() + ": " + e.firstChild().toElement().tagName());
+				return;
+
+			}
+
+			if(e.tagName() == "block") {
+
+				std::vector<QString> attribs = {"x", "y", "type"};
+				
+
+				auto map = e.attributes();
+
+				if(map.length() < 3) {
+					QMessageBox::critical(nullptr, "XML", "Not enough attributes for block");
+					return;
+
+				}
+				
+				for (int i = 0; i < 3; i++) {
+
+					if(!map.contains(attribs[i])) {
+						
+						QMessageBox::critical(nullptr, "XML", "Missing attribute for block: " + attribs[i]);
+						return;
+					}
+
+				}
+
+				bool ok = true;
+				int x = map.namedItem("x").toAttr().value().toInt(&ok, 10);
+
+				if (!ok) {
+
+					QMessageBox::critical(nullptr, "XML", "Invalid value for x attribute: " + map.namedItem("x").toAttr().value());
+					return;
+				}
+
+				int y = map.namedItem("y").toAttr().value().toInt(&ok, 10);
+
+				if (!ok) {
+
+					QMessageBox::critical(nullptr, "XML", "Invalid value for y attribute: " + map.namedItem("x").toAttr().value());
+					return;
+				}
+
+				QString type = map.namedItem("x").toAttr().value();
+
+				if (type != "const" && type != "op" && type != "result") {
+
+					QMessageBox::critical(nullptr, "XML", "Invalid value for type attribute: " + type);
+					return;
+				}
+			
+			}
+			else {
+				
+
+			}
+
+			
+
+		}
+		n = n.nextSibling();
+	}
+	
 
 }
