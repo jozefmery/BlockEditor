@@ -34,8 +34,8 @@ class BlockEditor : public QGraphicsView {
 		QPointF getLineStart() const;
 		Block* getActualBlock() const;
 		Block* getResultBlock() const;
-		QVector<Block*> getBlocks() const;
-		QVector<Line*> getLines() const;
+		QVector<Block*>& getBlocks();
+		QVector<Line*>& getLines();
 		QPoint getMousePos() const;
 
 		//setters

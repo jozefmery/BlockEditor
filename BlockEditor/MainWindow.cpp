@@ -358,8 +358,8 @@ void MainWindow::writeXML(const int idx) const
 
 	if (editor->getResultBlock()) {
 		writer.writeStartElement("block");
-		writer.writeAttribute("x", QString::number(editor->mapFromScene(editor->getResultBlock()->pos()).x()));
-		writer.writeAttribute("y", QString::number(editor->mapFromScene(editor->getResultBlock()->pos()).y()));
+		writer.writeAttribute("x", QString::number(editor->getResultBlock()->pos().x()));
+		writer.writeAttribute("y", QString::number(editor->getResultBlock()->pos().y()));
 		writer.writeAttribute("type", "result");
 		writer.writeEndElement(); // block
 	}
@@ -539,12 +539,11 @@ void MainWindow::readXML(const QString path) {
 
 					}
 
-
-					Block* block = new Block(pos.x(), pos.y(), editor, value, output);
+					Block* block = new Block(0, 0, editor, value, output);
 
 					editor->getBlocks().push_back(block);
 					editor->scene->addItem(block);
-
+					block->setPos(pos);
 
 				}
 				else if(type == "op") {
@@ -595,10 +594,11 @@ void MainWindow::readXML(const QString path) {
 
 					}
 
-					Block* block = new Block(pos.x(), pos.y(), editor, op, input, output);
+					Block* block = new Block(0, 0, editor, op, input, output);
 
 					editor->getBlocks().push_back(block);
 					editor->scene->addItem(block);
+					block->setPos(pos);
 				}
 				else if (type == "result") {
 
@@ -615,11 +615,12 @@ void MainWindow::readXML(const QString path) {
 
 					}
 					
-					Block* block = new Block(pos.x(), pos.y(), editor);
+					Block* block = new Block(0, 0, editor);
 
 					editor->setResultBlock(block);
 
 					editor->scene->addItem(block);
+					block->setPos(pos);
 
 				}
 				else {

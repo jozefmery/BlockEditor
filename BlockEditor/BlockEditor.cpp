@@ -29,7 +29,7 @@ BlockEditor::BlockEditor(QWidget* parent) {
 
 	drawGUI();
 
-	setAlignment(Qt::AlignLeft | Qt::AlignTop);
+	//setAlignment(Qt::AlignLeft | Qt::AlignTop);
 }
 /**
  * Set background.
@@ -438,11 +438,12 @@ void BlockEditor::spawnBlock() {
 		// get cursor position
 		QPointF cursorPos = mapToScene(mapFromGlobal(rightClick));
 		// draw a block
-		Block* block = new Block(cursorPos.x(), cursorPos.y(), this,
+		Block* block = new Block(0, 0, this,
 			dialog->getOperation(), dialog->getInputType(), dialog->getOutputType());
 
 		blocks.push_back(block);
 		scene->addItem(block);
+		block->setPos(cursorPos);
 
 		dialog->setClickedOk(false);
 	}
@@ -464,12 +465,12 @@ void BlockEditor::spawnConstBlock() {
 		// get cursor position
 		QPointF cursorPos = mapToScene(mapFromGlobal(rightClick));;
 		// draw a block
-		Block* block = new Block(cursorPos.x(), cursorPos.y(), this,
+		Block* block = new Block(0, 0, this,
 			dialogConst->getValue(), dialogConst->getOutputType());
 
 		blocks.push_back(block);
 		scene->addItem(block);
-
+		block->setPos(cursorPos);
 		dialogConst->setClickedOk(false);
 	}
 
@@ -485,12 +486,12 @@ void BlockEditor::spawnResultBlock() {
 		// get cursor position
 		QPointF cursorPos = mapToScene(mapFromGlobal(rightClick));;
 		// draw a block
-		Block* block = new Block(cursorPos.x(), cursorPos.y(), this);
+		Block* block = new Block(0, 0 , this);
 
 		resultBlock = block;
 
 		scene->addItem(block);
-
+		block->setPos(cursorPos);
 
 	} else {
 		QMessageBox messageBox;
@@ -663,7 +664,7 @@ Block* BlockEditor::getResultBlock() const {
  * Get all the blocks of scene.
  * @return blocks of scene
  */
-QVector<Block*> BlockEditor::getBlocks() const {
+QVector<Block*>& BlockEditor::getBlocks() {
 	return blocks;
 };
 
@@ -671,7 +672,7 @@ QVector<Block*> BlockEditor::getBlocks() const {
  * Get all the connections of scene.
  * @return connections of scene
  */
-QVector<Line*> BlockEditor::getLines() const {
+QVector<Line*>& BlockEditor::getLines() {
 	return lines;
 };
 
