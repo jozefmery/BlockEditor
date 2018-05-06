@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<scheme>
-    <block x="-621" y="-471" type="op" operation="+" input="double" output="double" out="1" in1="2" in2="3"/>
-    <block x="-398" y="-434" type="op" operation="+" input="double" output="double" out="5" in1="0" in2="4"/>
-    <block x="-816" y="-571" type="const" output="double" value="0" out="0"/>
-    <block x="-817" y="-413" type="const" output="double" value="0" out="0"/>
-    <block x="-574" y="-326" type="const" output="double" value="0" out="1"/>
-    <block x="-156" y="-437" type="result" in="1"/>
-</scheme>

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<scheme>
+    <block x="-555" y="-260" type="const" output="double" value="0" out="1"/>
+    <block x="-392" y="-380" type="op" operation="+" input="double" output="real" out="3" in1="2" in2="0"/>
+    <block x="-572" y="-501" type="const" output="double" value="15" out="1"/>
+    <block x="-215" y="-384" type="result" in="1"/>
+</scheme>

@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<scheme>
-    <block x="-973" y="-504" type="op" operation="+" input="double" output="double" out="-1" in1="-1" in2="-1"/>
-    <block x="-624" y="-513" type="result" in="-1"/>
-</scheme>

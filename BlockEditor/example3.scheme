@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<scheme>
+    <block x="52" y="-234" type="op" operation="+" input="double" output="double" out="13" in1="4" in2="3"/>
+    <block x="-221" y="-64" type="op" operation="/" input="integer" output="constant" out="3" in1="6" in2="5"/>
+    <block x="-194" y="-208" type="op" operation="+" input="integer" output="constant" out="3" in1="7" in2="8"/>
+    <block x="-74" y="-156" type="op" operation="-" input="constant" output="double" out="0" in1="2" in2="1"/>
+    <block x="-33" y="-284" type="const" output="double" value="-2" out="0"/>
+    <block x="-334" y="-1" type="op" operation="+" input="real" output="integer" out="1" in1="11" in2="12"/>
+    <block x="-321" y="-117" type="const" output="integer" value="0" out="1"/>
+    <block x="-325" y="-281" type="const" output="integer" value="2.2" out="2"/>
+    <block x="-412" y="-179" type="op" operation="/" input="real" output="integer" out="2" in1="9" in2="10"/>
+    <block x="-564" y="-247" type="const" output="real" value="-4.7" out="8"/>
+    <block x="-575" y="-136" type="const" output="real" value="2.8" out="8"/>
+    <block x="-478" y="-61" type="const" output="real" value="49" out="5"/>
+    <block x="-481" y="64" type="const" output="real" value="8" out="5"/>
+    <block x="203" y="-225" type="result" in="0"/>
+</scheme>
