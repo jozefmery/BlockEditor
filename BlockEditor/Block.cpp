@@ -10,6 +10,8 @@
 #include <QTextDocument>
 #include <cmath>
 #include <QToolTip>
+#include <QApplication>
+#include <QDesktopWidget>
 
 /**
  * Constructor of block with operation.
@@ -29,21 +31,25 @@ Block::Block(const int x, const int y, BlockEditor* parent, QString operation, Q
 	this->blockType = BLOCK;
 
 	// draw the block
-	setRect(x, y, 50, 50);
+
+	auto desktop = QApplication::desktop()->availableGeometry();
+
+	setRect(x, y, 50 * (desktop.width() / 1920), 50 * (desktop.width() / 1920));
+
 	QBrush brush;
 	brush.setStyle(Qt::SolidPattern);
 	brush.setColor(Qt::red);
 	setBrush(brush);
 
 	operationText = new QGraphicsTextItem(QString(operation), this);
-	operationText->setFont(QFont("comic sans", 10));
+	operationText->setFont(QFont("comic sans", 12));
 	operationText->setPos(x + rect().width() / 2 - operationText->boundingRect().width() / 2,
 				y + rect().height() / 2 - operationText->boundingRect().height() / 2);
 
 	input.push_back(new BlockIO(x, y, INPUT, inputType, 0, parent, this));
-	input.push_back(new BlockIO(x, y + 37, INPUT, inputType, 0, parent, this));
+	input.push_back(new BlockIO(x, y + 37 * (desktop.width() / 1920), INPUT, inputType, 0, parent, this));
 	
-	output.push_back(new BlockIO(x + 43, y + 19, OUTPUT, outputType, 0, parent, this));
+	output.push_back(new BlockIO(x + 43 * (desktop.width() / 1920), y + 19 * (desktop.width() / 1920), OUTPUT, outputType, 0, parent, this));
 	
 	setIsPlaced(true);
 
@@ -71,18 +77,20 @@ Block::Block(const int x, const int y, BlockEditor* parent, double value, QStrin
 	this->blockType = CONSTBLOCK;
 
 	// draw the block
-	setRect(x, y, 50, 50);
+	auto desktop = QApplication::desktop()->availableGeometry();
+
+	setRect(x, y, 50 * (desktop.width() / 1920), 50 * (desktop.width() / 1920));
 	QBrush brush;
 	brush.setStyle(Qt::SolidPattern);
 	brush.setColor(Qt::yellow);
 	setBrush(brush);
 
 	operationText = new QGraphicsTextItem(QString::number(value), this);
-	operationText->setFont(QFont("comic sans", 7));
+	operationText->setFont(QFont("comic sans", 12));
 	operationText->setPos(x + rect().width() / 2 - operationText->boundingRect().width() / 2,
 		y + rect().height() / 2 - operationText->boundingRect().height() / 2);
 
-	output.push_back(new BlockIO(x + 43, y + 19, OUTPUT, outputType, value, parent, this));
+	output.push_back(new BlockIO(x + 43 * (desktop.width() / 1920), y + 19 * (desktop.width() / 1920), OUTPUT, outputType, value, parent, this));
 
 	setIsPlaced(true);
 
@@ -108,17 +116,20 @@ Block::Block(const int x, const int y, BlockEditor* parent) :
 	this->blockType = RESULT;
 
 	// draw the block
-	setRect(x, y, 70, 50);
+	auto desktop = QApplication::desktop()->availableGeometry();
+
+	setRect(x, y, 100 * (desktop.width() / 1920), 50 * (desktop.width() / 1920));
 	QBrush brush;
 	brush.setStyle(Qt::SolidPattern);
 	brush.setColor(Qt::white);
 	setBrush(brush);
 
 	operationText = new QGraphicsTextItem("RESULT", this);
+	operationText->setFont(QFont("comic sans", 12));
 	operationText->setPos(x + rect().width() / 2 - operationText->boundingRect().width() / 2,
 		y + rect().height() / 2 - operationText->boundingRect().height() / 2);
 
-	input.push_back(new BlockIO(x, y + 19, INPUT, nullptr, NULL, parent, this));
+	input.push_back(new BlockIO(x, y + 19 * (desktop.width() / 1920), INPUT, nullptr, NULL, parent, this));
 
 	setIsPlaced(true);
 
@@ -281,8 +292,12 @@ Block::BlockIO::BlockIO(int x, int y, int IO, QString name, double value, BlockE
 
 	line = nullptr;
 
+	auto desktop = QApplication::desktop()->availableGeometry();
+
+	setRect(x, y, 50 * (desktop.width() / 1920), 50 * (desktop.width() / 1920));
+
 	if (IO == INPUT) {
-		setRect(x, y, 7, 12);
+		setRect(x, y, 7 * (desktop.width() / 1920), 12 * (desktop.width() / 1920));
 		if (dynamic_cast<Block*>(parentBlock)->getBlockType() == RESULT) {
 			setBrush(QBrush(QColor(Qt::green)));
 		} else {
@@ -295,7 +310,7 @@ Block::BlockIO::BlockIO(int x, int y, int IO, QString name, double value, BlockE
 		if (dynamic_cast<Block*>(parentBlock)->getBlockType() == CONSTBLOCK) {
 			this->hasValue = true;
 		}
-		setRect(x, y, 7, 12);
+		setRect(x, y, 7 * (desktop.width() / 1920), 12 * (desktop.width() / 1920));
 		setBrush(QBrush(QColor(Qt::blue)));
 		setCursor(Qt::PointingHandCursor);
 		cycle = false;
