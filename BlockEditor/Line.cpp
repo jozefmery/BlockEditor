@@ -1,3 +1,11 @@
+﻿/************************************************/
+/* 	BlockEditor ICP 2018						*/
+/*	Part: Line									*/
+/*	Authors:									*/
+/*		Denis Dovičic		xdovic01			*/
+/*		Jozef Méry			xmeryj00			*/
+/************************************************/
+
 #include "Line.h"
 #include "BlockEditor.h"
 

@@ -1,4 +1,12 @@
-﻿#include "MainWindow.h"
+﻿/************************************************/
+/* 	BlockEditor ICP 2018						*/
+/*	Part: MainWindow							*/
+/*	Authors:									*/
+/*		Denis Dovičic		xdovic01			*/
+/*		Jozef Méry			xmeryj00			*/
+/************************************************/
+
+#include "MainWindow.h"
 #include "BlockEditor.h"
 
 #include <QDebug>
