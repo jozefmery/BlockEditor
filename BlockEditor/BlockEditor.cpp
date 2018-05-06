@@ -9,6 +9,10 @@
 #include <QDialog>
 #include <cmath>
 #include <QMessageBox>
+#include <QApplication>
+#include <QDesktopWidget>
+
+static QPoint rightClick;
 
 /**
  * Constructor of a view (central widget of main window).
@@ -22,10 +26,11 @@ BlockEditor::BlockEditor(QWidget* parent) {
 
 	actualBlock = nullptr;
 	resultBlock = nullptr;
-	
-	drawGUI();
-}
 
+	drawGUI();
+
+	setAlignment(Qt::AlignLeft | Qt::AlignTop);
+}
 /**
  * Set background.
  */
@@ -85,6 +90,8 @@ void BlockEditor::showContextMenu(QPoint pos) {
 	if (blockToPlace == nullptr && !isDrawing()) { // when block is picked up, context menu isn't able to open
 		// Handle global position
 		const QPoint globalPos = mapToGlobal(pos);
+
+		rightClick = globalPos;
 
 		item = itemAt(pos.x(), pos.y());
 		if (item) {
@@ -419,16 +426,19 @@ void BlockEditor::unsetAsStartBlock() {
  */
 void BlockEditor::spawnBlock() {
 
+	auto desktop = QApplication::desktop()->availableGeometry();
+
 	dialog = new Dialog(this);
-	dialog->move(QCursor::pos().x() - dialog->width() / 2, 
-		QCursor::pos().y() - dialog->height() / 2);
+	
+	dialog->move(rightClick.x() - dialog->width() / 2, 
+		rightClick.y() - dialog->height() / 2);
 	dialog->exec();
 
 	if (dialog->isOK()) {
 		// get cursor position
-		QPointF cursorPos = mapToScene(mapFromGlobal(QCursor::pos()));
+		QPointF cursorPos = mapToScene(mapFromGlobal(rightClick));
 		// draw a block
-		Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this,
+		Block* block = new Block(cursorPos.x(), cursorPos.y(), this,
 			dialog->getOperation(), dialog->getInputType(), dialog->getOutputType());
 
 		blocks.push_back(block);
@@ -446,16 +456,16 @@ void BlockEditor::spawnBlock() {
 void BlockEditor::spawnConstBlock() {
 	
 	dialogConst = new DialogConst(this);
-	dialogConst->move(QCursor::pos().x() - dialogConst->width() / 2,
-		QCursor::pos().y() - dialogConst->height() / 2);
+	dialogConst->move(rightClick.x() - dialogConst->width() / 2,
+		rightClick.y() - dialogConst->height() / 2);
 	dialogConst->exec();
 
 	if (dialogConst->isOK()) {
 		// get cursor position
-		QPointF cursorPos = mapToScene(mapFromGlobal(QCursor::pos()));;
+		QPointF cursorPos = mapToScene(mapFromGlobal(rightClick));;
 		// draw a block
-		Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this,
-			std::floor((dialogConst->getValue() * 100) + .5) / 100, dialogConst->getOutputType());
+		Block* block = new Block(cursorPos.x(), cursorPos.y(), this,
+			dialogConst->getValue(), dialogConst->getOutputType());
 
 		blocks.push_back(block);
 		scene->addItem(block);
@@ -473,9 +483,9 @@ void BlockEditor::spawnResultBlock() {
 
 	if (resultBlock == nullptr) {
 		// get cursor position
-		QPointF cursorPos = mapToScene(mapFromGlobal(QCursor::pos()));;
+		QPointF cursorPos = mapToScene(mapFromGlobal(rightClick));;
 		// draw a block
-		Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this);
+		Block* block = new Block(cursorPos.x(), cursorPos.y(), this);
 
 		resultBlock = block;
 
@@ -689,4 +699,9 @@ void BlockEditor::setLineStart(const QPoint lineStart) {
  */
 QPoint BlockEditor::getMousePos() const {
 	return mapFromGlobal(QCursor::pos());
+}
+
+void BlockEditor::setResultBlock(Block* result){
+	
+	resultBlock = result;
 }

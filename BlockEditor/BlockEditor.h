@@ -43,6 +43,7 @@ class BlockEditor : public QGraphicsView {
 		void setLine(Line* line);
 		void setLineStart(const QPoint lineStart);
 		void setActualBlock(Block* block);
+		void setResultBlock(Block* result);
 
 	private:
 		// attributes

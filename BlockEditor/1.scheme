@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <scheme>
-    <block x="0" y="0" type="const" output="double" value="0"/>
-    <block x="0" y="0" type="const" output="double" value="0"/>
-    <block x="0" y="0" type="const" output="double" value="0"/>
+    <block x="0" y="0" type="op" operation="+" input="double" output="double"/>
+    <block x="-166" y="-148" type="const" output="double" value="0"/>
+    <block x="-132" y="-176" type="result"/>
 </scheme>
