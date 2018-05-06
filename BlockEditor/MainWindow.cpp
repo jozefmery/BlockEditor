@@ -329,54 +329,89 @@ void MainWindow::writeXML(const int idx) const
 
 	BlockEditor* editor = dynamic_cast<BlockEditor*>(editorTabs->widget(idx));
 
-	for (int i = 0; i < editor->getBlocks().size(); i++) {
+	auto writeBlock = [&](Block *b) {
 
 		writer.writeStartElement("block");
 
-		writer.writeAttribute("x", QString::number(editor->getBlocks()[i]->pos().x()));
-		writer.writeAttribute("y", QString::number(editor->getBlocks()[i]->pos().y()));
+		writer.writeAttribute("id", QString::number(std::find(editor->getBlocks().begin(), editor->getBlocks().end(), b) - editor->getBlocks().begin()));
+		writer.writeAttribute("x", QString::number(b->pos().x()));
+		writer.writeAttribute("y", QString::number(b->pos().y()));
 
-		switch (editor->getBlocks()[i]->getBlockType())
+		switch (b->getBlockType())
 		{
 		case CONSTBLOCK:
 			writer.writeAttribute("type", "const");
-			writer.writeAttribute("output", editor->getBlocks()[i]->getOutputs()[0]->getName());
-			writer.writeAttribute("value", editor->getBlocks()[i]->getOperationText()->toPlainText());
+			writer.writeAttribute("output", b->getOutputs()[0]->getName());
+			writer.writeAttribute("value", b->getOperationText()->toPlainText());
+			if(b->getOutputs()[0]->getLine()) {
+				
+				auto id = std::find(editor->getBlocks().begin(), editor->getBlocks().end(), b->getOutputs()[0]->getLine()->getInBlock()) - editor->getBlocks().begin();
+				writer.writeAttribute("out", QString::number(id));
+			}
+			else {
+				writer.writeAttribute("out", "-1");
+			}
 			break;
 		case BLOCK:
 			writer.writeAttribute("type", "op");
-			writer.writeAttribute("operation", editor->getBlocks()[i]->getOperation());
-			writer.writeAttribute("input", editor->getBlocks()[i]->getInputs()[0]->getName());
-			writer.writeAttribute("output", editor->getBlocks()[i]->getOutputs()[0]->getName());
+			writer.writeAttribute("operation", b->getOperation());
+			writer.writeAttribute("input", b->getInputs()[0]->getName());
+			writer.writeAttribute("output", b->getOutputs()[0]->getName());
+			
+			if (b->getOutputs()[0]->getLine()) {
+
+				auto id = std::find(editor->getBlocks().begin(), editor->getBlocks().end(), b->getOutputs()[0]->getLine()->getInBlock()) - editor->getBlocks().begin();
+				writer.writeAttribute("out", QString::number(id));
+			}
+			else{
+				writer.writeAttribute("out", "-1");
+			}
+
+			if (b->getInputs()[0]->getLine()) {
+
+				auto id = std::find(editor->getBlocks().begin(), editor->getBlocks().end(), b->getInputs()[0]->getLine()->getOutBlock()) - editor->getBlocks().begin();
+				writer.writeAttribute("in1", QString::number(id));
+			}
+			else {
+				writer.writeAttribute("in1", "-1");
+			}
+
+			if (b->getInputs()[1]->getLine()) {
+
+				auto id = std::find(editor->getBlocks().begin(), editor->getBlocks().end(), b->getInputs()[1]->getLine()->getOutBlock()) - editor->getBlocks().begin();
+				writer.writeAttribute("in2", QString::number(id));
+			}
+			else {
+				writer.writeAttribute("in2", "-1");
+			}
+			break;
+		case RESULT:
+			writer.writeAttribute("type", "result");
+			if (b->getInputs()[0]->getLine()) {
+
+				auto id = std::find(editor->getBlocks().begin(), editor->getBlocks().end(), b->getInputs()[0]->getLine()->getOutBlock()) - editor->getBlocks().begin();
+				writer.writeAttribute("in", QString::number(id));
+			}
+			else {
+				writer.writeAttribute("in", "-1");
+			}
 			break;
 
 		}
 
 		writer.writeEndElement(); // block
 
+	};
+
+	for (int i = 0; i < editor->getBlocks().size(); i++) {
+
+		writeBlock(editor->getBlocks()[i]);
 	}
 
-	if (editor->getResultBlock()) {
-		writer.writeStartElement("block");
-		writer.writeAttribute("x", QString::number(editor->getResultBlock()->pos().x()));
-		writer.writeAttribute("y", QString::number(editor->getResultBlock()->pos().y()));
-		writer.writeAttribute("type", "result");
-		writer.writeEndElement(); // block
+	if(editor->getResultBlock()){
+		writeBlock(editor->getResultBlock());
 	}
-
-	for (int i = 0; i < editor->getLines().size(); i++) {
-		
-		writer.writeStartElement("line");
-
-		writer.writeAttribute("x1", QString::number(editor->getLines()[i]->line().x1()));
-		writer.writeAttribute("y1", QString::number(editor->getLines()[i]->line().y1()));
-		writer.writeAttribute("x2", QString::number(editor->getLines()[i]->line().x2()));
-		writer.writeAttribute("y2", QString::number(editor->getLines()[i]->line().y2()));
-
-		writer.writeEndElement(); // line
-
-	}
-
+	
 	writer.writeEndElement(); // scheme
 
 	writer.writeEndDocument();
@@ -397,6 +432,7 @@ void MainWindow::readXML(const QString path) {
 
 	QDomDocument doc;
 	QFile file(path);
+	BlockEditor* editor = dynamic_cast<BlockEditor*>(editorTabs->widget(editorTabs->currentIndex()));
 
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 
@@ -474,7 +510,6 @@ void MainWindow::readXML(const QString path) {
 
 				}
 
-				BlockEditor* editor = dynamic_cast<BlockEditor*>(editorTabs->widget(editorTabs->currentIndex()));
 				bool ok = true;
 				int x = map.namedItem("x").toAttr().value().toInt(&ok, 10);
 
@@ -631,6 +666,34 @@ void MainWindow::readXML(const QString path) {
 			}
 			else /* line */ {
 				
+				std::vector<QString> attribs = { "x1", "y1", "x2", "y2", "dx1", "dy1", "dx2", "dy2" };
+
+				auto map = elem.attributes();
+
+				if (map.length() != 4) {
+					QMessageBox::critical(nullptr, "XML", "Invalid attributes for line");
+					return;
+
+				}
+
+				for (int i = 0; i < map.length(); i++) {
+
+					if (!map.contains(attribs[i])) {
+
+						QMessageBox::critical(nullptr, "XML", "Missing attribute for block: " + attribs[i]);
+						return;
+					}
+
+				}
+
+				bool ok = true;
+				int x = map.namedItem("x").toAttr().value().toInt(&ok, 10);
+
+				if (!ok) {
+
+					QMessageBox::critical(nullptr, "XML", "Invalid value for x attribute: " + map.namedItem("x").toAttr().value());
+					return;
+				}
 
 			}
 		}
