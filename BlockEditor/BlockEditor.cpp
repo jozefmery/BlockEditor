@@ -11,8 +11,8 @@
 #include <QMessageBox>
 
 /**
- * \brief Constructor of a view (central widget of main window).
- * \param parent 
+ * Constructor of a view (central widget of main window).
+ * @param parent 
  */
 BlockEditor::BlockEditor(QWidget* parent) {
 
@@ -24,11 +24,10 @@ BlockEditor::BlockEditor(QWidget* parent) {
 	resultBlock = nullptr;
 	
 	drawGUI();
-	setAlignment(Qt::AlignLeft | Qt::AlignTop);
 }
 
 /**
- * \brief Set background.
+ * Set background.
  */
 void BlockEditor::drawGUI() {
 	// background
@@ -40,9 +39,9 @@ void BlockEditor::drawGUI() {
 
 
 /**
- * \brief Sets position of placed block and picks the block up.
- * \param block placed plock
- * \param pos position of placed block
+ * Sets position of placed block and picks the block up.
+ * @param block placed plock
+ * @param pos position of placed block
  */
 void BlockEditor::pickUpBlock(Block* block, QPointF pos) {
 	if (blockToPlace == nullptr) {
@@ -56,8 +55,8 @@ void BlockEditor::pickUpBlock(Block* block, QPointF pos) {
 }
 
 /**
- * \brief Places block.
- * \param block block to place
+ * Places block.
+ * @param block block to place
  */
 void BlockEditor::placeBlock(Block* block) {
 	// get cursor position
@@ -79,8 +78,8 @@ void BlockEditor::placeBlock(Block* block) {
 }
 
 /**
- * \brief Shows context menu, depending on right-clicked item.
- * \param pos 
+ * Shows context menu, depending on right-clicked item.
+ * @param pos 
  */
 void BlockEditor::showContextMenu(QPoint pos) {
 	if (blockToPlace == nullptr && !isDrawing()) { // when plock is picked up, context menu isn't able to open
@@ -142,10 +141,10 @@ void BlockEditor::showContextMenu(QPoint pos) {
 }
 
 /**
- * \brief Removes connections of given block.
- * \param actual block that connections will be deleted
- * \param input input connection to remove indicator
- * \param output output connection to remove indicator 
+ * Removes connections of given block.
+ * @param actual block that connections will be deleted
+ * @param input input connection to remove indicator
+ * @param output output connection to remove indicator 
  */
 void BlockEditor::removeConnections(Block* actual, bool input, bool output) {
 	if (input) {
@@ -169,13 +168,8 @@ void BlockEditor::removeConnections(Block* actual, bool input, bool output) {
 	}
 }
 
-void BlockEditor::resizeEvent(QResizeEvent* event){
-	
-	QGraphicsView::resizeEvent(event);
-}
-
 /**
- * \brief Removes block (block to remove is set in showContextMenu slot as
+ * Removes block (block to remove is set in showContextMenu slot as
  * attribute item).
  */
 void BlockEditor::deleteBlock() {
@@ -199,8 +193,8 @@ void BlockEditor::deleteBlock() {
 		}
 		if (dynamic_cast<Block*>(item->parentItem())->getBlockType() == RESULT) {
 			resultBlock = nullptr;
-			scene->removeItem(item);
-			removeConnections(dynamic_cast<Block*>(item), true, false);
+			scene->removeItem(item->parentItem());
+			removeConnections(dynamic_cast<Block*>(item->parentItem()), true, false);
 			return;
 		}
 		blocks.remove(blocks.indexOf(dynamic_cast<Block*>(item->parentItem()), 0));
@@ -245,7 +239,7 @@ void BlockEditor::deleteBlock() {
 }
 
 /**
- * \brief Edit block, based on user input.
+ * Edit block, based on user input.
  */
 void BlockEditor::editBlock() {
 
@@ -348,6 +342,9 @@ void BlockEditor::editBlock() {
 	item = nullptr;
 }
 
+/**
+ * Set block as start position.
+ */
 void BlockEditor::setAsStartBlock() {
 
 	if (resultBlock == nullptr || resultBlock->getInputs()[0]->getLine() == nullptr) {
@@ -403,6 +400,9 @@ void BlockEditor::setAsStartBlock() {
 	actualBlock->setActualBlock(true);
 }
 
+/**
+ * Unset block as start position.
+ */
 void BlockEditor::unsetAsStartBlock() {
 	if (actualBlock->getBlockType() == BLOCK) {
 		actualBlock->setBrush(QBrush(QColor(Qt::red)));
@@ -415,7 +415,7 @@ void BlockEditor::unsetAsStartBlock() {
 
 
 /**
- * \brief Spawn block, based on user input.
+ * Spawn block, based on user input.
  */
 void BlockEditor::spawnBlock() {
 
@@ -428,11 +428,8 @@ void BlockEditor::spawnBlock() {
 		// get cursor position
 		QPointF cursorPos = mapToScene(mapFromGlobal(QCursor::pos()));
 		// draw a block
-		qDebug() << cursorPos.x() << " " << cursorPos.y();
-		
-		Block* block = new Block(cursorPos.x(), cursorPos.y(), this,
+		Block* block = new Block(cursorPos.x() - 25, cursorPos.y() - 25, this,
 			dialog->getOperation(), dialog->getInputType(), dialog->getOutputType());
-
 
 		blocks.push_back(block);
 		scene->addItem(block);
@@ -444,7 +441,7 @@ void BlockEditor::spawnBlock() {
 }
 
 /**
- * \brief Spawn block, based on user input.
+ * Spawn block, based on user input.
  */
 void BlockEditor::spawnConstBlock() {
 	
@@ -469,6 +466,9 @@ void BlockEditor::spawnConstBlock() {
 	item = nullptr;
 }
 
+/**
+ * Spawn block handling result of cumputation.
+ */
 void BlockEditor::spawnResultBlock() {
 
 	if (resultBlock == nullptr) {
@@ -490,25 +490,32 @@ void BlockEditor::spawnResultBlock() {
 	item = nullptr;
 }
 
+/**
+ * If block is not placed or if connect is being drawn follow the 
+ * mouse. 
+ * @param event mouse event
+ */
 void BlockEditor::mouseMoveEvent(QMouseEvent* event) {
 
 	// if there is a blockToPlace, then make it follow the mouse
 	if (blockToPlace) {
 		int shiftX = event->pos().x() - mouseClickPos.x();
 		int shiftY = event->pos().y() - mouseClickPos.y();
-		QPointF newPoint(shiftX, shiftY);
-		blockToPlace->setPos(newPoint);
+		QPoint newPoint(shiftX, shiftY);
+		blockToPlace->setPos(mapToScene(newPoint));
 	} else if (isDrawing()) {
-		line->setLine(lineStart.x(), lineStart.y(), event->pos().x(), event->pos().y());
+		QPoint newPoint(event->pos().x(), event->pos().y());
+		newPoint = mapToScene(newPoint).toPoint();
+		line->setLine(lineStart.x(), lineStart.y(), newPoint.x(), newPoint.y());
 	}
 
 	QGraphicsView::mouseMoveEvent(event);
 }
 
 /**
- * \brief Recursively checks weather the connection to input port, doesn't
+ * Recursively checks weather the connection to input port, doesn't
  * create cycle.
- * \param block 
+ * @param block 
  */
 void BlockEditor::checkCycle(Block* block) {
 	
@@ -526,14 +533,16 @@ void BlockEditor::checkCycle(Block* block) {
 
 
 /**
- * \brief Getter.
- * \return return wether connection is being drawn.
+ * Getter.
+ * @return return wether connection is being drawn.
  */
-bool BlockEditor::isDrawing() const { return drawing; }
+bool BlockEditor::isDrawing() const {
+	return drawing;
+}
 
 /**
- * \brief Setter.
- * \param drawing conenction is being drawn indicator.
+ * Setter.
+ * @param drawing conenction is being drawn indicator.
  */
 void BlockEditor::setIsDrawing(const bool drawing) {
 
@@ -582,6 +591,10 @@ void BlockEditor::setIsDrawing(const bool drawing) {
 	this->drawing = drawing;
 };
 
+/**
+ * Set block as current.
+ * @param block 
+ */
 void BlockEditor::setActualBlock(Block* block) {
 
 	if (actualBlock) {
@@ -602,3 +615,76 @@ void BlockEditor::setActualBlock(Block* block) {
 	}
 }
 
+/**
+ * Get connection.
+ * @return connection
+ */
+Line* BlockEditor::getLine() const {
+	return line;
+};
+
+/**
+ * Get connection start.
+ * @return connection begin
+ */
+QPointF BlockEditor::getLineStart() const {
+	return lineStart;
+};
+
+/**
+ * Get current block.
+ * @return current block
+ */
+Block* BlockEditor::getActualBlock() const {
+	return actualBlock;
+};
+
+/**
+ * Get block handling result of computation.
+ * @return block handling result of computation
+ */
+Block* BlockEditor::getResultBlock() const {
+	return resultBlock;
+};
+
+/**
+ * Get all the blocks of scene.
+ * @return blocks of scene
+ */
+QVector<Block*> BlockEditor::getBlocks() const {
+	return blocks;
+};
+
+/**
+ * Get all the connections of scene.
+ * @return connections of scene
+ */
+QVector<Line*> BlockEditor::getLines() const {
+	return lines;
+};
+
+/**
+ * Set connection.
+ * @param line conenction
+ */
+void BlockEditor::setLine(Line* line) {
+	this->line = line;
+	lines.push_back(line);
+};
+
+/**
+ * Set connection start position.
+ * @param lineStart connection start position
+ */
+void BlockEditor::setLineStart(const QPoint lineStart) {
+	this->lineStart = mapFromGlobal(lineStart);
+};
+
+
+/**
+ * Get mouse position.
+ * @return mouse position
+ */
+QPoint BlockEditor::getMousePos() const {
+	return mapFromGlobal(QCursor::pos());
+}

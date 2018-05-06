@@ -12,13 +12,13 @@
 #include <QToolTip>
 
 /**
- * \brief Constructor of block with operation.
- * \param x position ax
- * \param y position ay
- * \param parent view
- * \param operation operation of block
- * \param inputType type of input port values
- * \param outputType type of output port values
+ * Constructor of block with operation.
+ * @param x position ax
+ * @param y position ay
+ * @param parent view
+ * @param operation operation of block
+ * @param inputType type of input port values
+ * @param outputType type of output port values
  */
 Block::Block(const int x, const int y, BlockEditor* parent, QString operation, QString inputType, QString outputType) :
 	parent(parent) {
@@ -55,12 +55,12 @@ Block::Block(const int x, const int y, BlockEditor* parent, QString operation, Q
 }
 
 /**
- * \brief Constructor of block with constant value.
- * \param x position ax
- * \param y position ay
- * \param parent view
- * \param value constant value
- * \param outputType type of output port values
+ * Constructor of block with constant value.
+ * @param x position ax
+ * @param y position ay
+ * @param parent view
+ * @param value constant value
+ * @param outputType type of output port values
  */
 Block::Block(const int x, const int y, BlockEditor* parent, double value, QString outputType)
 	: parent(parent) {
@@ -94,10 +94,10 @@ Block::Block(const int x, const int y, BlockEditor* parent, double value, QStrin
 }
 
 /**
-* \brief Constructor of a result block.
-* \param x position ax
-* \param y position ay
-* \param parent view
+* Constructor of a result block.
+* @param x position ax
+* @param y position ay
+* @param parent view
 */
 Block::Block(const int x, const int y, BlockEditor* parent) :
 	parent(parent) {
@@ -129,6 +129,10 @@ Block::Block(const int x, const int y, BlockEditor* parent) :
 	setAcceptHoverEvents(true);
 }
 
+/**
+ * Pick up pressed block.
+ * @param event graphics scene mouse event
+ */
 void Block::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 	if (isPlaced()) { // block is placed
 		if (event->button() == Qt::LeftButton && !parent->isDrawing()) {
@@ -138,6 +142,10 @@ void Block::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 	}
 }
 
+/**
+ * Place picked up block.
+ * @param event graphics scene mouse event
+ */
 void Block::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
 	if (!isPlaced()) {
 		if (event->button() == Qt::LeftButton) {
@@ -146,23 +154,118 @@ void Block::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
 	}
 }
 
+/**
+ * Get type of block.
+ * @return type of block
+ */
 int Block::getBlockType() const { 
 	return blockType; 
 }
+
+
+/**
+ * Get wether block is placed.
+ * @return placed block indicator
+ */
+bool Block::isPlaced() const {
+	return placed;
+};
+
+/**
+ * Get input ports of block.
+ * @return input ports
+ */
+QVector<Block::BlockIO*> Block::getInputs() const {
+	return input;
+};
+
+/**
+ * Get output ports of block.
+ * @return output ports
+ */
+QVector<Block::BlockIO*> Block::getOutputs() const {
+	return output;
+};
+
+/**
+ * Get block operation.
+ * @return operation
+ */
+QString Block::getOperation() const {
+	return operation;
+};
+
+/**
+ * Get operation sign.
+ * @return operation sign
+ */
+QGraphicsTextItem* Block::getOperationText() const {
+	return operationText;
+};
+
+
+/**
+ * Get wether current block is actual.
+ * @return actual block indicator
+ */
+bool Block::isActualBlock() const {
+	return startBlock;
+};
+
+/**
+ * Set wether block is placed.
+ * @param placed placed block indicator
+ */
+void Block::setIsPlaced(bool const placed) {
+	this->placed = placed;
+};
+
+/**
+ * Set operation of block.
+ * @param operation operation
+ */
+void Block::setOperation(const QString operation) {
+	this->operation = operation;
+};
+
+/**
+ * Set operation sign.
+ * @param operationText  operation sign
+ */
+void Block::setOperationText(QGraphicsTextItem* operationText) {
+	this->operationText = operationText;
+};
+
+/**
+ * Set block type.
+ * @param blockType type of block
+ */
+void Block::setBlockType(const int blockType) {
+	this->blockType = blockType;
+};
+
+/**
+ * Set current block as actual.
+ * @param startBlock actual block indicator
+ */
+void Block::setActualBlock(const bool startBlock) {
+	this->startBlock = startBlock;
+};
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //													BlockIO														  //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * \brief Constructor of block's port.
- * \param x position in ax
- * \param y position in ay
- * \param IO type of port INPUT/OUTPUT
- * \param name type of port value
- * \param value value of port
- * \param editor view
- * \param parentBlock parent block
+ * Constructor of block's port.
+ * @param x position in ax
+ * @param y position in ay
+ * @param IO type of port INPUT/OUTPUT
+ * @param name type of port value
+ * @param value value of port
+ * @param editor view
+ * @param parentBlock parent block
  */
 Block::BlockIO::BlockIO(int x, int y, int IO, QString name, double value, BlockEditor* editor, QGraphicsRectItem* parentBlock) : QGraphicsRectItem(parentBlock) {
 
@@ -203,9 +306,9 @@ Block::BlockIO::BlockIO(int x, int y, int IO, QString name, double value, BlockE
 }
 
 /**
- * \brief Set attributes of port.
- * \param line connection
- * \param isPoint1 first point of connection indicator
+ * Set attributes of port.
+ * @param line connection
+ * @param isPoint1 first point of connection indicator
  */
 void Block::BlockIO::addLine(Line* line, bool isPoint1) {
 	this->line = line;
@@ -213,6 +316,12 @@ void Block::BlockIO::addLine(Line* line, bool isPoint1) {
 	setCursor(Qt::ArrowCursor);
 }
 
+/**
+ * Process item, which sent ItemScenePositionHasChanged
+ * @param change item changed position indicator
+ * @param value new position
+ * @return new position of item
+ */
 QVariant Block::BlockIO::itemChange(GraphicsItemChange change, const QVariant &value) {
 	if (line != nullptr && change == ItemScenePositionHasChanged && scene()) {
 		// value is the new position.
@@ -224,9 +333,9 @@ QVariant Block::BlockIO::itemChange(GraphicsItemChange change, const QVariant &v
 }
 
 /**
- * \brief Set position of first point of connection in the middle of the
+ * Set position of first point of connection in the middle of the
  * port.
- * \param newPos position of moved parent block
+ * @param newPos position of moved parent block
  */
 void Block::BlockIO::moveLineToCenter(QPointF newPos) {
 	// Converts the port position to its center position
@@ -243,6 +352,10 @@ void Block::BlockIO::moveLineToCenter(QPointF newPos) {
 	line->setZValue(2);
 }
 
+/**
+ * Set connection to clicked port block
+ * @param event graphics scene mouse event
+ */
 void Block::BlockIO::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 	Block* block = dynamic_cast<Block*>(parentBlock);
 	if (IO == INPUT && editor->isDrawing() && line == nullptr) {
@@ -254,7 +367,9 @@ void Block::BlockIO::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 			addLine(line, false);
 		}
 	} else if (IO == OUTPUT && !editor->isDrawing() && line == nullptr) {
-		Line* line = new Line(event->pos(), event->pos(), block->parent);
+		QPointF newPoint(QCursor::pos().x(), QCursor::pos().y());
+		newPoint = mapToScene(editor->getMousePos());
+		Line* line = new Line(newPoint, newPoint, block->parent);
 		editor->scene->addItem(line);
 		addLine(line, true);
 		line->setOutBlock(block);
@@ -265,6 +380,10 @@ void Block::BlockIO::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 	}
 }
 
+/**
+ * Show port name and value tooltip.
+ * @param event graphics scene hover event
+ */
 void Block::BlockIO::hoverEnterEvent(QGraphicsSceneHoverEvent* event) {
 	setToolTip(getName() + ": " + QString::number(std::floor((getValue() * 100) + .5) / 100));
 	if (!editor->isDrawing()) {
@@ -272,6 +391,10 @@ void Block::BlockIO::hoverEnterEvent(QGraphicsSceneHoverEvent* event) {
 	}
 }
 
+/**
+ * Hide port name and value tooltip.
+ * @param event graphics scene hover event
+ */
 void Block::BlockIO::hoverLeaveEvent(QGraphicsSceneHoverEvent* event) {
 	if (!editor->isDrawing()) {
 		QToolTip::hideText();
@@ -279,6 +402,10 @@ void Block::BlockIO::hoverLeaveEvent(QGraphicsSceneHoverEvent* event) {
 }
 
 
+/**
+ * Set connection to a port.
+ * @param line connection
+ */
 void Block::BlockIO::setLine(Line* line) {
 	if (line == nullptr) {
 		setCursor(Qt::PointingHandCursor);
@@ -286,4 +413,92 @@ void Block::BlockIO::setLine(Line* line) {
 	this->line = line;
 };
 
+/**
+ * Get port's conenction.
+ * @return connection
+ */
+Line* Block::BlockIO::getLine() const
+{
+	return line;
+};
 
+/**
+ * Get port name.
+ * @return name
+ */
+QString Block::BlockIO::getName() const
+{
+	return name;
+};
+
+/**
+ * Get port value.
+ * @return value
+ */
+double Block::BlockIO::getValue() const
+{
+	return value;
+};
+
+/**
+ * Get connection to port would create cycle indicator.
+ * @return cycle indicator
+ */
+bool Block::BlockIO::isCycle() const
+{
+	return cycle;
+};
+
+/**
+ * Port has value indicator.
+ * @return port has value indicator
+ */
+bool Block::BlockIO::hasVal() const
+{
+	return hasValue;
+};
+
+/**
+ * Set port name.
+ * @param name name
+ */
+void Block::BlockIO::setName(const QString name)
+{
+	this->name = name;
+};
+
+/**
+ * Set port value.
+ * @param value value
+ */
+void Block::BlockIO::setValue(const double value)
+{
+	this->value = value; hasValue = true;
+};
+
+/**
+ * Set connection to port would create cycle indicator.
+ * @param cycle cycle indicator
+ */
+void Block::BlockIO::setCycle(const bool cycle)
+{
+	this->cycle = cycle;
+};
+
+/**
+ * Set connectable indicator.
+ * @param connectable connectable indicator
+ */
+void Block::BlockIO::setConnectable(const bool connectable)
+{
+	this->connectable = connectable;
+};
+
+/**
+ * Set port has value indicator.
+ * @param hasValue port has value indicator
+ */
+void Block::BlockIO::setHasVal(const bool hasValue)
+{
+	this->hasValue = hasValue;
+};

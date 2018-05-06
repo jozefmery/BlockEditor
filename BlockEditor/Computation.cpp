@@ -4,6 +4,10 @@
 
 extern Computation* computation;
 
+/**
+ * Constructor.
+ * @param currentView current opened view
+ */
 Computation::Computation(BlockEditor* currentView) {
 
 	this->currentView = currentView;
@@ -12,6 +16,9 @@ Computation::Computation(BlockEditor* currentView) {
 	result = true;
 }
 
+/**
+ * Thread run function.
+ */
 void Computation::run() {
 
 	compute();
@@ -19,6 +26,10 @@ void Computation::run() {
 	computation = nullptr;
 }
 
+/**
+ * Recursivly transit blocks and compute results from input ports 
+ * and set it to output port. 
+ */
 void Computation::compute() {
 
 	while (result) {
@@ -95,6 +106,10 @@ void Computation::compute() {
 	}
 }
 
+/**
+ * If input port of block hasn't value, search for the nearest
+ * block with value on output port.
+ */
 void Computation::getValue() {
 	if (actualBlock->getBlockType() == BLOCK) {
 		QVector<Block::BlockIO*> inputs = actualBlock->getInputs();
@@ -120,6 +135,10 @@ void Computation::getValue() {
 	}
 }
 
+/**
+ * Get type of operation.
+ * @return type of operation
+ */
 int Computation::getOperation() {
 	QString operation = actualBlock->getOperation();
 
@@ -142,6 +161,9 @@ int Computation::getOperation() {
 	return -1;
 }
 
+/**
+ * Add values;
+ */
 void Computation::add() {
 	QVector<double> inputs;
 	for (Block::BlockIO* input: actualBlock->getInputs()) {
@@ -152,6 +174,9 @@ void Computation::add() {
 	actualBlock->getOutputs()[0]->setHasVal(true);
 }
 
+/**
+ * Subtract values.
+ */
 void Computation::sub() {
 	QVector<double> inputs;
 	for (Block::BlockIO* input : actualBlock->getInputs()) {
@@ -162,6 +187,9 @@ void Computation::sub() {
 	actualBlock->getOutputs()[0]->setHasVal(true);
 }
 
+/**
+ * Multiplicate values.
+ */
 void Computation::mul() {
 	QVector<double> inputs;
 	for (Block::BlockIO* input : actualBlock->getInputs()) {
@@ -172,6 +200,9 @@ void Computation::mul() {
 	actualBlock->getOutputs()[0]->setHasVal(true);
 }
 
+/**
+ * Divide values.
+ */
 void Computation::div() {
 	QVector<double> inputs;
 	for (Block::BlockIO* input : actualBlock->getInputs()) {
@@ -186,3 +217,20 @@ void Computation::div() {
 		actualBlock->getOutputs()[0]->setHasVal(true);
 	}
 }
+
+
+/**
+ * Get current opened view.
+ * @return current view
+ */
+BlockEditor* Computation::getCurrentView() const {
+	return currentView;
+};
+
+/**
+ * Set current opened view.
+ * @param currentView current view.
+ */
+void Computation::setCurrentView(BlockEditor* currentView) {
+	this->currentView = currentView;
+};

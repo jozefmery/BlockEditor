@@ -19,7 +19,6 @@ class Line : public QGraphicsLineItem {
 
 		// events
 		void hoverEnterEvent(QGraphicsSceneHoverEvent* event) override;
-		void hoverMoveEvent(QGraphicsSceneHoverEvent* event) override;
 		void hoverLeaveEvent(QGraphicsSceneHoverEvent* event) override;
 
 		// getters

@@ -6,10 +6,10 @@
 #include <QCursor>
 
 /**
- * \brief Constructor
- * \param p1 first point of a connection
- * \param p2 second point of a connection
- * \param parent view
+ * Constructor
+ * @param p1 first point of a connection
+ * @param p2 second point of a connection
+ * @param parent view
  */
 Line::Line(QPointF p1, QPointF p2, BlockEditor* parent) : parent(parent) {
 
@@ -24,30 +24,86 @@ Line::Line(QPointF p1, QPointF p2, BlockEditor* parent) : parent(parent) {
 	setToolTip("Nothing");
 }
 
+/**
+ * Show connection tooltip.
+ * @param event graphics scene hover event
+ */
 void Line::hoverEnterEvent(QGraphicsSceneHoverEvent* event) {
 	if (!parent->isDrawing()) {
 		QToolTip::showText(QCursor::pos(), toolTip());
 	}
 }
 
-void Line::hoverMoveEvent(QGraphicsSceneHoverEvent* event) {
-	// vobec neviem na co mi to je ale mozno niekedy to pouzijem
-}
-
+/**
+* Hide connection tooltip.
+* @param event graphics scene hover event
+*/
 void Line::hoverLeaveEvent(QGraphicsSceneHoverEvent* event) {
 	if (!parent->isDrawing()) {
 		QToolTip::hideText();
 	}
 }
 
-Block* Line::getOutBlock() const { return outBlock; }
-Block* Line::getInBlock() const { return inBlock; }
+/**
+ * Get output block.
+ * @return output block
+ */
+Block* Line::getOutBlock() const {
+	return outBlock;
+}
 
-void Line::setOutBlock(Block* outBlock) { this->outBlock = outBlock; }
-void Line::setInBlock(Block* inBlock) { this->inBlock = inBlock; }
+/**
+ * Get input block.
+ * @return input block
+ */
+Block* Line::getInBlock() const {
+	return inBlock;
+}
 
-Block::BlockIO* Line::getInPort() const { return input; }
-Block::BlockIO* Line::getOutPort() const { return output; }
+/**
+ * Set output block.
+ * @param outBlock output block
+ */
+void Line::setOutBlock(Block* outBlock) {
+	this->outBlock = outBlock;
+}
 
-void Line::setInPort(Block::BlockIO* input) { this->input = input; }
-void Line::setOutPort(Block::BlockIO* output) { this->output = output; }
+/**
+ * Set input block.
+ * @param inBlock input block
+ */
+void Line::setInBlock(Block* inBlock) {
+	this->inBlock = inBlock;
+}
+
+/**
+ * Get input port.
+ * @return input port
+ */
+Block::BlockIO* Line::getInPort() const {
+	return input;
+}
+
+/**
+ * Get output port.
+ * @return output port
+ */
+Block::BlockIO* Line::getOutPort() const {
+	return output;
+}
+
+/**
+ * Set input port.
+ * @param input input port
+ */
+void Line::setInPort(Block::BlockIO* input) {
+	this->input = input;
+}
+
+/**
+ * Set output port.
+ * @param output output port
+ */
+void Line::setOutPort(Block::BlockIO* output) {
+	this->output = output;
+}

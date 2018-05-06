@@ -43,19 +43,19 @@ class Block : public QGraphicsRectItem {
 				void moveLineToCenter(QPointF newPos);
 
 				// getters
-				Line* getLine() const { return line; };
-				QString getName() const { return name; };
-				double getValue() const { return value; };
-				bool isCycle() const { return cycle; };
-				bool hasVal() const { return hasValue; };
+				Line* getLine() const;
+				QString getName() const;
+				double getValue() const;
+				bool isCycle() const;
+				bool hasVal() const;
 
 				// setters
 				void setLine(Line* line);
-				void setName(const QString name) { this->name = name; };
-				void setValue(const double value) { this->value = value; hasValue = true; };
-				void setCycle(const bool cycle) { this->cycle = cycle; };
-				void setConnectable(const bool connectable) { this->connectable = connectable; };
-				void setHasVal(const bool hasValue) { this->hasValue = hasValue; };
+				void setName(const QString name);
+				void setValue(const double value);
+				void setCycle(const bool cycle);
+				void setConnectable(const bool connectable);
+				void setHasVal(const bool hasValue);
 
 			private:
 				// attributes
@@ -72,20 +72,20 @@ class Block : public QGraphicsRectItem {
 		};
 
 		// getters
-		bool isPlaced() const { return placed; };
-		QVector<BlockIO*> getInputs() const { return input; };
-		QVector<BlockIO*> getOutputs() const { return output; };
-		QString getOperation() const { return operation; };
-		QGraphicsTextItem* getOperationText() const { return operationText; };
+		bool isPlaced() const;
+		QVector<BlockIO*> getInputs() const;
+		QVector<BlockIO*> getOutputs() const;
+		QString getOperation() const;
+		QGraphicsTextItem* getOperationText() const;
 		int getBlockType() const;
-		bool isActualBlock() const { return startBlock; };
+		bool isActualBlock() const;
 
 		// setters
-		void setIsPlaced(bool const placed) { this->placed = placed; };
-		void setOperation(const QString operation) { this->operation = operation; };
-		void setOperationText(QGraphicsTextItem* operationText) { this->operationText = operationText; };
-		void setBlockType(const int blockType) { this->blockType = blockType; };
-		void setActualBlock(const bool startBlock) { this->startBlock = startBlock; };
+		void setIsPlaced(bool const placed);
+		void setOperation(const QString operation);
+		void setOperationText(QGraphicsTextItem* operationText);
+		void setBlockType(const int blockType);
+		void setActualBlock(const bool startBlock);
 
 	private:
 		// attributes

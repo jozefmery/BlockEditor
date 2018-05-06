@@ -19,7 +19,6 @@ class BlockEditor : public QGraphicsView {
 
 		// events
 		void mouseMoveEvent(QMouseEvent* event) override;
-		//void mousePressEvent(QMouseEvent* event);
 
 		// constructors
 		explicit BlockEditor(QWidget* parent = nullptr);
@@ -31,20 +30,18 @@ class BlockEditor : public QGraphicsView {
 
 		// getters
 		bool isDrawing() const;
-		Line* getLine() const { return line; };
-		QPointF getLineStart() const { return lineStart; };
-		Block* getActualBlock() const { return actualBlock; };
-		Block* getResultBlock() const { return resultBlock; };
-		QVector<Block*> getBlocks() const { return blocks; };
-		QVector<Line*> getLines() const { return lines; };
+		Line* getLine() const;
+		QPointF getLineStart() const;
+		Block* getActualBlock() const;
+		Block* getResultBlock() const;
+		QVector<Block*> getBlocks() const;
+		QVector<Line*> getLines() const;
+		QPoint getMousePos() const;
 
 		//setters
 		void setIsDrawing(const bool drawing);
-		void setLine(Line* line){
-			this->line = line;
-			lines.push_back(line);
-		};
-		void setLineStart(const QPoint lineStart) { this->lineStart = mapToScene(mapFromGlobal(QCursor::pos()));; };
+		void setLine(Line* line);
+		void setLineStart(const QPoint lineStart);
 		void setActualBlock(Block* block);
 
 	private:
