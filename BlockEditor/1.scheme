@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <scheme>
-    <block id="0" x="-887" y="-385" type="op" operation="+" input="double" output="double" out="-1" in1="1" in2="-1"/>
-    <block id="1" x="-1615" y="-390" type="const" output="double" value="0" out="0"/>
+    <block x="-5590" y="-2573" type="const" output="double" value="0" out="1"/>
+    <block x="-5004" y="-2254" type="op" operation="+" input="double" output="double" out="3" in1="0" in2="-1"/>
+    <block x="-5443" y="-2213" type="const" output="double" value="3" out="-1"/>
+    <block x="-4644" y="-2488" type="result" in="1"/>
 </scheme>

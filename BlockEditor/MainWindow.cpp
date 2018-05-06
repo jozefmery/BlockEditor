@@ -216,6 +216,8 @@ void MainWindow::openFile(const QString path, const bool addToRecent)
 
 		readXML(file.getFullPath());
 
+
+
 	} else {
 
 		// focus on file
@@ -423,7 +425,7 @@ void MainWindow::writeXML(const int idx) const
 	}
 
 	file.write(xml.toUtf8());
-
+	file.close();
 }
 
 void MainWindow::readXML(const QString path) {
@@ -580,7 +582,7 @@ void MainWindow::readXML(const QString path) {
 			}
 			else if(type == "op") {
 				
-				unique_attrib = { "operation", "input", "output" };
+				unique_attrib = { "operation", "input", "output", "out", "in1", "in2" };
 
 				if (attribs.size() + unique_attrib.size() != map.length()) {
 
@@ -634,6 +636,14 @@ void MainWindow::readXML(const QString path) {
 			}
 			else if (type == "result") {
 
+				unique_attrib = { "in" };
+
+				if (!map.contains("in")) {
+
+					QMessageBox::critical(nullptr, "XML", "Missing attribute for result block: in");
+					return;
+				}
+
 				if(attribs.size() + unique_attrib.size() != map.length()){
 					
 					QMessageBox::critical(nullptr, "XML", "Invalid attributes for result block!");
@@ -663,5 +673,189 @@ void MainWindow::readXML(const QString path) {
 		node = node.nextSibling();
 	}
 	
+	node = docElem.firstChild();
+	int idx = 0;
+	while (!node.isNull()) {
+
+		QDomElement elem = node.toElement(); // try to convert the node to an element.
+		if (!elem.isNull()) {
+			
+			auto map = elem.attributes();
+
+			QString type = map.namedItem("type").toAttr().value();
+			auto blocks = editor->getBlocks();
+			bool ok = true;
+
+
+			if(type == "const"){
+					
+				auto out = map.namedItem("out").toAttr().value().toInt(&ok, 10);
+				
+				if(!ok){
+
+					QMessageBox::critical(nullptr, "XML", "Invalid value for out attribute: " + map.namedItem("out").toAttr().value());
+					return;
+				}
+				if(out >= blocks.size() + (editor->getResultBlock() ? 1 : 0)){
+					
+					QMessageBox::critical(nullptr, "XML", "Connection out to non existing block: " + map.namedItem("out").toAttr().value());
+					return;
+				}
+				if (out >= 0) {
+
+					Block *out_target = (out >= blocks.size()) ? editor->getResultBlock() : blocks[out];
+
+
+					if (blocks[idx]->getOutputs()[0]->getLine() == nullptr && out_target->getBlockType() != BLOCK &&
+						out_target->getInputs()[0]->getLine() == nullptr) {
+
+						auto line = new Line(QPointF(), QPointF(), editor);
+
+						line->setOutBlock(blocks[idx]);
+						line->setOutPort(blocks[idx]->getOutputs()[0]);
+						blocks[idx]->getOutputs()[0]->setLine(line);
+						blocks[idx]->getOutputs()[0]->addLine(line, true);
+						blocks[idx]->getOutputs()[0]->moveLineToCenter(QPointF(blocks[idx]->pos().x(), blocks[idx]->pos().y()));
+
+
+						line->setInBlock(out_target);
+						line->setInPort(out_target->getInputs()[0]);
+						out_target->getInputs()[0]->addLine(line, false);
+						out_target->getInputs()[0]->moveLineToCenter(QPointF(out_target->pos().x(), out_target->pos().y()));
+						editor->scene->addItem(line);
+						editor->getLines().push_back(line);
+
+					}
+				}
+			}
+			else if (type == "op") {
+
+				auto out = map.namedItem("out").toAttr().value().toInt(&ok, 10);
+
+				if (!ok) {
+
+					QMessageBox::critical(nullptr, "XML", "Invalid value for out attribute: " + map.namedItem("out").toAttr().value());
+					return;
+				}
+				if (out >= blocks.size() + (editor->getResultBlock() ? 1 : 0)) {
+
+					QMessageBox::critical(nullptr, "XML", "Connection out to non existing block: " + map.namedItem("out").toAttr().value());
+					return;
+				}
+
+				auto in1 = map.namedItem("in1").toAttr().value().toInt(&ok, 10);
+
+				if (!ok) {
+
+					QMessageBox::critical(nullptr, "XML", "Invalid value for in1 attribute: " + map.namedItem("in1").toAttr().value());
+					return;
+				}
+
+				if (in1 >= blocks.size() + (editor->getResultBlock() ? 1 : 0)) {
+
+					QMessageBox::critical(nullptr, "XML", "Connection in1 to non existing block: " + map.namedItem("in1").toAttr().value());
+					return;
+				}
+
+				auto in2 = map.namedItem("in2").toAttr().value().toInt(&ok, 10);
+
+				if (!ok) {
+
+					QMessageBox::critical(nullptr, "XML", "Invalid value for in2 attribute: " + map.namedItem("in2").toAttr().value());
+					return;
+				}
+
+				if (in2 >= blocks.size() + (editor->getResultBlock() ? 1 : 0)) {
+
+					QMessageBox::critical(nullptr, "XML", "Connection in2 to non existing block: " + map.namedItem("in2").toAttr().value());
+					return;
+				}
+
+				
+
+				if (out >= 0) {
+
+					Block *out_target = (out >= blocks.size()) ? editor->getResultBlock() : blocks[out];
+					
+					if (blocks[idx]->getOutputs()[0]->getLine() == nullptr &&
+						out_target->getInputs()[0]->getLine() == nullptr) {
+
+						auto line = new Line(QPointF(), QPointF(), editor);
+
+						line->setOutBlock(blocks[idx]);
+						line->setOutPort(blocks[idx]->getOutputs()[0]);
+						blocks[idx]->getOutputs()[0]->setLine(line);
+						blocks[idx]->getOutputs()[0]->addLine(line, true);
+						blocks[idx]->getOutputs()[0]->moveLineToCenter(QPointF(blocks[idx]->pos().x(), blocks[idx]->pos().y()));
+
+
+						line->setInBlock(out_target);
+						line->setInPort(out_target->getInputs()[0]);
+						out_target->getInputs()[0]->addLine(line, false);
+						out_target->getInputs()[0]->moveLineToCenter(QPointF(out_target->pos().x(), out_target->pos().y()));
+						editor->scene->addItem(line);
+						editor->getLines().push_back(line);
+
+					}
+				}
+				
+				
+				if(in1 >= 0) {
+					
+					if (blocks[idx]->getInputs()[0]->getLine() == nullptr && 
+						blocks[in1]->getOutputs()[0]->getLine() == nullptr) {
+
+						auto line = new Line(QPointF(), QPointF(), editor);
+
+						line->setInBlock(blocks[idx]);
+						line->setInPort(blocks[idx]->getInputs()[0]);
+						blocks[idx]->getInputs()[0]->setLine(line);
+						blocks[idx]->getInputs()[0]->addLine(line, true);
+						blocks[idx]->getInputs()[0]->moveLineToCenter(QPointF(blocks[idx]->pos().x(), blocks[idx]->pos().y()));
+
+
+						line->setOutBlock(blocks[in1]);
+						line->setOutPort(blocks[in1]->getOutputs()[0]);
+						blocks[in1]->getOutputs()[0]->addLine(line, false);
+						blocks[in1]->getOutputs()[0]->moveLineToCenter(QPointF(blocks[in1]->pos().x(), blocks[in1]->pos().y()));
+						
+						editor->scene->addItem(line);
+						editor->getLines().push_back(line);
+
+					}
+				}
+
+				
+				if (in2 >= 0) {
+
+					if (blocks[idx]->getInputs()[1]->getLine() == nullptr &&
+						blocks[in2]->getOutputs()[0]->getLine() == nullptr) {
+
+						auto line = new Line(QPointF(), QPointF(), editor);
+
+						line->setInBlock(blocks[idx]);
+						line->setInPort(blocks[idx]->getInputs()[1]);
+						blocks[idx]->getInputs()[1]->setLine(line);
+						blocks[idx]->getInputs()[1]->addLine(line, true);
+						blocks[idx]->getInputs()[1]->moveLineToCenter(QPointF(blocks[idx]->pos().x(), blocks[idx]->pos().y()));
+
+
+						line->setOutBlock(blocks[in2]);
+						line->setOutPort(blocks[in2]->getOutputs()[0]);
+						blocks[in2]->getOutputs()[0]->addLine(line, false);
+						blocks[in2]->getOutputs()[0]->moveLineToCenter(QPointF(blocks[in2]->pos().x(), blocks[in2]->pos().y()));
+
+						editor->scene->addItem(line);
+						editor->getLines().push_back(line);
+
+					}
+				}
+
+			} 
+
+		}
+		node = node.nextSibling();
+		idx++;
+	}
 
 }
