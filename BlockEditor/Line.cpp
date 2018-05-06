@@ -13,8 +13,6 @@
  */
 Line::Line(QPointF p1, QPointF p2, BlockEditor* parent) : parent(parent) {
 
-	this->parent = parent;
-
 	QPen pen;
 	pen.setWidth(3);
 	setPen(pen);

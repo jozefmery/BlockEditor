@@ -677,7 +677,7 @@ void BlockEditor::setLine(Line* line) {
  * @param lineStart connection start position
  */
 void BlockEditor::setLineStart(const QPoint lineStart) {
-	this->lineStart = mapFromGlobal(lineStart);
+	this->lineStart = mapToScene(mapFromGlobal(lineStart));
 };
 
 
