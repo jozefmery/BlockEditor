@@ -333,7 +333,6 @@ void MainWindow::writeXML(const int idx) const
 
 		writer.writeStartElement("block");
 
-		writer.writeAttribute("id", QString::number(std::find(editor->getBlocks().begin(), editor->getBlocks().end(), b) - editor->getBlocks().begin()));
 		writer.writeAttribute("x", QString::number(b->pos().x()));
 		writer.writeAttribute("y", QString::number(b->pos().y()));
 
@@ -474,7 +473,7 @@ void MainWindow::readXML(const QString path) {
 		QDomElement elem = node.toElement(); // try to convert the node to an element.
 		if (!elem.isNull()) {
 			
-			if(elem.tagName() != "block" && elem.tagName() != "line") {
+			if(elem.tagName() != "block") {
 
 				QMessageBox::critical(nullptr, "XML", "Unknown element: " + elem.tagName());
 				return;
@@ -488,213 +487,177 @@ void MainWindow::readXML(const QString path) {
 
 			}
 
-			if(elem.tagName() == "block") {
+			std::vector<QString> attribs = {"x", "y", "type"};
 
-				std::vector<QString> attribs = {"x", "y", "type"};
+			auto map = elem.attributes();
 
-				auto map = elem.attributes();
+			if(map.length() < 3) {
+				QMessageBox::critical(nullptr, "XML", "Not enough attributes for block");
+				return;
 
-				if(map.length() < 3) {
-					QMessageBox::critical(nullptr, "XML", "Not enough attributes for block");
-					return;
-
-				}
-				
-				for (int i = 0; i < 3; i++) {
-
-					if(!map.contains(attribs[i])) {
-						
-						QMessageBox::critical(nullptr, "XML", "Missing attribute for block: " + attribs[i]);
-						return;
-					}
-
-				}
-
-				bool ok = true;
-				int x = map.namedItem("x").toAttr().value().toInt(&ok, 10);
-
-				if (!ok) {
-
-					QMessageBox::critical(nullptr, "XML", "Invalid value for x attribute: " + map.namedItem("x").toAttr().value());
-					return;
-				}
-
-				int y = map.namedItem("y").toAttr().value().toInt(&ok, 10);
-
-				if (!ok) {
-
-					QMessageBox::critical(nullptr, "XML", "Invalid value for y attribute: " + map.namedItem("x").toAttr().value());
-					return;
-				}
-
-				QPointF pos = editor->mapToScene(QPoint(x, y));
-
-				QString type = map.namedItem("type").toAttr().value();
-
-
-				std::vector<QString> unique_attrib;
-				std::vector<QString> IOtypes = {"integer", "float", "double", "constant", "real"};
-
-				if (type == "const") {
-
-					unique_attrib = {"output", "value"};
-
-					if (attribs.size() + unique_attrib.size() != map.length()) {
-
-						QMessageBox::critical(nullptr, "XML", "Invalid attributes for const block!");
-						return;
-					}
-
-					for (size_t i = 0; i < unique_attrib.size(); i++) {
-
-						if (!map.contains(unique_attrib[i])) {
-
-							QMessageBox::critical(nullptr, "XML", "Missing attribute for const block: " + unique_attrib[i]);
-							return;
-						}
-
-					}
-
-					auto output = map.namedItem("output").toAttr().value();
-
-					if (std::find(IOtypes.begin(), IOtypes.end(), output) == IOtypes.end()) {
-
-						QMessageBox::critical(nullptr, "XML", "Invalid output type: " + output);
-						return;
-
-					}
-
-					bool ok = true;
-					auto value = map.namedItem("value").toAttr().value().toDouble(&ok);
-
-					if (!ok) {
-
-						QMessageBox::critical(nullptr, "XML", "Invalid value for value attribute: " + map.namedItem("output").toAttr().value());
-						return;
-
-					}
-
-					Block* block = new Block(0, 0, editor, value, output);
-
-					editor->getBlocks().push_back(block);
-					editor->scene->addItem(block);
-					block->setPos(pos);
-
-				}
-				else if(type == "op") {
-					
-					unique_attrib = { "operation", "input", "output" };
-
-					if (attribs.size() + unique_attrib.size() != map.length()) {
-
-						QMessageBox::critical(nullptr, "XML", "Invalid attributes for operator block!");
-						return;
-					}
-
-					for (size_t i = 0; i < unique_attrib.size(); i++) {
-
-						if (!map.contains(unique_attrib[i])) {
-
-							QMessageBox::critical(nullptr, "XML", "Missing attribute for operator block: " + unique_attrib[i]);
-							return;
-						}
-
-					}
-
-					auto op = map.namedItem("operation").toAttr().value();
-					std::vector<QString> ops = { "+", "-", "/", "*" };
-
-					if (std::find(ops.begin(), ops.end(), op) == ops.end()) {
-						
-						QMessageBox::critical(nullptr, "XML", "Unknown operation: " + op);
-						return;
-
-					}
-
-					auto input = map.namedItem("input").toAttr().value();
-
-					if (std::find(IOtypes.begin(), IOtypes.end(), input) == IOtypes.end()) {
-
-						QMessageBox::critical(nullptr, "XML", "Invalid input type: " + input);
-						return;
-
-					}
-
-					auto output = map.namedItem("output").toAttr().value();
-
-					if (std::find(IOtypes.begin(), IOtypes.end(), output) == IOtypes.end()) {
-
-						QMessageBox::critical(nullptr, "XML", "Invalid output type: " + output);
-						return;
-
-					}
-
-					Block* block = new Block(0, 0, editor, op, input, output);
-
-					editor->getBlocks().push_back(block);
-					editor->scene->addItem(block);
-					block->setPos(pos);
-				}
-				else if (type == "result") {
-
-					if(attribs.size() + unique_attrib.size() != map.length()){
-						
-						QMessageBox::critical(nullptr, "XML", "Invalid attributes for result block!");
-						return;
-					}
-					
-					if(editor->getResultBlock()) {
-						
-						QMessageBox::critical(nullptr, "XML", "Duplicate result block!");
-						return;
-
-					}
-					
-					Block* block = new Block(0, 0, editor);
-
-					editor->setResultBlock(block);
-
-					editor->scene->addItem(block);
-					block->setPos(pos);
-
-				}
-				else {
-					QMessageBox::critical(nullptr, "XML", "Invalid value for type attribute: " + type);
-					return;
-				}
-			
 			}
-			else /* line */ {
-				
-				std::vector<QString> attribs = { "x1", "y1", "x2", "y2", "dx1", "dy1", "dx2", "dy2" };
+			
+			for (int i = 0; i < 3; i++) {
 
-				auto map = elem.attributes();
-
-				if (map.length() != 4) {
-					QMessageBox::critical(nullptr, "XML", "Invalid attributes for line");
+				if(!map.contains(attribs[i])) {
+					
+					QMessageBox::critical(nullptr, "XML", "Missing attribute for block: " + attribs[i]);
 					return;
-
 				}
 
-				for (int i = 0; i < map.length(); i++) {
+			}
 
-					if (!map.contains(attribs[i])) {
+			bool ok = true;
+			int x = map.namedItem("x").toAttr().value().toInt(&ok, 10);
 
-						QMessageBox::critical(nullptr, "XML", "Missing attribute for block: " + attribs[i]);
+			if (!ok) {
+
+				QMessageBox::critical(nullptr, "XML", "Invalid value for x attribute: " + map.namedItem("x").toAttr().value());
+				return;
+			}
+
+			int y = map.namedItem("y").toAttr().value().toInt(&ok, 10);
+
+			if (!ok) {
+
+				QMessageBox::critical(nullptr, "XML", "Invalid value for y attribute: " + map.namedItem("x").toAttr().value());
+				return;
+			}
+
+			QPointF pos = editor->mapToScene(QPoint(x, y));
+
+			QString type = map.namedItem("type").toAttr().value();
+
+
+			std::vector<QString> unique_attrib;
+			std::vector<QString> IOtypes = {"integer", "float", "double", "constant", "real"};
+
+			if (type == "const") {
+
+				unique_attrib = {"output", "value", "out"};
+
+				if (attribs.size() + unique_attrib.size() != map.length()) {
+
+					QMessageBox::critical(nullptr, "XML", "Invalid attributes for const block!");
+					return;
+				}
+
+				for (size_t i = 0; i < unique_attrib.size(); i++) {
+
+					if (!map.contains(unique_attrib[i])) {
+
+						QMessageBox::critical(nullptr, "XML", "Missing attribute for const block: " + unique_attrib[i]);
 						return;
 					}
 
 				}
 
+				auto output = map.namedItem("output").toAttr().value();
+
+				if (std::find(IOtypes.begin(), IOtypes.end(), output) == IOtypes.end()) {
+
+					QMessageBox::critical(nullptr, "XML", "Invalid output type: " + output);
+					return;
+
+				}
+
 				bool ok = true;
-				int x = map.namedItem("x").toAttr().value().toInt(&ok, 10);
+				auto value = map.namedItem("value").toAttr().value().toDouble(&ok);
 
 				if (!ok) {
 
-					QMessageBox::critical(nullptr, "XML", "Invalid value for x attribute: " + map.namedItem("x").toAttr().value());
+					QMessageBox::critical(nullptr, "XML", "Invalid value for value attribute: " + map.namedItem("output").toAttr().value());
+					return;
+
+				}
+
+				Block* block = new Block(0, 0, editor, value, output);
+
+				editor->getBlocks().push_back(block);
+				editor->scene->addItem(block);
+				block->setPos(pos);
+
+			}
+			else if(type == "op") {
+				
+				unique_attrib = { "operation", "input", "output" };
+
+				if (attribs.size() + unique_attrib.size() != map.length()) {
+
+					QMessageBox::critical(nullptr, "XML", "Invalid attributes for operator block!");
 					return;
 				}
 
+				for (size_t i = 0; i < unique_attrib.size(); i++) {
+
+					if (!map.contains(unique_attrib[i])) {
+
+						QMessageBox::critical(nullptr, "XML", "Missing attribute for operator block: " + unique_attrib[i]);
+						return;
+					}
+
+				}
+
+				auto op = map.namedItem("operation").toAttr().value();
+				std::vector<QString> ops = { "+", "-", "/", "*" };
+
+				if (std::find(ops.begin(), ops.end(), op) == ops.end()) {
+					
+					QMessageBox::critical(nullptr, "XML", "Unknown operation: " + op);
+					return;
+
+				}
+
+				auto input = map.namedItem("input").toAttr().value();
+
+				if (std::find(IOtypes.begin(), IOtypes.end(), input) == IOtypes.end()) {
+
+					QMessageBox::critical(nullptr, "XML", "Invalid input type: " + input);
+					return;
+
+				}
+
+				auto output = map.namedItem("output").toAttr().value();
+
+				if (std::find(IOtypes.begin(), IOtypes.end(), output) == IOtypes.end()) {
+
+					QMessageBox::critical(nullptr, "XML", "Invalid output type: " + output);
+					return;
+
+				}
+
+				Block* block = new Block(0, 0, editor, op, input, output);
+
+				editor->getBlocks().push_back(block);
+				editor->scene->addItem(block);
+				block->setPos(pos);
+			}
+			else if (type == "result") {
+
+				if(attribs.size() + unique_attrib.size() != map.length()){
+					
+					QMessageBox::critical(nullptr, "XML", "Invalid attributes for result block!");
+					return;
+				}
+				
+				if(editor->getResultBlock()) {
+					
+					QMessageBox::critical(nullptr, "XML", "Duplicate result block!");
+					return;
+
+				}
+				
+				Block* block = new Block(0, 0, editor);
+
+				editor->setResultBlock(block);
+
+				editor->scene->addItem(block);
+				block->setPos(pos);
+
+			}
+			else {
+				QMessageBox::critical(nullptr, "XML", "Invalid value for type attribute: " + type);
+				return;
 			}
 		}
 		node = node.nextSibling();
