@@ -1,3 +1,11 @@
+﻿/************************************************/
+/* 	BlockEditor ICP 2018						*/
+/*	Part: DialogConbst							*/
+/*	Authors:									*/
+/*		Denis Dovičic		xdovic01			*/
+/*		Jozef Méry			xmeryj00			*/
+/************************************************/
+
 #pragma once
 
 #include "ui_DialogConst.h"

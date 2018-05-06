@@ -1,3 +1,11 @@
+﻿/************************************************/
+/* 	BlockEditor ICP 2018						*/
+/*	Part: Dialog								*/
+/*	Authors:									*/
+/*		Denis Dovičic		xdovic01			*/
+/*		Jozef Méry			xmeryj00			*/
+/************************************************/
+
 #pragma once
 
 #include "ui_Dialog.h"

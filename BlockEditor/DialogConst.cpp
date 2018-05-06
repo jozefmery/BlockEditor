@@ -1,3 +1,11 @@
+﻿/************************************************/
+/* 	BlockEditor ICP 2018						*/
+/*	Part: DialogConst							*/
+/*	Authors:									*/
+/*		Denis Dovičic		xdovic01			*/
+/*		Jozef Méry			xmeryj00			*/
+/************************************************/
+
 #include "DialogConst.h"
 
 DialogConst::DialogConst(QWidget *parent)

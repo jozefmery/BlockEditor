@@ -1,3 +1,11 @@
+﻿/************************************************/
+/* 	BlockEditor ICP 2018						*/
+/*	Part: Block									*/
+/*	Authors:									*/
+/*		Denis Dovičic		xdovic01			*/
+/*		Jozef Méry			xmeryj00			*/
+/************************************************/
+
 #include "Block.h"
 #include "Line.h"
 #include "BlockEditor.h"
@@ -368,7 +376,7 @@ void Block::BlockIO::moveLineToCenter(QPointF newPos) {
 }
 
 /**
- * Set connection to clicked port block
+ * Set connection to clicked port.
  * @param event graphics scene mouse event
  */
 void Block::BlockIO::mousePressEvent(QGraphicsSceneMouseEvent* event) {
