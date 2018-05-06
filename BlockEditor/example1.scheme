@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<scheme>
-    <block x="-793" y="-316" type="const" output="double" value="9" out="1"/>
-    <block x="-488" y="-307" type="result" in="0"/>
-</scheme>

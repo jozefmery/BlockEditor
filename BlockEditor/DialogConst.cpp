@@ -8,6 +8,10 @@
 
 #include "DialogConst.h"
 
+/**
+* Constructor of dialog.
+* @param parent widget parent
+*/
 DialogConst::DialogConst(QWidget *parent)
 	: QDialog(parent) {
 
@@ -19,6 +23,9 @@ DialogConst::DialogConst(QWidget *parent)
 	clickedOk = false;
 }
 
+/**
+* Slot for signal cliclked on OK button. Get values from widgets.
+*/
 void DialogConst::ok() {
 	value = ui.value->text().toDouble();
 	outputType = ui.output->currentText();
@@ -28,6 +35,9 @@ void DialogConst::ok() {
 	close();
 }
 
+/**
+* Slot for signal clicked on Cancel button. Close dialog.
+*/
 void DialogConst::cancel() {
 
 	clickedOk = false;
