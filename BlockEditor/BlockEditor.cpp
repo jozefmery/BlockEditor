@@ -1,6 +1,6 @@
 ﻿/************************************************/
 /* 	BlockEditor ICP 2018						*/
-/*	Part: BlockEditor							*/
+/*	Part: BlockEditor						*/
 /*	Authors:									*/
 /*		Denis Dovičic		xdovic01			*/
 /*		Jozef Méry			xmeryj00			*/
@@ -708,6 +708,10 @@ QPoint BlockEditor::getMousePos() const {
 	return mapFromGlobal(QCursor::pos());
 }
 
+/**
+* Set result block.
+* @param result result block
+*/
 void BlockEditor::setResultBlock(Block* result){
 	
 	resultBlock = result;

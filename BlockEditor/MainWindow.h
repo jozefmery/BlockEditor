@@ -43,8 +43,6 @@ class MainWindow : public QMainWindow
 
 	private slots:
 		void start();
-		void pause();
-		void stop();
 
 		void createNewFile();
 		void showAbout();

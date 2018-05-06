@@ -36,8 +36,6 @@ public:
     QAction *actionClose_all;
     QAction *actionExit;
     QAction *actionStart;
-    QAction *actionPause;
-    QAction *actionStop;
     QAction *actionClear;
     QAction *actionAbout;
     QWidget *centralWidget;
@@ -200,26 +198,16 @@ public:
         QIcon icon4;
         icon4.addFile(QStringLiteral(":/Resources/play.png"), QSize(), QIcon::Normal, QIcon::Off);
         actionStart->setIcon(icon4);
-        actionPause = new QAction(MainWindowClass);
-        actionPause->setObjectName(QStringLiteral("actionPause"));
-        QIcon icon5;
-        icon5.addFile(QStringLiteral(":/Resources/pause.png"), QSize(), QIcon::Normal, QIcon::Off);
-        actionPause->setIcon(icon5);
-        actionStop = new QAction(MainWindowClass);
-        actionStop->setObjectName(QStringLiteral("actionStop"));
-        QIcon icon6;
-        icon6.addFile(QStringLiteral(":/Resources/stop.png"), QSize(), QIcon::Normal, QIcon::Off);
-        actionStop->setIcon(icon6);
         actionClear = new QAction(MainWindowClass);
         actionClear->setObjectName(QStringLiteral("actionClear"));
-        QIcon icon7;
-        icon7.addFile(QStringLiteral(":/Resources/clear.png"), QSize(), QIcon::Normal, QIcon::Off);
-        actionClear->setIcon(icon7);
+        QIcon icon5;
+        icon5.addFile(QStringLiteral(":/Resources/clear.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionClear->setIcon(icon5);
         actionAbout = new QAction(MainWindowClass);
         actionAbout->setObjectName(QStringLiteral("actionAbout"));
-        QIcon icon8;
-        icon8.addFile(QStringLiteral(":/Resources/about.png"), QSize(), QIcon::Normal, QIcon::Off);
-        actionAbout->setIcon(icon8);
+        QIcon icon6;
+        icon6.addFile(QStringLiteral(":/Resources/about.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionAbout->setIcon(icon6);
         centralWidget = new QWidget(MainWindowClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         centralWidget->setStyleSheet(QStringLiteral(""));
@@ -288,8 +276,6 @@ public:
         menuRecent->addAction(actionClear);
         menuHELP->addAction(actionAbout);
         controlToolBar->addAction(actionStart);
-        controlToolBar->addAction(actionPause);
-        controlToolBar->addAction(actionStop);
         fileToolBar->addAction(actionNew);
         fileToolBar->addAction(actionOpen);
         fileToolBar->addAction(actionSave);
@@ -361,8 +347,6 @@ public:
 #ifndef QT_NO_TOOLTIP
         actionStart->setToolTip(QApplication::translate("MainWindowClass", "Start execution of the selected scheme.", nullptr));
 #endif // QT_NO_TOOLTIP
-        actionPause->setText(QApplication::translate("MainWindowClass", "Pause Execution", nullptr));
-        actionStop->setText(QApplication::translate("MainWindowClass", "Stop Execution", nullptr));
         actionClear->setText(QApplication::translate("MainWindowClass", "Clear", nullptr));
 #ifndef QT_NO_TOOLTIP
         actionClear->setToolTip(QApplication::translate("MainWindowClass", "Clear recent files", nullptr));

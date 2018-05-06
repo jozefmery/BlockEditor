@@ -1,6 +1,6 @@
 ﻿/************************************************/
 /* 	BlockEditor ICP 2018						*/
-/*	Part: Line									*/
+/*	Part: Line								*/
 /*	Authors:									*/
 /*		Denis Dovičic		xdovic01			*/
 /*		Jozef Méry			xmeryj00			*/

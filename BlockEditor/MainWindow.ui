@@ -234,8 +234,6 @@ QToolBar{
     <bool>false</bool>
    </attribute>
    <addaction name="actionStart"/>
-   <addaction name="actionPause"/>
-   <addaction name="actionStop"/>
   </widget>
   <widget class="QToolBar" name="fileToolBar">
    <property name="windowTitle">
@@ -391,24 +389,6 @@ QToolBar{
    </property>
    <property name="toolTip">
     <string>Start execution of the selected scheme.</string>
-   </property>
-  </action>
-  <action name="actionPause">
-   <property name="icon">
-    <iconset resource="MainWindow.qrc">
-     <normaloff>:/Resources/pause.png</normaloff>:/Resources/pause.png</iconset>
-   </property>
-   <property name="text">
-    <string>Pause Execution</string>
-   </property>
-  </action>
-  <action name="actionStop">
-   <property name="icon">
-    <iconset resource="MainWindow.qrc">
-     <normaloff>:/Resources/stop.png</normaloff>:/Resources/stop.png</iconset>
-   </property>
-   <property name="text">
-    <string>Stop Execution</string>
    </property>
   </action>
   <action name="actionClear">

@@ -13,12 +13,19 @@
 
 static const QString DEFAULT_NAME("new scheme");
 
+/**
+ * Default constructor of EditorFile.
+ */
 EditorFile::EditorFile() 
 	: 
 	fullPath(""), 
 	displayPath(DEFAULT_NAME)
 {}
 
+/**
+ * Constructor of EditorFile with path.
+ * @param path path of the file
+ */
 EditorFile::EditorFile(const QString path) 
 	:
 	fullPath(path)
@@ -26,6 +33,9 @@ EditorFile::EditorFile(const QString path)
 	setDisplayPath();
 }
 
+/**
+* Sets display path to name only.
+*/
 void EditorFile::setDisplayPath()
 {
 	QRegularExpression re("(?:.*/)*(.*)\\..*");

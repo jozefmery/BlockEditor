@@ -21,6 +21,9 @@
 constexpr int NOT_FOUND = -1;
 Computation* computation;
 
+/**
+* Constructor of mainWindow.
+*/
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 {
@@ -29,6 +32,9 @@ MainWindow::MainWindow(QWidget *parent)
 	setUpChildren();
 }
 
+/**
+* Helper for setting up ui elements and hooks.
+*/
 inline void MainWindow::setUpChildren() {
 	
 	computation = nullptr;
@@ -40,8 +46,6 @@ inline void MainWindow::setUpChildren() {
 	editorTabs->setMovable(true);
 
 	connect(ui.actionStart, &QAction::triggered, this, &MainWindow::start);
-	connect(ui.actionPause, &QAction::triggered, this, &MainWindow::pause);
-	connect(ui.actionStop, &QAction::triggered, this, &MainWindow::stop);
 	connect(ui.actionNew, &QAction::triggered, this, &MainWindow::createNewFile);
 	connect(ui.actionOpen, &QAction::triggered, this, &MainWindow::openFileBrowse);
 	connect(ui.actionAbout, &QAction::triggered, this, &MainWindow::showAbout);
@@ -62,6 +66,9 @@ inline void MainWindow::setUpChildren() {
 	this->setIconSize(QSize(50 * (rect.width() / 1920), 50 * (rect.width() / 1920)));
 }
 
+/**
+* Start the simulation.
+*/
 void MainWindow::start() {
 	
 	if (editorTabs->currentIndex() == -1) { return; }
@@ -112,14 +119,9 @@ void MainWindow::start() {
 	}
 }
 
-void MainWindow::pause() {
-	
-}
-
-void MainWindow::stop() {
-	
-}
-
+/**
+* Creates a new file with a default name.
+*/
 void MainWindow::createNewFile() {
 
 	EditorFile file;
@@ -127,6 +129,9 @@ void MainWindow::createNewFile() {
 	createNewTab(file.getDisplayPath());
 }
 
+/**
+* Removes opened files from history.
+*/
 void MainWindow::clearHistory() {
 	
 	auto actions = ui.menuRecent->actions();
@@ -137,7 +142,9 @@ void MainWindow::clearHistory() {
 	}
 }
 
-
+/**
+* Asks user which file to open.
+*/
 void MainWindow::openFileBrowse() {
 	
 	auto path = QFileDialog::getOpenFileName(this, "Open Scheme", "", "Scheme file (*.scheme);;All Files (*.*)");
@@ -151,6 +158,10 @@ void MainWindow::openFileBrowse() {
 	openFile(path, true);
 }
 
+/**
+* Creates new tab.
+* @param name display name
+*/
 void MainWindow::createNewTab(const QString& name) {
 
 	BlockEditor* blockEditor = new BlockEditor;
@@ -161,6 +172,9 @@ void MainWindow::createNewTab(const QString& name) {
 
 }
 
+/**
+* Show info dialog.
+*/
 void MainWindow::showAbout() {
 
 
@@ -170,6 +184,11 @@ void MainWindow::showAbout() {
 											"Jozef Mery    - xmeryj00@stud.fit.vutbr.cz");	
 }
 
+/**
+* Gets index of file in files vector.
+* @param fullPath path to search
+* @return index of path or -1 if not found 
+*/
 int MainWindow::getFileIndex(const QString fullPath) {
 	
 
@@ -185,6 +204,11 @@ int MainWindow::getFileIndex(const QString fullPath) {
 	return NOT_FOUND;
 }
 
+/**
+* File opener helper wrapper.
+* @param path path to file
+* @param addToRecent add opened file to recent menu
+*/
 void MainWindow::openFile(const QString path, const bool addToRecent)
 {
 	int idx = getFileIndex(path);
@@ -233,12 +257,19 @@ void MainWindow::openFile(const QString path, const bool addToRecent)
 	}
 }
 
+/**
+* Closes a tab and a file.
+* @param idx index of tab.
+*/
 void MainWindow::closeFile(const int idx) {
 
 	editorTabs->removeTab(idx);
 	files.erase(files.begin() + idx);
 }
 
+/**
+* Closes current tab.
+*/
 void MainWindow::closeCurrent() {
 
 	int idx = editorTabs->currentIndex();
@@ -249,6 +280,9 @@ void MainWindow::closeCurrent() {
 	closeFile(idx);
 }
 
+/**
+* Closes all tabs.
+*/
 void MainWindow::closeAll() {
 
 	while(editorTabs->count() > 0) {
@@ -258,6 +292,9 @@ void MainWindow::closeAll() {
 		
 }
 
+/**
+* Quits app.
+*/
 void MainWindow::exitApp() {
 
 	closeAll();
@@ -281,6 +318,9 @@ void MainWindow::setResult() {
 	cursor.removeSelectedText();
 }
 
+/**
+* Saves current tab.
+*/
 void MainWindow::saveCurrent() {
 	
 	int idx = editorTabs->currentIndex();
@@ -291,6 +331,9 @@ void MainWindow::saveCurrent() {
 	save(idx, false);
 }
 
+/**
+* Saves current tab with a prompt.
+*/
 void MainWindow::saveAs() {
 
 	int idx = editorTabs->currentIndex();
@@ -301,6 +344,9 @@ void MainWindow::saveAs() {
 	save(idx, true);
 }
 
+/**
+* Save all files without prompt.
+*/
 void MainWindow::saveAll() {
 
 	qDebug() << editorTabs->count();
@@ -311,6 +357,11 @@ void MainWindow::saveAll() {
 	}
 }
 
+/**
+* File save helper wrapper.
+* @param idx index of tab
+* @param ask ask for save name
+*/
 void MainWindow::save(const int idx, bool ask) {
 	
 	// new file
@@ -327,6 +378,10 @@ void MainWindow::save(const int idx, bool ask) {
 	writeXML(idx);
 }
 
+/**
+* Writes xml data to a file.
+* @param idx index of tab to saved
+*/
 void MainWindow::writeXML(const int idx) const
 {
 	QString xml;
@@ -436,6 +491,10 @@ void MainWindow::writeXML(const int idx) const
 	file.close();
 }
 
+/**
+* Reads xml into the current tab.
+* @param path path of file
+*/
 void MainWindow::readXML(const QString path) {
 
 
@@ -730,6 +789,7 @@ void MainWindow::readXML(const QString path) {
 						line->setInPort(out_target->getInputs()[0]);
 						out_target->getInputs()[0]->addLine(line, false);
 						out_target->getInputs()[0]->moveLineToCenter(QPointF(out_target->pos().x(), out_target->pos().y()));
+						out_target->getInputs()[0]->setLine(line);
 						editor->scene->addItem(line);
 						editor->getLines().push_back(line);
 
@@ -779,8 +839,6 @@ void MainWindow::readXML(const QString path) {
 					return;
 				}
 
-				
-
 				if (out >= 0) {
 
 					Block *out_target = (out >= blocks.size()) ? editor->getResultBlock() : blocks[out];
@@ -801,9 +859,9 @@ void MainWindow::readXML(const QString path) {
 						line->setInPort(out_target->getInputs()[0]);
 						out_target->getInputs()[0]->addLine(line, false);
 						out_target->getInputs()[0]->moveLineToCenter(QPointF(out_target->pos().x(), out_target->pos().y()));
+						out_target->getInputs()[0]->setLine(line);
 						editor->scene->addItem(line);
 						editor->getLines().push_back(line);
-
 					}
 				}
 				
@@ -818,15 +876,15 @@ void MainWindow::readXML(const QString path) {
 						line->setInBlock(blocks[idx]);
 						line->setInPort(blocks[idx]->getInputs()[0]);
 						blocks[idx]->getInputs()[0]->setLine(line);
-						blocks[idx]->getInputs()[0]->addLine(line, true);
+						blocks[idx]->getInputs()[0]->addLine(line, false);
 						blocks[idx]->getInputs()[0]->moveLineToCenter(QPointF(blocks[idx]->pos().x(), blocks[idx]->pos().y()));
 
 
 						line->setOutBlock(blocks[in1]);
 						line->setOutPort(blocks[in1]->getOutputs()[0]);
-						blocks[in1]->getOutputs()[0]->addLine(line, false);
+						blocks[in1]->getOutputs()[0]->addLine(line, true);
 						blocks[in1]->getOutputs()[0]->moveLineToCenter(QPointF(blocks[in1]->pos().x(), blocks[in1]->pos().y()));
-						
+						blocks[in1]->getOutputs()[0]->setLine(line);
 						editor->scene->addItem(line);
 						editor->getLines().push_back(line);
 
@@ -844,15 +902,15 @@ void MainWindow::readXML(const QString path) {
 						line->setInBlock(blocks[idx]);
 						line->setInPort(blocks[idx]->getInputs()[1]);
 						blocks[idx]->getInputs()[1]->setLine(line);
-						blocks[idx]->getInputs()[1]->addLine(line, true);
+						blocks[idx]->getInputs()[1]->addLine(line, false);
 						blocks[idx]->getInputs()[1]->moveLineToCenter(QPointF(blocks[idx]->pos().x(), blocks[idx]->pos().y()));
 
 
 						line->setOutBlock(blocks[in2]);
 						line->setOutPort(blocks[in2]->getOutputs()[0]);
-						blocks[in2]->getOutputs()[0]->addLine(line, false);
+						blocks[in2]->getOutputs()[0]->addLine(line, true);
 						blocks[in2]->getOutputs()[0]->moveLineToCenter(QPointF(blocks[in2]->pos().x(), blocks[in2]->pos().y()));
-
+						blocks[in2]->getOutputs()[0]->setLine(line);
 						editor->scene->addItem(line);
 						editor->getLines().push_back(line);
 
